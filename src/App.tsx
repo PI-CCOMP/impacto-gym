@@ -13,7 +13,7 @@ import { MeatballsMenu } from "./components/MeatballsMenu";
 import { Input } from "./components/Input/input";
 import { FileUpload } from "./components/FileUpload";
 import { InputCheckbox } from "./components/InputCheckbox";
-import { CardCheckbox } from "./components/CardCheckbox";
+import { CheckboxCard } from "./components/CheckboxCard";
 import maleImg from "./assets/img/male.png";
 import { AvatarUpload } from "./components/AvatarUpload";
 import { Line } from "./components/Line";
@@ -41,7 +41,7 @@ function App() {
  médico liberando a prática de atividades físicas "
         />
         <InputCheckbox labelText="Peito" id="Peito" />
-        <CardCheckbox
+        <CheckboxCard
           image={maleImg}
           alt="Homem "
           labelText="Masculino"

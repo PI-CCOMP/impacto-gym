@@ -1,12 +1,12 @@
 import styles from "./styles.module.css";
 
-type CardCheckboxProps = {
+type CheckboxCardProps = {
   image: string;
   labelText: string;
   alt: string;
 } & React.ComponentProps<"input">;
 
-export function CardCheckbox({ image, alt, labelText, id }: CardCheckboxProps) {
+export function CheckboxCard({ image, alt, labelText, id }: CheckboxCardProps) {
   return (
     <div className={styles.container}>
       <label htmlFor={id} className={styles.label}>
