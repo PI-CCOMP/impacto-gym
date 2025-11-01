@@ -26,6 +26,8 @@ import { User } from "lucide-react";
 import { FaqItem } from "./components/FaqItem";
 import { EmptyResultsCard } from "./components/EmptyResultsCard";
 import noDataImg from "./assets/img/no-data.png";
+import { WorkoutTraining } from "./components/WorkoutTable";
+import { TimeAdjust } from "./components/TimeAdjust";
 
 function App() {
   return (
@@ -89,8 +91,11 @@ em breve, sua conta estará disponível"
           description="Para qualquer dúvida, entre em contato 
 com a recepção da academia"
         />
+        <WorkoutTraining trainingActive={false} />
+        <WorkoutTraining trainingActive={true} />
+        <TimeAdjust />
       </Container>
-      <Navbar />
+      {/* <Navbar /> */}
     </Wrapper>
   );
 }

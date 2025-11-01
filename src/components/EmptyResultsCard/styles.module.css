@@ -11,11 +11,10 @@
 }
 
 .img {
-  width: 100%;
+  max-width: 32rem;
   max-height: 20rem;
 }
 
 .description {
-  font-size: calc(var(--size-xs) + var(--size-sm));
   color: var(--text-dark);
 }

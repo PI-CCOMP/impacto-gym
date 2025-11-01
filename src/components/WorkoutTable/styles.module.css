@@ -1,0 +1,35 @@
+.table {
+  text-align: center;
+  border-collapse: collapse;
+}
+
+.tableHeader th {
+  font-weight: normal;
+  color: var(--text-dark);
+  padding: var(--size-sm);
+}
+
+.tableHeader th .icon {
+  height: var(--size-lg);
+  width: var(--size-lg);
+}
+
+.tableBody tr {
+  color: var(--text);
+}
+
+.tableBody tr:nth-child(even) {
+  background-color: var(--primary-light);
+}
+.tableBody tr:nth-child(odd) {
+  background-color: var(--primary);
+}
+.tableBody tr.activeRow {
+  background-color: var(--secondary);
+}
+
+.tableBody td {
+  padding: var(--size-sm);
+  text-align: center;
+  font-size: calc(var(--size-xs) + var(--size-md));
+}

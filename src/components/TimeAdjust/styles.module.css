@@ -1,0 +1,28 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: var(--size-xxs);
+}
+
+.time {
+  color: var(--secondary);
+}
+
+.bottomOverlay {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--primary-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--size-md);
+  padding: var(--size-md);
+  border-radius: calc(var(--size-md) + var(--size-xl))
+    calc(var(--size-md) + var(--size-xl)) 0 0;
+}
+
+.pickerWrapper {
+  width: 100%;
+}

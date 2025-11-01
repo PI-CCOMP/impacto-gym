@@ -1,9 +1,14 @@
 import styles from "./styles.module.css";
 
 type ButtonStrokeProps = {
+  onClick?: () => void;
   children: React.ReactNode;
 };
 
-export function ButtonStroke({ children }: ButtonStrokeProps) {
-  return <button className={styles.button}>{children}</button>;
+export function ButtonStroke({ onClick, children }: ButtonStrokeProps) {
+  return (
+    <button onClick={onClick} className={styles.button}>
+      {children}
+    </button>
+  );
 }

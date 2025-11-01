@@ -19,5 +19,4 @@
   padding: var(--size-sm);
   cursor: pointer;
   color: var(--secondary);
-  font-size: calc((var(--size-xs) + var(--size-sm)));
 }

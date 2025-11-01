@@ -65,7 +65,6 @@
   display: flex;
   align-items: center;
   gap: var(--size-sm);
-  font-size: calc(var(--size-xs) + var(--size-sm));
   color: var(--text-default);
 }
 

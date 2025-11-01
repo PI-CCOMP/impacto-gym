@@ -35,7 +35,7 @@ a:hover {
 
 input,
 button {
-  max-width: 32rem;
+  width: 100%;
 }
 
 button:hover {
