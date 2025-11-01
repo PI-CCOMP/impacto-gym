@@ -24,6 +24,8 @@ import { TrainingHeader } from "./components/TrainingHeader";
 import { MenuItem } from "./components/MenuItem";
 import { User } from "lucide-react";
 import { FaqItem } from "./components/FaqItem";
+import { EmptyResultsCard } from "./components/EmptyResultsCard";
+import noDataImg from "./assets/img/no-data.png";
 
 function App() {
   return (
@@ -78,6 +80,14 @@ function App() {
         <FaqItem
           faqTitle="Como altero minha senha?"
           faqDescription="Você pode alterar sua senha a qualquer momento. Basta acessar as configurações > perfil > alterar senha. Por segurança, o sistema solicitará sua senha atual antes de permitir a criação de uma nova. Suas senhas são armazenadas de forma protegida em nosso sistema."
+        />
+        <EmptyResultsCard
+          title="O administrador irá validar suas informações e, 
+em breve, sua conta estará disponível"
+          image={noDataImg}
+          alt="Pasta de documentos vazia"
+          description="Para qualquer dúvida, entre em contato 
+com a recepção da academia"
         />
       </Container>
       <Navbar />
