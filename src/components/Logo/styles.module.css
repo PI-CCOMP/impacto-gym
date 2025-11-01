@@ -1,0 +1,15 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-sm);
+}
+
+.companyLogo {
+  color: var(--title);
+}
+
+.companyName {
+  font-weight: 800;
+  color: var(--secondary);
+}

@@ -1,0 +1,5 @@
+.line {
+  border: none;
+  height: var(--size-xxs);
+  background-color: var(--primary-light-contrast);
+}

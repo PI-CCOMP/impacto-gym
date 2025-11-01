@@ -1,0 +1,34 @@
+.meatballsMenu {
+  width: fit-content;
+}
+
+.ellipsis {
+  background-color: transparent;
+  color: var(--title);
+  border: none;
+  transition: color 0.3s ease-in-out;
+}
+
+.ellipsis:hover {
+  color: var(--secondary);
+}
+
+.meatballsMenuOptions {
+  background-color: var(--primary-light);
+  max-width: auto;
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--size-sm);
+  list-style-type: none;
+}
+
+.meatballsMenuOptions li a {
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: var(--size-sm);
+  padding: var(--size-sm);
+  overflow-x: hidden;
+}

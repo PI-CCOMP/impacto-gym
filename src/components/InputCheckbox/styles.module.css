@@ -1,0 +1,19 @@
+.container {
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: var(--size-sm);
+}
+
+.label {
+  color: var(--title);
+}
+
+.input {
+  width: var(--size-md);
+  height: var(--size-md);
+}
+
+.input:checked {
+  accent-color: var(--secondary);
+}

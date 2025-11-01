@@ -1,0 +1,32 @@
+.container {
+  display: flex;
+  flex-direction: column;
+
+  background-color: var(--primary-light);
+  padding: var(--size-md);
+  border-radius: var(--size-sm);
+}
+
+.topContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.icon {
+  background-color: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  color: var(--secondary);
+}
+
+.faqDescription {
+  overflow: hidden;
+  transition: height 0.3s ease-in-out;
+}
+
+.faqDescription.active {
+  margin-top: var(--size-sm);
+}
