@@ -1,0 +1,20 @@
+.article {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--size-md);
+}
+
+.title {
+  font-weight: normal;
+}
+
+.img {
+  max-width: 32rem;
+  max-height: 20rem;
+}
+
+.description {
+  color: var(--text-dark);
+}

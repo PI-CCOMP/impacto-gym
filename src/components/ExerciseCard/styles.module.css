@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: var(--size-md);
+  cursor: pointer;
+}
+
+.img {
+  width: 6.4rem;
+  height: 6.4rem;
+  border-radius: var(--size-sm);
+}
+
+.container p {
+  font-weight: bold;
+}

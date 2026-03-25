@@ -1,0 +1,23 @@
+.label {
+  width: 16rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-sm);
+  padding: var(--size-sm);
+  text-align: center;
+  border: var(--size-xxs) solid var(--title);
+  border-radius: var(--size-sm);
+  transition: border-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.label:hover {
+  cursor: pointer;
+  border-color: var(--secondary);
+}
+
+.label:has(input:checked) {
+  border-color: var(--secondary);
+  color: var(--secondary);
+}

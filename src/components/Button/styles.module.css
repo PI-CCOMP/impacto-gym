@@ -1,0 +1,12 @@
+.button {
+  background-color: var(--secondary);
+  color: var(--title);
+  padding: calc(var(--size-md) - var(--size-xs));
+  border: none;
+  border-radius: var(--size-sm);
+  transition: background-color 0.3s ease-in-out;
+}
+
+.button:hover {
+  background-color: var(--secondary-hover);
+}

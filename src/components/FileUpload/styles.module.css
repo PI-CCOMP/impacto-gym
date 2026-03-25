@@ -1,0 +1,24 @@
+.label {
+  height: 12.8rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-sm);
+  padding: var(--size-sm);
+  text-align: center;
+  border: var(--size-xxs) dashed var(--title);
+  border-radius: var(--size-sm);
+  transition: border-color 0.3s ease-in-out;
+}
+
+.icon {
+  width: auto;
+  height: calc(var(--size-xl));
+  color: var(--secondary);
+}
+
+.label:hover {
+  cursor: pointer;
+  border-color: var(--secondary);
+}

@@ -1,0 +1,22 @@
+.container {
+  width: 16rem;
+}
+
+.circle {
+  width: 9rem;
+  height: 9rem;
+  padding: var(--size-xl);
+  background-color: var(--text-default);
+  color: var(--text-dark);
+  border-radius: 100%;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--size-sm);
+  padding: var(--size-sm);
+  cursor: pointer;
+  color: var(--secondary);
+}

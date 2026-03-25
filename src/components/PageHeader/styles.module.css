@@ -1,0 +1,12 @@
+.container {
+  display: flex;
+  align-items: center;
+  color: var(--title);
+}
+
+.title {
+  width: calc(100% - var(--size-lg));
+  text-align: center;
+  font-size: calc(var(--size-xs) + var(--size-md));
+  font-weight: 600;
+}

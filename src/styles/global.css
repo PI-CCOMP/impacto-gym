@@ -1,0 +1,50 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-family: "Sequel Sans", sans-serif;
+  font-size: 1.6rem;
+  background-color: var(--primary);
+  color: var(--text-default);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  color: var(--title);
+}
+
+a {
+  text-decoration: none;
+  color: var(--title);
+  transition: color 0.3s ease-in-out;
+}
+
+a:hover {
+  color: var(--secondary);
+}
+
+input,
+button {
+  width: 100%;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+@media screen and (min-width: 768px) {
+  input,
+  button {
+    width: 50%;
+  }
+}

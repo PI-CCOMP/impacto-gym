@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-md);
+}
+
+.label {
+  color: var(--title);
+}
+
+.input {
+  background-color: transparent;
+  color: var(--text-default);
+  outline: none;
+  border: var(--size-xxs) solid var(--title);
+  border-radius: var(--size-sm);
+  padding: var(--size-md);
+  transition: border-color 0.3s ease-in-out;
+}
+
+.input:focus {
+  border-color: var(--secondary);
+}
+
+.input:invalid {
+  border-color: var(--error);
+}
