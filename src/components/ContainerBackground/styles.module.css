@@ -1,0 +1,24 @@
+.containerBackground {
+  height: 100vh;
+  display: flex;
+  justify-content: end;
+  flex-direction: column;
+  text-align: center;
+  gap: var(--size-xl);
+  padding: calc(var(--size-xl) + var(--size-md)) var(--size-md);
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.containerBackground::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+}
+
+.containerBackground > * {
+  position: relative;
+  z-index: 1;
+}
