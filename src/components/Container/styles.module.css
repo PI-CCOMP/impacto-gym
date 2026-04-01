@@ -6,6 +6,4 @@
   text-align: center;
   gap: var(--size-xl);
   padding: calc(var(--size-xl) + var(--size-md)) var(--size-md);
-  background-size: cover;
-  background-position: center;
 }
