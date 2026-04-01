@@ -1,7 +1,9 @@
-.container {
+.previousPage {
   display: flex;
   align-items: center;
   color: var(--title);
+  background-color: transparent;
+  border: none;
 }
 
 .title {
