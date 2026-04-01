@@ -2,8 +2,10 @@ import "./styles/theme.css";
 import "./styles/global.css";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Index } from "./pages/Index";
 import { Componentes } from "./Componentes";
+
+import { Index } from "./pages/Index";
+import { Login } from "./pages/Login";
 
 export function App() {
   return (
@@ -11,6 +13,7 @@ export function App() {
       <Routes>
         <Route path="/componentes" element={<Componentes />} />
         <Route path="/" element={<Index />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </BrowserRouter>
   );
