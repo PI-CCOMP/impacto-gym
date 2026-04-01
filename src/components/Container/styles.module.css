@@ -1,7 +1,6 @@
 .container {
   height: 100vh;
   display: flex;
-  justify-content: end;
   flex-direction: column;
   text-align: center;
   gap: var(--size-xl);
