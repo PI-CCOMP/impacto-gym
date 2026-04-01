@@ -1,0 +1,10 @@
+form {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  gap: var(--size-md);
+}
+
+form button {
+  margin-top: var(--size-sm);
+}
