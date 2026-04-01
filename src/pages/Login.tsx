@@ -6,7 +6,7 @@ import { AuthFormHeader } from "../components/AuthFormHeader";
 import { Input } from "../components/Input/input";
 import { Button } from "../components/Button";
 
-import styles from "../pages/Login.module.css";
+import styles from "../pages/Auth.module.css";
 
 export function Login() {
   return (
