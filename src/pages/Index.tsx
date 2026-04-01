@@ -3,6 +3,8 @@ import { ContainerBackground } from "../components/ContainerBackground";
 import { Button } from "../components/Button";
 import { Logo } from "../components/Logo";
 
+import { Link } from "react-router-dom";
+
 import manBackground from "../assets/img/homem.png";
 import maleBackground from "../assets/img/mulher.png";
 
@@ -19,10 +21,10 @@ export function Index() {
           aqui para te ajudar em cada passo!
         </p>
 
-        <a href="/login">
+        <Link to={"/login"}>
           <Button>Entrar</Button>
-        </a>
-        <a href="/register">Registrar</a>
+        </Link>
+        <Link to={"/register"}>Registrar</Link>
         <Logo />
       </ContainerBackground>
     </Wrapper>
