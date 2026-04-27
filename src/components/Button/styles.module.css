@@ -5,6 +5,8 @@
   border: none;
   border-radius: var(--size-sm);
   transition: background-color 0.3s ease-in-out;
+  margin-top: 2rem;
+  min-height: 4.4rem;
 }
 
 .button:hover {
