@@ -5,6 +5,7 @@
   border: none;
   border: var(--size-xxs) solid var(--primary-light);
   border-radius: var(--size-sm);
+  min-height: 3.6rem;
   transition: background-color 0.3s ease-in-out;
 }
 
