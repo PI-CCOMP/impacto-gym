@@ -15,6 +15,7 @@
   border: var(--size-xxs) solid var(--title);
   border-radius: var(--size-sm);
   padding: var(--size-md);
+  min-height: 4.4rem;
   transition: border-color 0.3s ease-in-out;
 }
 
