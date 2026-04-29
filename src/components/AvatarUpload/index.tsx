@@ -2,17 +2,19 @@ import styles from "./styles.module.css";
 
 import { ImagePlus } from "lucide-react";
 
-type AvatarUploadProps = { labelText: string } & React.ComponentProps<"input">;
+type AvatarUploadProps = {
+  children?: React.ReactNode;
+} & React.ComponentProps<"input">;
 
-export function AvatarUpload({ labelText, id }: AvatarUploadProps) {
+export function AvatarUpload({ children, id }: AvatarUploadProps) {
   return (
     <div className={styles.container}>
-      {labelText && (
+      {children && (
         <label htmlFor={id} className={styles.label}>
           <div className={styles.circle}>
             <ImagePlus />
           </div>
-          {labelText}
+          {children}
           <input type="file" id={id} hidden />
         </label>
       )}
