@@ -9,7 +9,9 @@
   text-align: center;
   border: var(--size-xxs) solid var(--title);
   border-radius: var(--size-sm);
-  transition: border-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  transition:
+    border-color 0.3s ease-in-out,
+    color 0.3s ease-in-out;
 }
 
 .label:hover {
