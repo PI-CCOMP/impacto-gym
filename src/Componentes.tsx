@@ -2,7 +2,7 @@ import { Wrapper } from "./components/Wrapper";
 import { Container } from "./components/Container";
 import { PageHeader } from "./components/PageHeader";
 import { Logo } from "./components/Logo";
-import { AuthFormHeader } from "./components/AuthFormHeader";
+import { FormHeader } from "./components/FormHeader";
 import { Button } from "./components/Button";
 import { ButtonStroke } from "./components/ButtonStroke";
 import { Navbar } from "./components/Navbar";
@@ -32,7 +32,7 @@ export function Componentes() {
       <Container>
         <PageHeader>Registro</PageHeader>
         <Logo></Logo>
-        <AuthFormHeader>Cadastre-se!</AuthFormHeader>
+        <FormHeader>Cadastre-se!</FormHeader>
         <Button>Avançar</Button>
         <ButtonStroke>Voltar</ButtonStroke>
         <MeatballsMenu />
