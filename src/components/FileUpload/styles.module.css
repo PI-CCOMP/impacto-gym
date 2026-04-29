@@ -22,3 +22,9 @@
   cursor: pointer;
   border-color: var(--secondary);
 }
+
+.fileName {
+  display: flex;
+  align-items: center;
+  gap: var(--size-sm);
+}
