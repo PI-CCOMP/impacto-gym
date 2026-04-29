@@ -29,7 +29,8 @@ a {
   transition: color 0.3s ease-in-out;
 }
 
-a:hover {
+a:hover,
+span {
   color: var(--secondary);
 }
 
@@ -40,11 +41,4 @@ button {
 
 button:hover {
   cursor: pointer;
-}
-
-@media screen and (min-width: 768px) {
-  input,
-  button {
-    width: 50%;
-  }
 }
