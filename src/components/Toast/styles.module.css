@@ -1,0 +1,58 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.toast {
+  position: relative;
+  background-color: var(--primary-light);
+  border: var(--size-xxs) solid var(--primary-light-contrast);
+  border-radius: var(--size-sm);
+  padding: var(--size-xl) var(--size-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--size-md);
+  min-width: 22rem;
+  text-align: center;
+}
+
+.close {
+  position: absolute;
+  top: var(--size-sm);
+  left: var(--size-sm);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--title);
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+
+.icon {
+  width: 6rem;
+  height: 6rem;
+  border-radius: 50%;
+  border: var(--size-xxs) solid var(--title);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.8rem;
+}
+
+.message {
+  color: var(--title);
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.highlight {
+  color: var(--secondary);
+}
