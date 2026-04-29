@@ -28,3 +28,9 @@
   align-items: center;
   gap: var(--size-sm);
 }
+
+.error {
+  color: var(--error);
+  font-size: 1.2rem;
+  display: block;
+}
