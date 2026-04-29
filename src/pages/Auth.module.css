@@ -8,3 +8,9 @@ form {
 form button {
   margin-top: var(--size-sm);
 }
+
+.secondaryLink {
+  text-align: center;
+  font-size: 1.2rem;
+  color: var(--text-dark);
+}

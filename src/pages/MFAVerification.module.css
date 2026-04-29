@@ -1,0 +1,27 @@
+.codeWrapper {
+  display: flex;
+  gap: var(--size-md);
+  justify-content: center;
+}
+
+.digitInput {
+  width: 6.4rem;
+  height: 6.4rem;
+  text-align: center;
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: var(--title);
+  background-color: transparent;
+  border: var(--size-xxs) solid var(--title);
+  border-radius: var(--size-sm);
+  outline: none;
+  transition: border-color 0.3s ease-in-out;
+}
+
+.digitInput:focus {
+  border-color: var(--secondary);
+}
+
+.digitInputError {
+  border-color: var(--error);
+}
