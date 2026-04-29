@@ -1,5 +1,5 @@
 .containerBackground {
-  height: 100vh;
+  min-height: 100dvh;
   display: flex;
   justify-content: end;
   flex-direction: column;
@@ -15,7 +15,12 @@
   content: "";
   position: absolute;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.45);
+  background: linear-gradient(
+    to top,
+    #060606 20%,
+    #060606 0%,
+    transparent 100%
+  );
 }
 
 .containerBackground > * {

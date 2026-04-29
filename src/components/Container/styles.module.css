@@ -1,8 +1,7 @@
 .container {
-  height: 100vh;
+  max-height: 100dvh;
   display: flex;
   flex-direction: column;
-  text-align: center;
   gap: var(--size-xl);
   padding: calc(var(--size-xl) + var(--size-md)) var(--size-md);
 }
