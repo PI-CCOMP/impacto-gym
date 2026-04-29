@@ -4,9 +4,10 @@
   padding: calc(var(--size-md) - var(--size-xs));
   border: none;
   border-radius: var(--size-sm);
-  transition: background-color 0.3s ease-in-out;
+  font-size: 1.6rem;
   margin-top: 2rem;
   min-height: 4.4rem;
+  transition: background-color 0.3s ease-in-out;
 }
 
 .button:hover {
