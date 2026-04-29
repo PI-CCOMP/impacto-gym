@@ -8,14 +8,25 @@
   color: var(--title);
 }
 
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
 .input {
+  width: 100%;
   background-color: transparent;
   color: var(--text-default);
   outline: none;
   border: var(--size-xxs) solid var(--title);
   border-radius: var(--size-sm);
   padding: var(--size-md);
+  padding-right: 4rem;
   min-height: 4.4rem;
+  text-overflow: ellipsis;
   transition: border-color 0.3s ease-in-out;
 }
 
@@ -23,6 +34,23 @@
   border-color: var(--secondary);
 }
 
-.input:invalid {
-  border-color: var(--error);
+.inputError {
+  border-color: var(--error) !important;
+}
+
+.eyeButton {
+  position: absolute;
+  width: fit-content;
+  right: var(--size-md);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--title);
+  align-items: center;
+}
+
+.errorMessage {
+  color: var(--error);
+  font-size: 1.2rem;
+  display: block;
 }
