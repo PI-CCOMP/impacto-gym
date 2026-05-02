@@ -25,3 +25,10 @@
 .digitInputError {
   border-color: var(--error);
 }
+
+.errorMessage {
+  color: var(--error);
+  font-size: 1.2rem;
+  margin: 0;
+  display: block;
+}

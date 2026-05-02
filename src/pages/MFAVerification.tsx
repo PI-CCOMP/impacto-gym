@@ -8,11 +8,11 @@ import { FormHeader } from "../components/FormHeader";
 import { Button } from "../components/Button";
 
 import styles from "./MFAVerification.module.css";
-
 import _authStyles from "./Auth.module.css";
 
 type LocationState = {
-  redirectTo: string;
+  redirectTo?: string;
+  action?: "register" | "change-password";
 };
 
 export function MFAVerification() {
@@ -20,6 +20,7 @@ export function MFAVerification() {
   const location = useLocation();
   const state = location.state as LocationState | null;
 
+  const action = state?.action;
   const redirectTo = state?.redirectTo ?? "/login";
 
   const [digits, setDigits] = useState(["", "", "", ""]);
@@ -57,10 +58,17 @@ export function MFAVerification() {
       setError("Digite o código completo de 4 dígitos.");
       return;
     }
+
     // aqui você chamaria a API para verificar o código
     console.log("Código MFA:", code);
-    navigate(redirectTo);
+    if (action === "change-password") {
+      navigate("/login");
+    } else {
+      navigate("/login"); // register também vai pro login
+    }
   }
+
+  const buttonLabel = action === "change-password" ? "Salvar" : "Finalizar";
 
   return (
     <Container>
@@ -86,13 +94,10 @@ export function MFAVerification() {
             />
           ))}
         </div>
-        {error && (
-          <p style={{ color: "var(--error)", fontSize: "1.2rem", margin: 0 }}>
-            {error}
-          </p>
-        )}
-        <Button type="submit">Entrar</Button>{" "}
-        {/* FAZER VALIDACAO SE VEIO DE CADASTRO FINALIZAR SE VEIO DE ALTERAR SENHA SALVAR e dps jogar para /login */}
+
+        {error && <p className={styles.errorMessage}>{error}</p>}
+
+        <Button type="submit">{buttonLabel}</Button>
       </form>
     </Container>
   );
