@@ -6,8 +6,9 @@ import { Componentes } from "./Componentes";
 
 import { Index } from "./pages/Index";
 import { Login } from "./pages/Login";
-import { Registrar } from "./pages/Registrar";
+import { Register } from "./pages/Register";
 import { MFAVerification } from "./pages/MFAVerification";
+import { ForgotPassword } from "./pages/ForgotPassword";
 
 export function App() {
   return (
@@ -16,8 +17,9 @@ export function App() {
         <Route path="/componentes" element={<Componentes />} />
         <Route path="/" element={<Index />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/registrar" element={<Registrar />} />
+        <Route path="/registrar" element={<Register />} />
         <Route path="verificar-email" element={<MFAVerification />} />
+        <Route path="/alterar-senha" element={<ForgotPassword />} />
       </Routes>
     </BrowserRouter>
   );
