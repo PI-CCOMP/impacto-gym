@@ -34,14 +34,12 @@ export function validateCPF(value: string): string {
 export function validatePassword(value: string): string {
   if (value.length < 8) return "Senha deve ter ao menos 8 caracteres.";
   if (!/[a-zA-Z]/.test(value)) return "Senha deve conter ao menos uma letra.";
+  if (!/[A-Z]/.test(value))
+    return "Senha deve conter ao menos uma letra maiúscula.";
   if (!/[0-9]/.test(value)) return "Senha deve conter ao menos um número.";
   if (!/[^a-zA-Z0-9]/.test(value))
     return "Senha deve conter ao menos um caractere especial.";
   return "";
-}
-
-export function validatePasswordLogin(value: string): string {
-  return value.trim().length === 0 ? "Informe a senha." : "";
 }
 
 export function validateConfirmPassword(
