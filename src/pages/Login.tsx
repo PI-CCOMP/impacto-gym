@@ -8,7 +8,7 @@ import { FormHeader } from "../components/FormHeader";
 import { Input } from "../components/Input/input";
 import { Button } from "../components/Button";
 
-import { validateEmailRequired, validatePasswordLogin } from "../validators";
+import { validateEmailRequired, validatePassword } from "../validators";
 
 import styles from "../pages/Auth.module.css";
 
@@ -22,7 +22,7 @@ export function Login() {
 
   function validate(name: string, value: string): string {
     if (name === "email") return validateEmailRequired(value);
-    if (name === "password") return validatePasswordLogin(value);
+    if (name === "password") return validatePassword(value);
     return "";
   }
 
@@ -43,7 +43,7 @@ export function Login() {
     setErrors(newErrors);
     if (newErrors.email || newErrors.password) return;
     console.log("Login!", {
-      email: values.email.trim(),
+      email: values.email,
       password: values.password,
     });
     navigate("/home");
@@ -85,7 +85,7 @@ export function Login() {
         <Button type="submit">Entrar</Button>
       </form>
 
-      <Link to="/esqueci_senha" className={styles.secondaryLink}>
+      <Link to="/alterar-senha" className={styles.secondaryLink}>
         Esqueceu sua senha?
       </Link>
     </Container>
