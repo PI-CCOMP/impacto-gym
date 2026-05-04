@@ -2,12 +2,13 @@
   background-color: transparent;
   color: var(--title);
   padding: calc(var(--size-md) - var(--size-xs));
-  border: none;
-  border: var(--size-xxs) solid var(--primary-light);
+  border: var(--size-xxs) solid var(--title);
   border-radius: var(--size-sm);
   font-size: 1.6rem;
   min-height: 3.6rem;
   transition: background-color 0.3s ease-in-out;
+  width: 100%;
+  cursor: pointer;
 }
 
 .button:hover {

@@ -23,7 +23,7 @@ import { User } from "lucide-react";
 import { FaqItem } from "./components/FaqItem";
 import { EmptyResultsCard } from "./components/EmptyResultsCard";
 import noDataImg from "./assets/img/no-data.png";
-import { WorkoutTraining } from "./components/WorkoutTable";
+import { WorkoutTraining } from "./components/WorkoutTraining";
 import { TimeAdjust } from "./components/TimeAdjust";
 
 export function Componentes() {

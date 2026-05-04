@@ -4,6 +4,10 @@ type ContainerProps = {
   children: React.ReactNode;
 };
 
-export function Container({ children }: ContainerProps) {
-  return <div className={styles.container}>{children}</div>;
+export function Container({ children, ...rest }: ContainerProps) {
+  return (
+    <div {...rest} className={styles.container}>
+      {children}
+    </div>
+  );
 }

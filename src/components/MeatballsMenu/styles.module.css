@@ -1,5 +1,6 @@
 .meatballsMenu {
   width: fit-content;
+  position: relative;
 }
 
 .ellipsis {
@@ -15,13 +16,16 @@
 
 .meatballsMenuOptions {
   background-color: var(--primary-light);
-  max-width: auto;
   width: fit-content;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: var(--size-sm);
   list-style-type: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 10;
 }
 
 .meatballsMenuOptions li a {

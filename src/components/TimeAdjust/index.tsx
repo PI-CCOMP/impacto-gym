@@ -5,10 +5,17 @@ import Picker from "react-mobile-picker";
 
 interface TimeAdjustProps {
   initialTime?: number;
+  trainingActive: boolean;
+  countdown: number | null;
   onConfirm?: (time: number) => void;
 }
 
-export function TimeAdjust({ initialTime = 90, onConfirm }: TimeAdjustProps) {
+export function TimeAdjust({
+  initialTime = 90,
+  trainingActive,
+  countdown,
+  onConfirm,
+}: TimeAdjustProps) {
   const [time, setTime] = useState<number>(initialTime);
   const [editing, setEditing] = useState<boolean>(false);
 
@@ -31,18 +38,21 @@ export function TimeAdjust({ initialTime = 90, onConfirm }: TimeAdjustProps) {
   };
 
   const handleStart = (clientY: number) => {
+    if (!trainingActive) return;
     dragging.current = true;
     startY.current = clientY;
     startTime.current = time;
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
+    if (!trainingActive) return;
     handleStart(e.clientY);
     window.addEventListener("mousemove", handleMove);
     window.addEventListener("mouseup", stopDrag);
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    if (!trainingActive) return;
     handleStart(e.touches[0].clientY);
     window.addEventListener("touchmove", handleMove);
     window.addEventListener("touchend", stopDrag);
@@ -50,13 +60,10 @@ export function TimeAdjust({ initialTime = 90, onConfirm }: TimeAdjustProps) {
 
   const handleMove = (e: MouseEvent | TouchEvent) => {
     if (!dragging.current) return;
-
     const clientY = e instanceof TouchEvent ? e.touches[0].clientY : e.clientY;
     const diffY = startY.current - clientY;
-
     const stepsMoved = Math.floor(diffY / sensibility);
     const newTime = Math.max(0, startTime.current + stepsMoved * step);
-
     setTime(newTime);
   };
 
@@ -68,24 +75,32 @@ export function TimeAdjust({ initialTime = 90, onConfirm }: TimeAdjustProps) {
     window.removeEventListener("touchend", stopDrag);
   };
 
-  const maxTime = 240; // 4 minutos
+  const maxTime = 240;
   const timeOptions = Array.from(
     { length: maxTime / step + 1 },
-    (_, i) => i * step
+    (_, i) => i * step,
   );
+
+  const displayTime = countdown !== null ? countdown : time;
+  const isCountingDown = countdown !== null;
 
   return (
     <div className={styles.container}>
       <p>Tempo de descanso:</p>
 
       <span
-        className={styles.time}
-        onClick={() => setEditing(true)}
+        className={`${styles.time} ${!trainingActive ? styles.disabled : ""} ${isCountingDown ? styles.counting : ""}`}
+        onClick={() => {
+          if (trainingActive && !isCountingDown) setEditing(true);
+        }}
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}
-        style={{ cursor: "ns-resize", userSelect: "none" }}
+        style={{
+          cursor: trainingActive && !isCountingDown ? "ns-resize" : "default",
+          userSelect: "none",
+        }}
       >
-        {formatTime(time)}
+        {formatTime(displayTime)}
       </span>
 
       {editing && (
@@ -107,7 +122,6 @@ export function TimeAdjust({ initialTime = 90, onConfirm }: TimeAdjustProps) {
               </Picker.Column>
             </Picker>
           </div>
-
           <Button onClick={handleConfirm}>Feito</Button>
         </div>
       )}

@@ -15,3 +15,34 @@
 .author {
   color: var(--text-dark);
 }
+
+.titleRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--size-sm);
+}
+
+.helpIcon {
+  width: var(--size-lg);
+  height: var(--size-lg);
+  color: var(--text-dark);
+  flex-shrink: 0;
+  margin-top: var(--size-xxs);
+}
+
+.stats {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--size-sm);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-xxs);
+}
+
+.statLabel {
+  color: var(--text-dark);
+}

@@ -56,3 +56,14 @@
 .highlight {
   color: var(--secondary);
 }
+
+.actions {
+  display: flex;
+  gap: var(--size-sm);
+  width: 100%;
+}
+
+.actions > * {
+  flex: 1;
+  margin-top: 0;
+}

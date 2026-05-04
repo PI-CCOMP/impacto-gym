@@ -10,6 +10,7 @@ import { Register } from "./pages/Aluno/Register";
 import { MFAVerification } from "./pages/Aluno/MFAVerification";
 import { ForgotPassword } from "./pages/Aluno/ForgotPassword";
 import { Home } from "./pages/Aluno/Home";
+import Training from "./pages/Aluno/Treino";
 
 export function App() {
   return (
@@ -22,6 +23,7 @@ export function App() {
         <Route path="verificar-email" element={<MFAVerification />} />
         <Route path="/alterar-senha" element={<ForgotPassword />} />
         <Route path="/inicio" element={<Home />} />
+        <Route path="/treino/:idTreino" element={<Training />} />
       </Routes>
     </BrowserRouter>
   );

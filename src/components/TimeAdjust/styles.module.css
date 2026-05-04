@@ -21,8 +21,19 @@
   padding: var(--size-md);
   border-radius: calc(var(--size-md) + var(--size-xl))
     calc(var(--size-md) + var(--size-xl)) 0 0;
+  z-index: 100;
 }
 
 .pickerWrapper {
   width: 100%;
+}
+
+.disabled {
+  color: var(--text-dark);
+  cursor: default !important;
+}
+
+.counting {
+  color: var(--secondary);
+  font-weight: bold;
 }
