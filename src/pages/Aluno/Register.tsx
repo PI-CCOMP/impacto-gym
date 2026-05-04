@@ -1,23 +1,23 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Container } from "../components/Container";
-import { Logo } from "../components/Logo";
-import { PageHeader } from "../components/PageHeader";
-import { FormHeader } from "../components/FormHeader";
-import { Input } from "../components/Input/input";
-import { Button } from "../components/Button";
-import { Row } from "../components/Row";
-import { CheckboxCard } from "../components/CheckboxCard";
-import { InputCheckbox } from "../components/InputCheckbox";
-import { FileUpload } from "../components/FileUpload";
+import { Container } from "../../components/Container";
+import { Logo } from "../../components/Logo";
+import { PageHeader } from "../../components/PageHeader";
+import { FormHeader } from "../../components/FormHeader";
+import { Input } from "../../components/Input/input";
+import { Button } from "../../components/Button";
+import { Row } from "../../components/Row";
+import { CheckboxCard } from "../../components/CheckboxCard";
+import { InputCheckbox } from "../../components/InputCheckbox";
+import { FileUpload } from "../../components/FileUpload";
 
-import maleImg from "../assets/img/male.png";
-import femaleImg from "../assets/img/female.png";
+import maleImg from "../../assets/img/male.png";
+import femaleImg from "../../assets/img/female.png";
 
-import { useRegistrarForm } from "../hooks/useRegistrarForm";
+import { useRegistrarForm } from "../../hooks/useRegistrarForm";
 
-import styles from "../pages/Auth.module.css";
+import styles from "../Aluno/Auth.module.css";
 
 const steps = [
   { id: 1, title: "Cadastre-se!", subtitle: "Preencha os campos abaixo" },

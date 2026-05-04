@@ -1,6 +1,11 @@
-.row {
+.row,
+.row-space {
   display: flex;
   gap: var(--size-xl);
   justify-content: center;
   flex-wrap: wrap;
+}
+
+.row-space {
+  justify-content: space-between;
 }

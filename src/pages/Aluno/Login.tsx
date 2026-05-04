@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
-import { Container } from "../components/Container";
-import { PageHeader } from "../components/PageHeader";
-import { Logo } from "../components/Logo";
-import { FormHeader } from "../components/FormHeader";
-import { Input } from "../components/Input/input";
-import { Button } from "../components/Button";
+import { Container } from "../../components/Container";
+import { PageHeader } from "../../components/PageHeader";
+import { Logo } from "../../components/Logo";
+import { FormHeader } from "../../components/FormHeader";
+import { Input } from "../../components/Input/input";
+import { Button } from "../../components/Button";
 
-import { validateEmailRequired, validatePassword } from "../validators";
+import { validateEmailRequired, validatePassword } from "../../validators";
 
-import styles from "../pages/Auth.module.css";
+import styles from "../Aluno/Auth.module.css";
 
 export function Login() {
   const navigate = useNavigate();

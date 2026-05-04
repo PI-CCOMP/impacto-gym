@@ -1,13 +1,13 @@
-import { ContainerBackground } from "../components/ContainerBackground";
-import { Button } from "../components/Button";
-import { Logo } from "../components/Logo";
+import { ContainerBackground } from "../../components/ContainerBackground";
+import { Button } from "../../components/Button";
+import { Logo } from "../../components/Logo";
 
 import { Link } from "react-router-dom";
 
-import manBackground from "../assets/img/homem.jpeg";
-import maleBackground from "../assets/img/mulher.jpg";
+import manBackground from "../../assets/img/homem.jpeg";
+import maleBackground from "../../assets/img/mulher.jpg";
 
-import styles from "../pages/Auth.module.css";
+import styles from "../Aluno/Auth.module.css";
 
 export function Index() {
   return (

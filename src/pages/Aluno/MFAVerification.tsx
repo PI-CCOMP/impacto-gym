@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-import { Container } from "../components/Container";
-import { PageHeader } from "../components/PageHeader";
-import { Logo } from "../components/Logo";
-import { FormHeader } from "../components/FormHeader";
-import { Button } from "../components/Button";
+import { Container } from "../../components/Container";
+import { PageHeader } from "../../components/PageHeader";
+import { Logo } from "../../components/Logo";
+import { FormHeader } from "../../components/FormHeader";
+import { Button } from "../../components/Button";
 
 import styles from "./MFAVerification.module.css";
 import _authStyles from "./Auth.module.css";

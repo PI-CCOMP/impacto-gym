@@ -1,31 +1,34 @@
+import { Link } from "react-router-dom";
+
 import styles from "./styles.module.css";
 
 import { Home, MessageSquare, History } from "lucide-react";
+
+{
+  /* fazer verificacao se estou nessa rota entao icone fica azul */
+}
 
 export function Navbar() {
   return (
     <nav className={styles.container}>
       <ul className={styles.menu}>
         <li>
-          <a href="#">
-            {" "}
+          <Link to={"/inicio"}>
             <Home />
             Início
-          </a>
+          </Link>
         </li>
         <li>
-          <a href="#">
-            {" "}
+          <Link to={"/avisos"}>
             <MessageSquare />
             Avisos
-          </a>
+          </Link>
         </li>
         <li>
-          <a href="#">
-            {" "}
+          <Link to={"/historico"}>
             <History />
             Historíco
-          </a>
+          </Link>
         </li>
       </ul>
     </nav>
