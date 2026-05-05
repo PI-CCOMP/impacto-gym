@@ -47,7 +47,7 @@ function playBeep() {
 
 function sendNotification() {
   if ("Notification" in window && Notification.permission === "granted") {
-    new Notification("Descanso encerrado! 💪", {
+    new Notification("Descanso encerrado!", {
       body: "Hora da próxima série!",
       icon: "/favicon.ico",
     });

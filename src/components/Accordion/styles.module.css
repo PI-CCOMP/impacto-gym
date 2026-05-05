@@ -6,6 +6,12 @@
   border-radius: var(--size-sm);
 }
 
+.transparent {
+  background-color: transparent;
+  padding-left: 0;
+  padding-right: 0;
+}
+
 .topContent {
   display: flex;
   justify-content: space-between;
@@ -22,11 +28,11 @@
   width: fit-content;
 }
 
-.faqDescription {
+.content {
   overflow: hidden;
   transition: height 0.3s ease-in-out;
 }
 
-.faqDescription.active {
+.content.active {
   margin-top: var(--size-sm);
 }

@@ -33,6 +33,7 @@ const mockTrainings = [
     muscleGroups: ["Peitoral", "Abdômen"],
     exercises: [
       {
+        id: "1",
         exerciseName: "Supino Reto",
         image: supinoImg,
         alt: "Supino Reto",
@@ -43,6 +44,7 @@ const mockTrainings = [
         ],
       },
       {
+        id: "2",
         exerciseName: "Crucifixo",
         image: supinoImg,
         alt: "Crucifixo",
@@ -52,6 +54,7 @@ const mockTrainings = [
         ],
       },
       {
+        id: "3",
         exerciseName: "Abdominal",
         image: supinoImg,
         alt: "Abdominal",
@@ -70,6 +73,7 @@ const mockTrainings = [
     muscleGroups: ["Costas", "Bíceps"],
     exercises: [
       {
+        id: "4",
         exerciseName: "Remada",
         image: supinoImg,
         alt: "Remada",
@@ -79,6 +83,7 @@ const mockTrainings = [
         ],
       },
       {
+        id: "5",
         exerciseName: "Puxada",
         image: supinoImg,
         alt: "Puxada",
@@ -97,6 +102,7 @@ const mockTrainings = [
     muscleGroups: ["Pernas", "Glúteos"],
     exercises: [
       {
+        id: "6",
         exerciseName: "Agachamento",
         image: supinoImg,
         alt: "Agachamento",
@@ -107,6 +113,7 @@ const mockTrainings = [
         ],
       },
       {
+        id: "7",
         exerciseName: "Leg Press",
         image: supinoImg,
         alt: "Leg Press",
@@ -262,9 +269,11 @@ export default function Training() {
         <>
           <ExerciseCard
             key={`card-${index}`}
+            id={exercise.id}
             exerciseName={exercise.exerciseName}
             image={exercise.image}
             alt={exercise.alt}
+            onClick={() => navigate(`/exercicio/${exercise.id}`)}
           />
           <WorkoutTraining
             key={`table-${index}`}

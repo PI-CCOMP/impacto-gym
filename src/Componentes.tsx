@@ -20,7 +20,7 @@ import { ExerciseCard } from "./components/ExerciseCard";
 import { TrainingHeader } from "./components/TrainingHeader";
 import { MenuItem } from "./components/MenuItem";
 import { User } from "lucide-react";
-import { FaqItem } from "./components/FaqItem";
+import { Accordion } from "./components/Accordion";
 import { EmptyResultsCard } from "./components/EmptyResultsCard";
 import noDataImg from "./assets/img/no-data.png";
 import { WorkoutTraining } from "./components/WorkoutTraining";
@@ -76,10 +76,7 @@ export function Componentes() {
         <MenuItem sectionTitle="Conta" itemName="Perfil">
           <User />
         </MenuItem>
-        <FaqItem
-          faqTitle="Como altero minha senha?"
-          faqDescription="Você pode alterar sua senha a qualquer momento. Basta acessar as configurações > perfil > alterar senha. Por segurança, o sistema solicitará sua senha atual antes de permitir a criação de uma nova. Suas senhas são armazenadas de forma protegida em nosso sistema."
-        />
+        <Accordion title="Como altero minha senha?">{children}</Accordion>
         <EmptyResultsCard
           title="O administrador irá validar suas informações e, 
 em breve, sua conta estará disponível"

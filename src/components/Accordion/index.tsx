@@ -2,11 +2,19 @@ import { useState, useRef, useEffect } from "react";
 import styles from "./styles.module.css";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
-type FaqItemProps = { faqTitle: string; faqDescription: string };
+type AccordionProps = {
+  title: string;
+  children: React.ReactNode;
+  transparent?: boolean;
+};
 
-export function FaqItem({ faqTitle, faqDescription }: FaqItemProps) {
+export function Accordion({
+  title,
+  children,
+  transparent = false,
+}: AccordionProps) {
   const [open, setOpen] = useState(false);
-  const contentRef = useRef<HTMLParagraphElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState("0px");
 
   useEffect(() => {
@@ -16,20 +24,22 @@ export function FaqItem({ faqTitle, faqDescription }: FaqItemProps) {
   }, [open]);
 
   return (
-    <div className={styles.container}>
+    <div
+      className={`${styles.container} ${transparent ? styles.transparent : ""}`}
+    >
       <div className={styles.topContent}>
-        <p className={styles.faqTitle}>{faqTitle}</p>
+        <p className={styles.title}>{title}</p>
         <button className={styles.icon} onClick={() => setOpen(!open)}>
           {open ? <ChevronUp /> : <ChevronDown />}
         </button>
       </div>
-      <p
+      <div
         ref={contentRef}
-        className={`${styles.faqDescription} ${open ? styles.active : ""}`}
-        style={{ height }}
+        className={`${styles.content} ${open ? styles.active : ""}`}
+        style={{ height, overflow: "hidden" }}
       >
-        {faqDescription}
-      </p>
+        {children}
+      </div>
     </div>
   );
 }
