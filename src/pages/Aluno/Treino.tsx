@@ -124,7 +124,8 @@ export default function Training() {
   const navigate = useNavigate();
 
   const training = mockTrainings.find((t) => t.id === idTreino);
-  const saved = getActiveTraining();
+  const savedRef = useRef(getActiveTraining());
+  const saved = savedRef.current;
   const isResuming = saved?.id === idTreino && saved?.isActive;
   const isDifferentActive = saved?.isActive && saved?.id !== idTreino;
 
@@ -244,9 +245,7 @@ export default function Training() {
   }
 
   return (
-    <Container
-      style={{ paddingBottom: "calc(var(--size-xl) + var(--size-lg))" }}
-    >
+    <Container>
       <PageHeader>{training.trainingName}</PageHeader>
 
       <TrainingHeader
@@ -281,33 +280,26 @@ export default function Training() {
         </>
       ))}
 
-      <div
-        style={{
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          padding: "var(--size-sm)",
-          backgroundColor: "var(--background)",
-          zIndex: 10,
-        }}
-      >
-        {!trainingActive ? (
-          <Button
-            style={{ marginBottom: "var(--size-xl)" }}
-            onClick={handleStart}
-          >
-            Iniciar
-          </Button>
-        ) : (
-          <Button
-            style={{ marginBottom: "var(--size-xl)" }}
-            onClick={handleFinish}
-          >
-            Finalizar Treino
-          </Button>
-        )}
-      </div>
+      {!trainingActive && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            padding:
+              "var(--size-sm) var(--size-sm) var(--size-lg) var(--size-sm)",
+            backgroundColor: "var(--background)",
+            zIndex: 10,
+          }}
+        >
+          <Button onClick={handleStart}>Iniciar</Button>
+        </div>
+      )}
+
+      {trainingActive && (
+        <Button onClick={handleFinish}>Finalizar Treino</Button>
+      )}
 
       {showFinishToast && (
         <Toast
@@ -329,7 +321,7 @@ export default function Training() {
           <Button
             onClick={() => {
               setShowSwitchToast(false);
-              navigate(`/treino/${saved?.id}`);
+              navigate(`/treino/${savedRef.current?.id}`);
             }}
           >
             Continuar

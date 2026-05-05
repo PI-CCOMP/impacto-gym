@@ -1,7 +1,7 @@
 import "./styles/theme.css";
 import "./styles/global.css";
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { Componentes } from "./Componentes";
 
 import { Index } from "./pages/Aluno/Index";
@@ -12,19 +12,30 @@ import { ForgotPassword } from "./pages/Aluno/ForgotPassword";
 import { Home } from "./pages/Aluno/Home";
 import Training from "./pages/Aluno/Treino";
 
+function AppRoutes() {
+  const location = useLocation();
+
+  return (
+    <Routes>
+      <Route path="/componentes" element={<Componentes />} />
+      <Route path="/" element={<Index />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/registrar" element={<Register />} />
+      <Route path="verificar-email" element={<MFAVerification />} />
+      <Route path="/alterar-senha" element={<ForgotPassword />} />
+      <Route path="/inicio" element={<Home />} />
+      <Route
+        path="/treino/:idTreino"
+        element={<Training key={location.pathname} />}
+      />
+    </Routes>
+  );
+}
+
 export function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/componentes" element={<Componentes />} />
-        <Route path="/" element={<Index />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/registrar" element={<Register />} />
-        <Route path="verificar-email" element={<MFAVerification />} />
-        <Route path="/alterar-senha" element={<ForgotPassword />} />
-        <Route path="/inicio" element={<Home />} />
-        <Route path="/treino/:idTreino" element={<Training />} />
-      </Routes>
+      <AppRoutes />
     </BrowserRouter>
   );
 }
