@@ -16,8 +16,9 @@ import {
   clearActiveTraining,
 } from "../../utils/activeTrainig";
 
+import { mockTrainings } from "../../mocks/mockData";
+
 import { Dumbbell } from "lucide-react";
-import supinoImg from "../../assets/img/supino-reto.jpg";
 
 type CheckedSerie = {
   exerciseIndex: number;
@@ -25,108 +26,7 @@ type CheckedSerie = {
   kg: number;
 };
 
-const mockTrainings = [
-  {
-    id: "1",
-    trainingName: "Treino A",
-    author: "Catarina",
-    muscleGroups: ["Peitoral", "Abdômen"],
-    exercises: [
-      {
-        id: "1",
-        exerciseName: "Supino Reto",
-        image: supinoImg,
-        alt: "Supino Reto",
-        series: [
-          { series: 1, kg: 40, reps: 12 },
-          { series: 2, kg: 42, reps: 10 },
-          { series: 3, kg: 45, reps: 8 },
-        ],
-      },
-      {
-        id: "2",
-        exerciseName: "Crucifixo",
-        image: supinoImg,
-        alt: "Crucifixo",
-        series: [
-          { series: 1, kg: 20, reps: 15 },
-          { series: 2, kg: 22, reps: 12 },
-        ],
-      },
-      {
-        id: "3",
-        exerciseName: "Abdominal",
-        image: supinoImg,
-        alt: "Abdominal",
-        series: [
-          { series: 1, kg: 0, reps: 20 },
-          { series: 2, kg: 0, reps: 20 },
-          { series: 3, kg: 0, reps: 15 },
-        ],
-      },
-    ],
-  },
-  {
-    id: "2",
-    trainingName: "Treino B",
-    author: "Catarina",
-    muscleGroups: ["Costas", "Bíceps"],
-    exercises: [
-      {
-        id: "4",
-        exerciseName: "Remada",
-        image: supinoImg,
-        alt: "Remada",
-        series: [
-          { series: 1, kg: 50, reps: 10 },
-          { series: 2, kg: 55, reps: 8 },
-        ],
-      },
-      {
-        id: "5",
-        exerciseName: "Puxada",
-        image: supinoImg,
-        alt: "Puxada",
-        series: [
-          { series: 1, kg: 60, reps: 10 },
-          { series: 2, kg: 60, reps: 8 },
-          { series: 3, kg: 55, reps: 8 },
-        ],
-      },
-    ],
-  },
-  {
-    id: "3",
-    trainingName: "Treino C",
-    author: "Catarina",
-    muscleGroups: ["Pernas", "Glúteos"],
-    exercises: [
-      {
-        id: "6",
-        exerciseName: "Agachamento",
-        image: supinoImg,
-        alt: "Agachamento",
-        series: [
-          { series: 1, kg: 80, reps: 10 },
-          { series: 2, kg: 85, reps: 8 },
-          { series: 3, kg: 90, reps: 6 },
-        ],
-      },
-      {
-        id: "7",
-        exerciseName: "Leg Press",
-        image: supinoImg,
-        alt: "Leg Press",
-        series: [
-          { series: 1, kg: 120, reps: 12 },
-          { series: 2, kg: 130, reps: 10 },
-        ],
-      },
-    ],
-  },
-];
-
-export default function Training() {
+export function Training() {
   const { idTreino } = useParams();
   const navigate = useNavigate();
 

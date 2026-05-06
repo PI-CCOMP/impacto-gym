@@ -1,14 +1,17 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
+
+import { getActiveTraining } from "../../utils/activeTrainig";
+import {
+  mockExercises,
+  exerciseBelongsToActiveTraining,
+} from "../../mocks/mockData";
 
 import { Container } from "../../components/Container";
 import { PageHeader } from "../../components/PageHeader";
 import { Accordion } from "../../components/Accordion";
-import { Dumbbell, HeartPulse, Clock, Droplet } from "lucide-react";
 import { ButtonStroke } from "../../components/ButtonStroke";
+import { Dumbbell, HeartPulse, Clock, Droplet } from "lucide-react";
 import styles from "./Exercise.module.css";
-
-import supinoImg from "../../assets/img/supino-reto.jpg";
-import peitoImg from "../../assets/img/peito.png";
 
 const tips = [
   { icon: <Dumbbell />, text: "Mantenha o peito estufado e a coluna reta!" },
@@ -17,21 +20,16 @@ const tips = [
   { icon: <Droplet />, text: "Não esqueça de se hidratar!" },
 ];
 
-const mockExercises = [
-  { id: "1", name: "Supino Reto", image: supinoImg },
-  { id: "2", name: "Crucifixo", image: supinoImg },
-  { id: "3", name: "Abdominal", image: supinoImg },
-  { id: "4", name: "Remada", image: supinoImg },
-  { id: "5", name: "Puxada", image: supinoImg },
-  { id: "6", name: "Agachamento", image: supinoImg },
-  { id: "7", name: "Leg Press", image: supinoImg },
-];
-
 export function Exercise() {
   const { idExercicio } = useParams();
   const navigate = useNavigate();
 
   const exercise = mockExercises.find((e) => e.id === idExercicio);
+  const activeTraining = getActiveTraining();
+  const canAskForHelp = exerciseBelongsToActiveTraining(
+    idExercicio ?? "",
+    activeTraining?.id,
+  );
 
   if (!exercise) {
     navigate(-1);
@@ -40,9 +38,10 @@ export function Exercise() {
 
   return (
     <Container>
-      <PageHeader>{exercise.name}</PageHeader>
-      <img src={exercise.image} alt={exercise.name} className={styles.image} />
-      <h2>{exercise.name}</h2>
+      <PageHeader>{exercise.exerciseName}</PageHeader>
+      <img src={exercise.image} alt={exercise.alt} className={styles.image} />
+      {/* depois trocar por vídeo */}
+      <h2>{exercise.exerciseName}</h2>
       <Accordion title="Dicas" transparent>
         <ul className={styles.tipsList}>
           {tips.map((tip, index) => (
@@ -56,14 +55,20 @@ export function Exercise() {
       <Accordion title="Ativação Muscular" transparent>
         <ul className={styles.tipsList}>
           <img
-            src={peitoImg}
-            alt={exercise.name}
+            src={exercise.muscleGroupImage}
+            alt={exercise.exerciseName}
             className={styles.imageGroupMuscle}
           />
+          {/* depois colocar cada imagem de acordo com o seu grupo */}
         </ul>
       </Accordion>
-      <ButtonStroke>Preciso de Ajuda</ButtonStroke>{" "}
-      {/* ir para pagina de pedir ajuda ao clicar, depois nessa pagina de ajuda se clicar no bptap azul chamar instrutor ja puxa automaticamnte o exercicio e qm precisa de ajuda e sobe toast informando, qnd fecha joga pro treino e aparece em Training.tsx o icone de ajuda q ao clicar nele leva para pagina com a fila de solicitacoes de auxilio q o usuario fex */}
+      {canAskForHelp ? (
+        <Link to="/ajuda" state={{ exerciseName: exercise.exerciseName }}>
+          <ButtonStroke>Preciso de Ajuda</ButtonStroke>
+        </Link>
+      ) : (
+        <ButtonStroke disabled>Preciso de Ajuda</ButtonStroke>
+      )}
     </Container>
   );
 }

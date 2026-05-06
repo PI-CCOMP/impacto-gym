@@ -15,33 +15,7 @@ import {
   clearActiveTraining,
 } from "../../utils/activeTrainig";
 
-import supinoImg from "../../assets/img/supino-reto.jpg";
-
-const mockUser = { name: "Arthur" };
-
-const mockTrainings = [
-  {
-    id: "1",
-    image: supinoImg,
-    alt: "Foto do treino A",
-    trainingName: "Treino A",
-    muscleGroups: ["Peitoral", "Abdômen"],
-  },
-  {
-    id: "2",
-    image: supinoImg,
-    alt: "Foto do treino B",
-    trainingName: "Treino B",
-    muscleGroups: ["Costas", "Bíceps"],
-  },
-  {
-    id: "3",
-    image: supinoImg,
-    alt: "Foto do treino C",
-    trainingName: "Treino C",
-    muscleGroups: ["Pernas", "Glúteos"],
-  },
-];
+import { mockUser, mockTrainings } from "../../mocks/mockData";
 
 export function Home() {
   const navigate = useNavigate();
