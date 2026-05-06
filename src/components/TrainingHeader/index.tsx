@@ -34,7 +34,7 @@ export function TrainingHeader({
             const isSecondLast = index === muscleGroups.length - 2;
             return (
               <span key={index}>
-                <span className={styles.muscleGroup}>{muscle}</span>
+                <span className={styles.muscleGroup}> {muscle}</span>
                 {!isLast && (isSecondLast ? " e " : ",")}
               </span>
             );

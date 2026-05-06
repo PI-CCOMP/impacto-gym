@@ -14,6 +14,7 @@ import { Training } from "./pages/Aluno/Training";
 import { Exercise } from "./pages/Aluno/Exercise";
 import { Help } from "./pages/Aluno/Help";
 import { HelpRequest } from "./pages/Aluno/HelpRequest";
+import { Alert } from "./pages/Aluno/Alert";
 
 function AppRoutes() {
   const location = useLocation();
@@ -34,6 +35,7 @@ function AppRoutes() {
       <Route path="/exercicio/:idExercicio" element={<Exercise />} />
       <Route path="/ajuda" element={<Help />} />
       <Route path="/solicitacao-auxilio" element={<HelpRequest />} />
+      <Route path="/aviso" element={<Alert />} />
     </Routes>
   );
 }

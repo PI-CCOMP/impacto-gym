@@ -19,7 +19,7 @@ export function Navbar() {
           </Link>
         </li>
         <li>
-          <Link to={"/avisos"}>
+          <Link to={"/aviso"}>
             <MessageSquare />
             Avisos
           </Link>
