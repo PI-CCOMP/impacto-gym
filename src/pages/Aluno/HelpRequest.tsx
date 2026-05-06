@@ -59,7 +59,7 @@ export function HelpRequest() {
     <Container>
       <PageHeader>Pedido de Ajuda</PageHeader>
 
-      <h2>Exercício(s) que você pediu auxílio</h2>
+      <h3>Exercício(s) que você pediu auxílio</h3>
 
       {requests.length === 0 && <p>Nenhum pedido de auxílio em andamento.</p>}
 
@@ -101,6 +101,7 @@ export function HelpRequest() {
             </Toast>
           );
         })()}
+      {/* colocar se auxlio vazio aparecer msg de vazio */}
     </Container>
   );
 }
