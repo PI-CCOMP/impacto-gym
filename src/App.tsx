@@ -10,8 +10,10 @@ import { Register } from "./pages/Aluno/Register";
 import { MFAVerification } from "./pages/Aluno/MFAVerification";
 import { ForgotPassword } from "./pages/Aluno/ForgotPassword";
 import { Home } from "./pages/Aluno/Home";
-import Training from "./pages/Aluno/Training";
+import { Training } from "./pages/Aluno/Training";
 import { Exercise } from "./pages/Aluno/Exercise";
+import { Help } from "./pages/Aluno/Help";
+import { HelpRequest } from "./pages/Aluno/HelpRequest";
 
 function AppRoutes() {
   const location = useLocation();
@@ -30,6 +32,8 @@ function AppRoutes() {
         element={<Training key={location.pathname} />}
       />
       <Route path="/exercicio/:idExercicio" element={<Exercise />} />
+      <Route path="/ajuda" element={<Help />} />
+      <Route path="/solicitacao-auxilio" element={<HelpRequest />} />
     </Routes>
   );
 }

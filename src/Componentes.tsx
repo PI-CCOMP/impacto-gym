@@ -76,7 +76,7 @@ export function Componentes() {
         <MenuItem sectionTitle="Conta" itemName="Perfil">
           <User />
         </MenuItem>
-        <Accordion title="Como altero minha senha?">{children}</Accordion>
+        <Accordion title="Como altero minha senha?">Teste</Accordion>
         <EmptyResultsCard
           title="O administrador irá validar suas informações e, 
 em breve, sua conta estará disponível"

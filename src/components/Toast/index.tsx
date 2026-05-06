@@ -29,7 +29,7 @@ export function Toast({
     <div className={styles.overlay}>
       <div className={styles.toast}>
         <button className={styles.close} onClick={onClose}>
-          <X size={16} />
+          <X />
         </button>
         {icon && <div className={styles.icon}>{icon}</div>}
         <p className={styles.message}>

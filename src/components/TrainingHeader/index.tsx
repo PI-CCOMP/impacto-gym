@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import styles from "./styles.module.css";
 import { CircleHelp } from "lucide-react";
 
@@ -32,15 +34,18 @@ export function TrainingHeader({
             const isSecondLast = index === muscleGroups.length - 2;
             return (
               <span key={index}>
-                {" "}
                 <span className={styles.muscleGroup}>{muscle}</span>
-                {!isLast && (isSecondLast ? " e" : ",")}
+                {!isLast && (isSecondLast ? " e " : ",")}
               </span>
             );
           })}
           !
         </h1>
-        <CircleHelp className={styles.helpIcon} />
+        {trainingActive && (
+          <Link to={"/solicitacao-auxilio"}>
+            <CircleHelp className={styles.helpIcon} />
+          </Link>
+        )}
       </div>
 
       <p className={styles.author}>Criado por {author}</p>

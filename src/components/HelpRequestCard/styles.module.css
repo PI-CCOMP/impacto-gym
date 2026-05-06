@@ -1,0 +1,28 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.content {
+  display: flex;
+  gap: var(--size-md);
+}
+
+.img {
+  width: 6.4rem;
+  height: 6.4rem;
+  border-radius: var(--size-sm);
+}
+
+.exerciseName,
+.date {
+  color: var(--text-dark);
+}
+
+.removeBtn {
+  width: fit-content;
+  background-color: transparent;
+  border: none;
+  color: var(--error);
+}
