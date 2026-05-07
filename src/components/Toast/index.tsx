@@ -43,6 +43,7 @@ export function Toast({
             <span className={styles.highlight}> {highlight}</span>
           )}
         </p>
+        {children && <div className={styles.actions}>{children}</div>}
       </div>
     </div>
   );

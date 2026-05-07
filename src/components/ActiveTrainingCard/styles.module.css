@@ -1,0 +1,47 @@
+.card {
+  background-color: var(--primary-light);
+  border: var(--size-xxs) solid var(--primary-light-contrast);
+  border-radius: var(--size-sm);
+  padding: var(--size-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-md);
+}
+
+.label {
+  color: var(--text-default);
+}
+
+.name {
+  color: var(--title);
+}
+
+.progressWrapper {
+  width: 100%;
+  height: var(--size-sm);
+  background-color: var(--primary-light-contrast);
+  border-radius: var(--size-xxs);
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  background-color: var(--secondary);
+  border-radius: var(--size-xxs);
+  transition: width 0.3s ease-in-out;
+}
+
+.progressText {
+  font-size: calc(var(--size-md) - var(--size-xs));
+  color: var(--text-default);
+  text-align: right;
+}
+
+.actions {
+  display: flex;
+  gap: var(--size-md);
+}
+
+.actions > button {
+  margin-top: 0;
+}

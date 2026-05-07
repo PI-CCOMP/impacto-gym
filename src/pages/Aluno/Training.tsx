@@ -235,7 +235,7 @@ export function Training() {
           >
             Continuar
           </Button>
-          <ButtonStroke onClick={handleConfirmSwitch}>Encerrar</ButtonStroke>{" "}
+          <ButtonStroke onClick={handleConfirmSwitch}>Encerrar</ButtonStroke>
           {/* colocar confirmação para encerrar treino na home */}
         </Toast>
       )}

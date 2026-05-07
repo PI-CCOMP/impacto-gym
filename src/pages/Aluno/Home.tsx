@@ -7,8 +7,8 @@ import { Logo } from "../../components/Logo";
 import { MeatballsMenu } from "../../components/MeatballsMenu";
 import { TrainingCard } from "../../components/TrainingCard";
 import { Navbar } from "../../components/Navbar";
-import { Button } from "../../components/Button";
-import { ButtonStroke } from "../../components/ButtonStroke";
+import { ActiveTrainingCard } from "../../components/ActiveTrainingCard";
+import { Line } from "../../components/Line";
 import { EmptyResultsCard } from "../../components/EmptyResultsCard";
 
 import noDataImg from "../../assets/img/undraw_no-data_ig65.svg";
@@ -36,6 +36,16 @@ export function Home() {
     setActiveTrainingState(null);
   };
 
+  const activeTrainingData = mockTrainings.find(
+    (t) => t.id === activeTraining?.id,
+  );
+  const totalSeries = activeTrainingData
+    ? activeTrainingData.exercises.reduce(
+        (acc, ex) => acc + ex.series.length,
+        0,
+      )
+    : 0;
+
   return (
     <>
       <Container>
@@ -46,27 +56,17 @@ export function Home() {
         <h1>Olá, {mockUser.name}!</h1>
 
         {activeTraining?.isActive && (
-          <div
-            style={{
-              backgroundColor: "var(--primary-light)",
-              border: "var(--size-xxs) solid var(--secondary)",
-              borderRadius: "var(--size-sm)",
-              padding: "var(--size-md)",
-              display: "flex",
-              flexDirection: "column",
-              gap: "var(--size-sm)",
-            }}
-          >
-            <p>Treino em andamento</p>
-            <strong>{activeTraining.trainingName}</strong>
-            <p>Quer continuar de onde parou?</p>
-            <Button onClick={() => navigate(`/treino/${activeTraining.id}`)}>
-              Continuar
-            </Button>
-            <ButtonStroke onClick={handleEncerrar}>Encerrar</ButtonStroke>
-          </div>
+          <>
+            <ActiveTrainingCard
+              trainingId={activeTraining.id}
+              trainingName={activeTraining.trainingName}
+              checkedCount={activeTraining.checkedSeries?.length ?? 0}
+              totalSeries={totalSeries}
+              onFinish={handleEncerrar}
+            />
+            <Line />
+          </>
         )}
-
         <h2>Selecione o seu treino</h2>
 
         {mockTrainings.length === 0 ? (
