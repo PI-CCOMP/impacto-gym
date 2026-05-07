@@ -11,7 +11,7 @@ html {
 body {
   font-family: "Sequel Sans", sans-serif;
   font-size: 1.6rem;
-  background-color: var(--primary);
+  background-color: var(--primary-light-contrast);
   color: var(--text-default);
 }
 
