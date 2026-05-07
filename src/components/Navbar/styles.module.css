@@ -26,6 +26,6 @@
   font-size: calc(var(--size-xs) + var(--size-sm));
 }
 
-.menu li a[current-page="true"] {
+.menu li a.active {
   color: var(--secondary);
-} /* Também pode ser feito com validação de acordo com a URL */
+}
