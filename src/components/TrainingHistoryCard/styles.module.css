@@ -2,15 +2,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--size-md);
   border-radius: var(--size-sm);
   cursor: pointer;
   outline: var(--size-xxs) solid transparent;
   transition: outline 0.3s ease-in-out;
-}
-
-.container:hover {
-  outline: var(--size-xxs) solid var(--title);
 }
 
 .content {
@@ -29,9 +24,6 @@
   color: var(--text-dark);
 }
 
-.showBtn {
-  width: fit-content;
-  background-color: transparent;
-  border: none;
+.showIcon {
   color: var(--secondary);
 }

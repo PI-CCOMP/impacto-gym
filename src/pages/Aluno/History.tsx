@@ -31,7 +31,7 @@ export function History() {
           <Logo />
           <MeatballsMenu />
         </Row>
-        <h2>Histórico</h2>
+        <h1>Histórico</h1>
 
         {mockHistoryTrainings.map((historyTraining) => (
           <TrainingHistoryCard

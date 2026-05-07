@@ -41,7 +41,7 @@ export function HelpRequest() {
     <Container>
       <PageHeader>Pedido de Ajuda</PageHeader>
 
-      <h3>Exercício(s) que você pediu auxílio</h3>
+      <h1>Exercício(s) que você pediu auxílio</h1>
 
       {requests.length === 0 && <p>Nenhum pedido de auxílio em andamento.</p>}
 
@@ -70,7 +70,7 @@ export function HelpRequest() {
 
           return (
             <Toast
-              message="Deseja cancelar o pedido de auxílio para "
+              message={`Deseja cancelar o pedido de auxílio para ${exercise?.exerciseName}?`}
               highlight={exercise?.exerciseName}
               icon={<Dumbbell />}
               duration={999999}

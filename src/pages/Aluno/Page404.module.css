@@ -1,0 +1,22 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-md);
+}
+
+.title {
+  font-size: 12rem;
+}
+
+.img {
+  width: 80%;
+}
+
+.back {
+  position: fixed;
+  bottom: var(--size-lg);
+  padding: var(--size-sm);
+}

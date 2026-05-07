@@ -7,6 +7,7 @@ type ToastProps = {
   highlight?: string;
   icon?: React.ReactNode;
   duration?: number;
+  highlightPosition?: "before" | "after";
   onClose: () => void;
   children?: React.ReactNode;
 };
@@ -17,6 +18,7 @@ export function Toast({
   icon,
   duration = 3000,
   onClose,
+  highlightPosition,
   children,
 }: ToastProps) {
   useEffect(() => {
@@ -33,10 +35,14 @@ export function Toast({
         </button>
         {icon && <div className={styles.icon}>{icon}</div>}
         <p className={styles.message}>
-          {highlight && <span className={styles.highlight}>{highlight} </span>}
+          {highlight && highlightPosition !== "after" && (
+            <span className={styles.highlight}>{highlight} </span>
+          )}
           {message}
+          {highlight && highlightPosition === "after" && (
+            <span className={styles.highlight}> {highlight}</span>
+          )}
         </p>
-        {children && <div className={styles.actions}>{children}</div>}
       </div>
     </div>
   );

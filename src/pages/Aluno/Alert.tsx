@@ -30,7 +30,7 @@ export function Alert() {
           <MeatballsMenu />
         </Row>
 
-        <h2>Avisos</h2>
+        <h1>Avisos</h1>
 
         {mockAlerts.map((alert, index) => (
           <>

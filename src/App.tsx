@@ -21,6 +21,7 @@ import { Settings } from "./pages/Aluno/Settings";
 import { Profile } from "./pages/Aluno/Profile";
 import { Faq } from "./pages/Aluno/Faq";
 import { ChangeEmail } from "./pages/Aluno/ChangeEmail";
+import { Page404 } from "./pages/Aluno/Page404";
 
 function AppRoutes() {
   const location = useLocation();
@@ -49,6 +50,7 @@ function AppRoutes() {
       <Route path="/configuracao/faq" element={<Faq />} />
       <Route path="/configuracao/alterar-senha" element={<ForgotPassword />} />
       <Route path="/configuracao/alterar-email" element={<ChangeEmail />} />
+      <Route path="*" element={<Page404 />} />
     </Routes>
   );
 }

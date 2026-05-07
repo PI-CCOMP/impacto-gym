@@ -29,7 +29,7 @@ export function TrainingHistoryCard({
           <p className={styles.date}>{finishedAt}</p>
         </div>
       </div>
-      <ChevronRight />
+      <ChevronRight className={styles.showIcon} />
     </Link>
   );
 }
