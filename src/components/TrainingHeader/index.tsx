@@ -10,6 +10,7 @@ type TrainingHeaderProps = {
   totalVolume: number;
   trainingActive: boolean;
   showStats?: boolean;
+  finishedAt?: string;
 };
 
 function formatDuration(seconds: number) {
@@ -46,12 +47,13 @@ export function TrainingHeader({
   totalVolume,
   trainingActive,
   showStats,
+  finishedAt,
 }: TrainingHeaderProps) {
   return (
     <header className={styles.header}>
       <div className={styles.titleRow}>
         <h1>
-          Hoje é dia de
+          {finishedAt ? finishedAt : "Hoje"} foi dia de
           {muscleGroups.map((muscle, index) => {
             const isLast = index === muscleGroups.length - 1;
             const isSecondLast = index === muscleGroups.length - 2;
