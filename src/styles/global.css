@@ -23,6 +23,20 @@ h5 {
   color: var(--title);
 }
 
+h1 {
+  font-size: clamp(2rem, 4vw, 3.2rem);
+}
+h2 {
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+}
+h3 {
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+}
+h4,
+h5 {
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+}
+
 a {
   text-decoration: none;
   color: var(--title);
@@ -32,6 +46,10 @@ a {
 a:hover,
 span {
   color: var(--secondary);
+}
+
+p {
+  color: var(--text-default);
 }
 
 input,
