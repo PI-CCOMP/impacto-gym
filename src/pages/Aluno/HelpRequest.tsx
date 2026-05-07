@@ -8,29 +8,11 @@ import { Button } from "../../components/Button";
 import { ButtonStroke } from "../../components/ButtonStroke";
 import { HelpRequestCard } from "../../components/HelpRequestCard";
 
-import { mockTrainings } from "../../mocks/mockData";
-
-type HelpRequest = {
-  id: string;
-  trainingId: string;
-  exerciseId: string;
-  requestedAt: number;
-};
-
-const mockHelpRequests: HelpRequest[] = [
-  {
-    id: "hr1",
-    trainingId: "1",
-    exerciseId: "1",
-    requestedAt: new Date("2026-09-13T16:00:00").getTime(),
-  },
-  {
-    id: "hr2",
-    trainingId: "1",
-    exerciseId: "2",
-    requestedAt: new Date("2026-09-13T16:15:00").getTime(),
-  },
-];
+import {
+  mockTrainings,
+  type HelpRequest,
+  mockHelpRequests,
+} from "../../mocks/mockData";
 
 export function HelpRequest() {
   const [requests, setRequests] = useState<HelpRequest[]>(mockHelpRequests);

@@ -9,12 +9,34 @@ type TrainingHeaderProps = {
   duration: number;
   totalVolume: number;
   trainingActive: boolean;
+  showStats?: boolean;
 };
 
 function formatDuration(seconds: number) {
-  const min = Math.floor(seconds / 60);
-  const sec = seconds % 60;
-  return `${min}min ${sec < 10 ? "0" : ""}${sec}s`;
+  if (seconds < 3600) {
+    const min = Math.floor(seconds / 60);
+    const sec = seconds % 60;
+    return `${min}min ${sec < 10 ? "0" : ""}${sec}s`;
+  }
+
+  if (seconds < 86400) {
+    const h = Math.floor(seconds / 3600);
+    const min = Math.floor((seconds % 3600) / 60);
+    return min > 0 ? `${h}h ${min}min` : `${h}h`;
+  }
+
+  if (seconds < 2592000) {
+    const days = Math.floor(seconds / 86400);
+    return `${days}d`;
+  }
+
+  if (seconds < 31536000) {
+    const months = Math.floor(seconds / 2592000);
+    return `${months}m`;
+  }
+
+  const years = Math.floor(seconds / 31536000);
+  return `${years}a`;
 }
 
 export function TrainingHeader({
@@ -23,6 +45,7 @@ export function TrainingHeader({
   duration,
   totalVolume,
   trainingActive,
+  showStats,
 }: TrainingHeaderProps) {
   return (
     <header className={styles.header}>
@@ -50,7 +73,7 @@ export function TrainingHeader({
 
       <p className={styles.author}>Criado por {author}</p>
 
-      {trainingActive && (
+      {(trainingActive || showStats) && (
         <div className={styles.stats}>
           <div className={styles.stat}>
             <span className={styles.statLabel}>Duração</span>

@@ -15,6 +15,8 @@ import { Exercise } from "./pages/Aluno/Exercise";
 import { Help } from "./pages/Aluno/Help";
 import { HelpRequest } from "./pages/Aluno/HelpRequest";
 import { Alert } from "./pages/Aluno/Alert";
+import { History } from "./pages/Aluno/History";
+import { HistoryDetail } from "./pages/Aluno/HistoryDetail";
 
 function AppRoutes() {
   const location = useLocation();
@@ -36,6 +38,8 @@ function AppRoutes() {
       <Route path="/ajuda" element={<Help />} />
       <Route path="/solicitacao-auxilio" element={<HelpRequest />} />
       <Route path="/aviso" element={<Alert />} />
+      <Route path="/historico" element={<History />} />
+      <Route path="/historico/:id" element={<HistoryDetail />} />
     </Routes>
   );
 }

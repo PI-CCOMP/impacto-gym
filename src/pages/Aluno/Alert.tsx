@@ -5,9 +5,22 @@ import { Logo } from "../../components/Logo";
 import { AlertCard } from "../../components/AlertCard";
 import { Navbar } from "../../components/Navbar";
 
-import fotoImg from "../../assets/img/supino-reto.jpg";
+import { mockAlerts } from "../../mocks/mockData";
 
 export function Alert() {
+  const formatDate = (timestamp: number) => {
+    const date = new Date(timestamp);
+
+    return (
+      date.toLocaleDateString("pt-BR") +
+      " às " +
+      date.toLocaleTimeString("pt-BR", {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    );
+  };
+
   return (
     <>
       <Container>
@@ -15,17 +28,21 @@ export function Alert() {
           <Logo />
           <MeatballsMenu />
         </Row>
+
         <h2>Avisos</h2>
 
-        <AlertCard
-          id="1"
-          author="Arthur"
-          description="Amanhã a academia funcionará até as 14h devido ao feriado."
-          date="12/02/2025 às 08:25"
-          image={fotoImg}
-        />
-        <h2></h2>
+        {mockAlerts.map((alert) => (
+          <AlertCard
+            key={alert.id}
+            id={alert.id}
+            author={alert.author}
+            image={alert.image}
+            date={formatDate(alert.publishedAt)}
+            description={alert.description}
+          />
+        ))}
       </Container>
+
       <Navbar />
     </>
   );

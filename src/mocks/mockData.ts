@@ -165,3 +165,101 @@ export function exerciseBelongsToActiveTraining(
   const training = mockTrainings.find((t) => t.id === activeTrainingId);
   return training?.exercises.some((e) => e.id === exerciseId) ?? false;
 }
+
+export type HelpRequest = {
+  id: string;
+  trainingId: string;
+  exerciseId: string;
+  requestedAt: number;
+};
+
+export const mockHelpRequests: HelpRequest[] = [
+  {
+    id: "hr1",
+    trainingId: "1",
+    exerciseId: "1",
+    requestedAt: new Date("2026-05-13T16:00:00").getTime(),
+  },
+  {
+    id: "hr2",
+    trainingId: "1",
+    exerciseId: "2",
+    requestedAt: new Date("2026-05-13T16:15:00").getTime(),
+  },
+];
+
+// Alerts
+
+export type Alert = {
+  id: string;
+  author: string;
+  image: string;
+  publishedAt: number;
+  description: string;
+};
+
+export const mockAlerts: Alert[] = [
+  {
+    id: "1",
+    author: "Bassiro",
+    image: supinoImg,
+    publishedAt: new Date("2026-05-13T16:15:00").getTime(),
+    description: "Amanhã a academia funcionará até as 14h devido ao feriado.",
+  },
+  {
+    id: "2",
+    author: "Luiz",
+    image: supinoImg,
+    publishedAt: new Date("2026-05-15T16:15:00").getTime(),
+    description: "Evento: Nova parceria",
+  },
+];
+
+// History
+
+export type HistoryTraining = {
+  id: string;
+  trainingName: string;
+  author: string;
+  image: string;
+  alt: string;
+  finishedAt: number;
+  muscleGroups: string[];
+  exercises: Exercise[];
+  duration: number;
+  totalVolume: number;
+};
+
+export const mockHistoryTrainings: HistoryTraining[] = [
+  {
+    id: "1",
+    trainingName: "Treino A",
+    author: "Catarina",
+    image: supinoImg,
+    alt: "Foto do treino A",
+    finishedAt: new Date("2026-05-07T16:15:00").getTime(),
+    muscleGroups: ["Peitoral", "Abdômen"],
+    exercises: [
+      mockExercises[0], // Supino Reto
+      mockExercises[1], // Crucifixo
+      mockExercises[2], // Abdominal
+    ],
+    duration: 3240, // 54 minutos em segundos
+    totalVolume: 2450, // kg totais
+  },
+  {
+    id: "2",
+    trainingName: "Treino B",
+    author: "Catarina",
+    image: supinoImg,
+    alt: "Foto do treino B",
+    finishedAt: new Date("2026-05-08T10:15:00").getTime(),
+    muscleGroups: ["Costas", "Bíceps"],
+    exercises: [
+      mockExercises[3], // Remada
+      mockExercises[4], // Puxada
+    ],
+    duration: 3840,
+    totalVolume: 2950,
+  },
+];
