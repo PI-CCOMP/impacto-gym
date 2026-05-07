@@ -9,6 +9,9 @@ import { TrainingCard } from "../../components/TrainingCard";
 import { Navbar } from "../../components/Navbar";
 import { Button } from "../../components/Button";
 import { ButtonStroke } from "../../components/ButtonStroke";
+import { EmptyResultsCard } from "../../components/EmptyResultsCard";
+
+import noDataImg from "../../assets/img/undraw_no-data_ig65.svg";
 
 import {
   getActiveTraining,
@@ -66,24 +69,33 @@ export function Home() {
 
         <h2>Selecione o seu treino</h2>
 
-        {mockTrainings.map((training) => (
-          <div
-            key={training.id}
-            onClick={() => navigate(`/treino/${training.id}`)}
-          >
-            <TrainingCard
-              dataState={
-                activeTraining?.isActive && activeTraining.id === training.id
-                  ? "current"
-                  : ""
-              }
-              image={training.image}
-              alt={training.alt}
-              trainingName={training.trainingName}
-              muscleGroups={training.muscleGroups}
-            />
-          </div>
-        ))}
+        {mockTrainings.length === 0 ? (
+          <EmptyResultsCard
+            title="Nenhum treino encontrado"
+            image={noDataImg}
+            alt="Nenhum treino disponível"
+            description="Você ainda não possui treinos cadastrados. Aguarde o instrutor configurar sua ficha."
+          />
+        ) : (
+          mockTrainings.map((training) => (
+            <div
+              key={training.id}
+              onClick={() => navigate(`/treino/${training.id}`)}
+            >
+              <TrainingCard
+                dataState={
+                  activeTraining?.isActive && activeTraining.id === training.id
+                    ? "current"
+                    : ""
+                }
+                image={training.image}
+                alt={training.alt}
+                trainingName={training.trainingName}
+                muscleGroups={training.muscleGroups}
+              />
+            </div>
+          ))
+        )}
       </Container>
       <Navbar />
     </>
