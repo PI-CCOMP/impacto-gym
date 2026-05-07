@@ -163,6 +163,12 @@ export function Training() {
         trainingActive={trainingActive}
       />
 
+      {!trainingActive && (
+        <Button onClick={handleStart} style={{ marginTop: 0 }}>
+          Iniciar
+        </Button>
+      )}
+
       <h2>Exercícios</h2>
 
       {training.exercises.map((exercise, index) => (
@@ -188,23 +194,6 @@ export function Training() {
           />
         </>
       ))}
-
-      {!trainingActive && (
-        <div
-          style={{
-            position: "fixed",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            padding:
-              "var(--size-sm) var(--size-sm) var(--size-lg) var(--size-sm)",
-            backgroundColor: "var(--background)",
-            zIndex: 10,
-          }}
-        >
-          <Button onClick={handleStart}>Iniciar</Button>
-        </div>
-      )}
 
       {trainingActive && (
         <Button onClick={handleFinish}>Finalizar Treino</Button>
