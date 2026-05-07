@@ -2,7 +2,7 @@
   background-color: transparent;
   color: var(--title);
   padding: calc(var(--size-md) - var(--size-xs));
-  border: var(--size-xxs) solid var(--title);
+  border: var(--size-xxs) solid var(--primary-light-contrast);
   border-radius: var(--size-sm);
   font-size: 1.6rem;
   min-height: 3.6rem;

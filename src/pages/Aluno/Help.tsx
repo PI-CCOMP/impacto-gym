@@ -35,36 +35,35 @@ export function Help() {
   return (
     <Container>
       <PageHeader>Preciso de Ajuda</PageHeader>
-      <Container>
-        <b>O que são séries?</b>
-        <p>Séries são grupos de repetições de um exercício. Ex: 4x</p>
-        <b>O que são repetições?</b>
+
+      <b>O que são séries?</b>
+      <p>Séries são grupos de repetições de um exercício. Ex: 4x</p>
+      <b>O que são repetições?</b>
+      <p>
+        Repetições são o número de vezes que um exercício é realizado em uma
+        série. Ex: 15 a 12
+      </p>
+      <Line />
+      <h3>Ainda com dúvida?</h3>
+      <p>Chame um instrutor para te guiar!</p>
+      {exerciseName && (
         <p>
-          Repetições são o número de vezes que um exercício é realizado em uma
-          série. Ex: 15 a 12
+          Exercício: <b>{exerciseName}</b>
         </p>
-        <Line />
-        <h3>Ainda com dúvida?</h3>
-        <p>Chame um instrutor para te guiar!</p>
-        {exerciseName && (
-          <p>
-            Exercício: <b>{exerciseName}</b>
-          </p>
-        )}
-        {/* <Button onClick={handleFinish} disabled={isLoading}>
+      )}
+      {/* <Button onClick={handleFinish} disabled={isLoading}>
           {isLoading ? "Enviando..." : "Chamar Instrutor"}
         </Button> */}
 
-        <Button onClick={handleFinish}>Chamar Instrutor</Button>
-        {showFinishToast && (
-          <Toast
-            message="enviada com sucesso!"
-            highlight="Solicitação de Auxílio"
-            icon={<Dumbbell size={32} />}
-            onClose={handleFinishToastClose}
-          />
-        )}
-      </Container>
+      <Button onClick={handleFinish}>Chamar Instrutor</Button>
+      {showFinishToast && (
+        <Toast
+          message="enviada com sucesso!"
+          highlight="Solicitação de Auxílio"
+          icon={<Dumbbell size={32} />}
+          onClose={handleFinishToastClose}
+        />
+      )}
     </Container>
   );
 }
