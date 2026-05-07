@@ -3,6 +3,7 @@ import { Row } from "../../components/Row";
 import { MeatballsMenu } from "../../components/MeatballsMenu";
 import { Logo } from "../../components/Logo";
 import { AlertCard } from "../../components/AlertCard";
+import { Line } from "../../components/Line";
 import { Navbar } from "../../components/Navbar";
 
 import { mockAlerts } from "../../mocks/mockData";
@@ -31,15 +32,18 @@ export function Alert() {
 
         <h2>Avisos</h2>
 
-        {mockAlerts.map((alert) => (
-          <AlertCard
-            key={alert.id}
-            id={alert.id}
-            author={alert.author}
-            image={alert.image}
-            date={formatDate(alert.publishedAt)}
-            description={alert.description}
-          />
+        {mockAlerts.map((alert, index) => (
+          <>
+            <AlertCard
+              key={alert.id}
+              id={alert.id}
+              author={alert.author}
+              image={alert.image}
+              date={formatDate(alert.publishedAt)}
+              description={alert.description}
+            />
+            {mockAlerts.length > 1 && index < mockAlerts.length - 1 && <Line />}
+          </>
         ))}
       </Container>
 
