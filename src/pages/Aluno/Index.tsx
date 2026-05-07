@@ -12,9 +12,9 @@ import styles from "../Aluno/Auth.module.css";
 export function Index() {
   return (
     <ContainerBackground backgroundImages={[manBackground, maleBackground]}>
-      <h1>
+      <h1 className={styles.heroTitle}>
         Prepara-se para <br />
-        <span>Transformar!</span>
+        <span className="highlight">Transformar!</span>
       </h1>
 
       <p>

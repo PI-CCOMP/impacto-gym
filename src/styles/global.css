@@ -43,8 +43,8 @@ a {
   transition: color 0.3s ease-in-out;
 }
 
-a:hover,
-span {
+.highlight,
+a:hover {
   color: var(--secondary);
 }
 
