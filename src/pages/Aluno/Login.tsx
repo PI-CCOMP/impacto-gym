@@ -46,7 +46,7 @@ export function Login() {
       email: values.email,
       password: values.password,
     });
-    navigate("/home");
+    navigate("/inicio");
   }
 
   function getError(name: "email" | "password") {
