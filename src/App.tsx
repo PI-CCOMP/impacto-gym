@@ -17,6 +17,9 @@ import { HelpRequest } from "./pages/Aluno/HelpRequest";
 import { Alert } from "./pages/Aluno/Alert";
 import { History } from "./pages/Aluno/History";
 import { HistoryDetail } from "./pages/Aluno/HistoryDetail";
+import { Settings } from "./pages/Aluno/Settings";
+import { Profile } from "./pages/Aluno/Profile";
+import { Faq } from "./pages/Aluno/Faq";
 
 function AppRoutes() {
   const location = useLocation();
@@ -40,6 +43,9 @@ function AppRoutes() {
       <Route path="/aviso" element={<Alert />} />
       <Route path="/historico" element={<History />} />
       <Route path="/historico/:id" element={<HistoryDetail />} />
+      <Route path="/configuracao" element={<Settings />} />
+      <Route path="/configuracao/perfil" element={<Profile />} />
+      <Route path="/configuracao/faq" element={<Faq />} />
     </Routes>
   );
 }

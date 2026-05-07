@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import styles from "./styles.module.css";
 
 import { useState } from "react";
@@ -20,10 +22,10 @@ export function MeatballsMenu() {
       {open && (
         <ul className={styles.meatballsMenuOptions}>
           <li>
-            <a href="#">
+            <Link to={"/configuracao"}>
               <Settings />
               Configurações
-            </a>
+            </Link>
           </li>
         </ul>
       )}
