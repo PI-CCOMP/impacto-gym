@@ -25,7 +25,7 @@ export function Index() {
       <Link to={"/login"}>
         <Button>Entrar</Button>
       </Link>
-      <Link to={"/registrar"}>
+      <Link to={"/registro"}>
         <p className={styles.secondaryLink}>Registrar</p>
       </Link>
       <Logo />

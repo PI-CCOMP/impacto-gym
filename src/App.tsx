@@ -31,7 +31,7 @@ function AppRoutes() {
       <Route path="/componentes" element={<Componentes />} />
       <Route path="/" element={<Index />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/registrar" element={<Register />} />
+      <Route path="/registro" element={<Register />} />
       <Route path="verificar-email" element={<MFAVerification />} />
       <Route path="/alterar-senha" element={<ForgotPassword />} />
       <Route path="/inicio" element={<Home />} />
