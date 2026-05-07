@@ -111,7 +111,14 @@ export function Training() {
     setTrainingActive(true);
   };
 
+  const [showErrorToast, setShowErrorToast] = useState(false);
+
   const handleFinish = () => {
+    if (checkedSeries.length === 0) {
+      setShowErrorToast(true);
+      return;
+    }
+
     setTrainingActive(false);
     clearActiveTraining();
     if (durationRef.current) clearInterval(durationRef.current);
@@ -197,6 +204,14 @@ export function Training() {
 
       {trainingActive && (
         <Button onClick={handleFinish}>Finalizar Treino</Button>
+      )}
+
+      {showErrorToast && (
+        <Toast
+          message="O treino não poderá ser finalizado. Para finalizar o treino você precisa preencher pelo menos uma linha da tabela."
+          icon={<Dumbbell size={32} />}
+          onClose={() => setShowErrorToast(false)}
+        />
       )}
 
       {showFinishToast && (
