@@ -5,7 +5,7 @@
 }
 
 .sectionTitle {
-  font-size: calc(var(--size-xs) + var(--size-sm));
+  font-size: calc(var(--size-md) - var(--size-xxs));
 }
 
 .menuItem {

@@ -6,6 +6,7 @@ import peitoImg from "../assets/img/peito.png";
 export const mockUser = {
   id: "u1",
   name: "Arthur",
+  profilePhoto: supinoImg,
 };
 
 // Exercises

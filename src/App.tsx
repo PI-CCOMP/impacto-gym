@@ -20,6 +20,7 @@ import { HistoryDetail } from "./pages/Aluno/HistoryDetail";
 import { Settings } from "./pages/Aluno/Settings";
 import { Profile } from "./pages/Aluno/Profile";
 import { Faq } from "./pages/Aluno/Faq";
+import { ChangeEmail } from "./pages/Aluno/ChangeEmail";
 
 function AppRoutes() {
   const location = useLocation();
@@ -46,6 +47,8 @@ function AppRoutes() {
       <Route path="/configuracao" element={<Settings />} />
       <Route path="/configuracao/perfil" element={<Profile />} />
       <Route path="/configuracao/faq" element={<Faq />} />
+      <Route path="/configuracao/alterar-senha" element={<ForgotPassword />} />
+      <Route path="/configuracao/alterar-email" element={<ChangeEmail />} />
     </Routes>
   );
 }

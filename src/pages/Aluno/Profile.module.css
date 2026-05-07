@@ -1,0 +1,19 @@
+.profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--size-sm);
+}
+
+.profilePhoto {
+  width: 12rem;
+  height: 12rem;
+  border-radius: 100%;
+}
+
+.btnChangePassword {
+  background-color: transparent;
+  border: none;
+  padding: var(--size-sm);
+  color: var(--secondary);
+}
