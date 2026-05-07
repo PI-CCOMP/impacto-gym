@@ -59,12 +59,14 @@ export function MFAVerification() {
       return;
     }
 
-    // aqui você chamaria a API para verificar o código
+    // aqui chamar a API para verificar o código
     console.log("Código MFA:", code);
     if (action === "change-password") {
       navigate("/login");
     } else {
-      navigate("/login"); // register também vai pro login
+      navigate("/login", {
+        state: { showRegisterToast: true },
+      });
     }
   }
 

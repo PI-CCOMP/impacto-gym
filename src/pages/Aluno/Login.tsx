@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import { Dumbbell } from "lucide-react";
 
 import { Container } from "../../components/Container";
 import { PageHeader } from "../../components/PageHeader";
@@ -7,13 +8,24 @@ import { Logo } from "../../components/Logo";
 import { FormHeader } from "../../components/FormHeader";
 import { Input } from "../../components/Input/input";
 import { Button } from "../../components/Button";
+import { Toast } from "../../components/Toast";
 
 import { validateEmailRequired, validatePassword } from "../../validators";
 
 import styles from "../Aluno/Auth.module.css";
 
+type LoginLocationState = {
+  showRegisterToast?: boolean;
+};
+
 export function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const locationState = location.state as LoginLocationState | null;
+
+  const [showToast, setShowToast] = useState(
+    locationState?.showRegisterToast ?? false,
+  );
 
   const [values, setValues] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({ email: "", password: "" });
@@ -55,7 +67,15 @@ export function Login() {
 
   return (
     <Container>
-      <PageHeader>Login</PageHeader>
+      {showToast && (
+        <Toast
+          message="A Impacto Gym irá validar suas informações e, em breve, sua conta estará disponível."
+          onClose={() => setShowToast(false)}
+          duration={6000}
+          icon={<Dumbbell />}
+        />
+      )}
+      <PageHeader onBack={() => navigate("/")}>Login</PageHeader>
       <Logo />
       <FormHeader subtitle="Preencha os campos abaixo">Conecte-se!</FormHeader>
 
