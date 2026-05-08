@@ -49,7 +49,7 @@ export function AppRoutes() {
         <Route path="/exercicio/:idExercicio" element={<Exercise />} />
         <Route path="/ajuda" element={<Help />} />
         <Route path="/solicitacao-auxilio" element={<HelpRequest />} />
-        <Route path="/aviso" element={<Alert />} />
+        <Route path="/avisos" element={<Alert />} />
         <Route path="/historico" element={<History />} />
         <Route path="/historico/:id" element={<HistoryDetail />} />
         <Route path="/configuracao" element={<Settings />} />
