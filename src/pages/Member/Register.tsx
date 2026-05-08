@@ -17,7 +17,7 @@ import femaleImg from "../../assets/img/female.png";
 
 import { useRegistrarForm } from "../../hooks/useRegistrarForm";
 
-import styles from "../Aluno/Auth.module.css";
+import styles from "../Member/Auth.module.css";
 
 const steps = [
   { id: 1, title: "Cadastre-se!", subtitle: "Preencha os campos abaixo" },

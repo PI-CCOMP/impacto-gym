@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import manBackground from "../../assets/img/homem.jpeg";
 import maleBackground from "../../assets/img/mulher.jpg";
 
-import styles from "../Aluno/Auth.module.css";
+import styles from "../Member/Auth.module.css";
 
 export function Index() {
   return (

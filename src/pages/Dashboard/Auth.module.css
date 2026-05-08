@@ -1,0 +1,42 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--size-xl);
+}
+
+.heroBanner {
+  width: 50%;
+  max-height: 600px;
+  object-fit: cover;
+}
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+  gap: var(--size-md);
+  flex: 1;
+}
+
+form button {
+  margin-top: var(--size-sm);
+}
+
+.secondaryLink {
+  display: block;
+  text-align: center;
+  font-size: 1.2rem;
+  color: var(--text-dark);
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .heroBanner {
+    width: 0;
+    position: absolute;
+  }
+}

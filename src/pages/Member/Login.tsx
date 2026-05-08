@@ -12,7 +12,7 @@ import { Toast } from "../../components/Toast";
 
 import { validateEmailRequired, validatePassword } from "../../validators";
 
-import styles from "../Aluno/Auth.module.css";
+import styles from "../Member/Auth.module.css";
 
 type LoginLocationState = {
   showRegisterToast?: boolean;
