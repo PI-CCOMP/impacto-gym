@@ -25,6 +25,7 @@ import { ChangeEmail } from "../pages/Member/ChangeEmail";
 import { Page404 } from "../pages/Member/Page404";
 
 import { DashboardLogin } from "../pages/Dashboard/DashboardLogin";
+import { DashboardForgotPassword } from "../pages/Dashboard/DashboardForgotPassword";
 
 export function AppRoutes() {
   const location = useLocation();
@@ -61,6 +62,10 @@ export function AppRoutes() {
 
       <Route element={<DashboardLayout />}>
         <Route path="/dashboard" element={<DashboardLogin />} />
+        <Route
+          path="/dashboard/alterar-senha"
+          element={<DashboardForgotPassword />}
+        />
       </Route>
 
       <Route path="*" element={<Page404 />} />

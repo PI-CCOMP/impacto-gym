@@ -4,6 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { Container } from "../../components/Container";
 import { Logo } from "../../components/Logo";
 import { FormHeader } from "../../components/FormHeader";
+import { Select } from "../../components/Select";
 import { Input } from "../../components/Input/input";
 import { Button } from "../../components/Button";
 
@@ -47,12 +48,14 @@ export function DashboardLogin() {
       email: values.email,
       password: values.password,
     });
-    navigate("/inicio");
+    navigate("/dashboard/inicio");
   }
 
   function getError(name: "email" | "password") {
     return touched[name] || submitAttempted ? errors[name] : "";
   }
+
+  const [role, setRole] = useState("");
 
   return (
     <Container style={{ justifyContent: "center" }}>
@@ -68,6 +71,21 @@ export function DashboardLogin() {
             Conecte-se!
           </FormHeader>
           <form onSubmit={handleSubmit}>
+            <Select
+              labelText="Cargo"
+              value={role}
+              onChange={setRole}
+              options={[
+                {
+                  value: "admin",
+                  label: "Administrador",
+                },
+                {
+                  value: "instructor",
+                  label: "Instrutor",
+                },
+              ]}
+            />
             <Input
               type="email"
               labelText="E-mail"
