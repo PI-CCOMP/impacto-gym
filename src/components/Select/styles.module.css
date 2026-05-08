@@ -1,0 +1,50 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-md);
+}
+
+.label {
+  color: var(--title);
+}
+
+.selectWrapper {
+  position: relative;
+}
+
+.select {
+  width: 100%;
+  min-height: 4.4rem;
+  padding: var(--size-md);
+  padding-right: 4rem;
+  border-radius: var(--size-sm);
+  border: var(--size-xxs) solid var(--title);
+  background-color: var(--primary);
+  color: var(--text-default);
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.select:focus {
+  border-color: var(--secondary);
+}
+
+.icon {
+  position: absolute;
+  top: 50%;
+  right: 1.6rem;
+  transform: translateY(-50%) rotate(0deg);
+  pointer-events: none;
+  color: var(--title);
+  transition:
+    transform 0.2s ease-in-out,
+    color 0.2s ease-in-out;
+}
+
+.selectWrapper:focus-within .icon {
+  color: var(--secondary);
+  transform: translateY(-50%) rotate(180deg);
+}
