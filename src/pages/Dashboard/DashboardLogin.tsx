@@ -48,7 +48,7 @@ export function DashboardLogin() {
       email: values.email,
       password: values.password,
     });
-    navigate("/dashboard/inicio");
+    navigate("/dashboard/usuarios");
   }
 
   function getError(name: "email" | "password") {

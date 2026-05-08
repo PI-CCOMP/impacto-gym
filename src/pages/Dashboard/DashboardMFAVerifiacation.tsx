@@ -71,7 +71,7 @@ export function DashboardMFAVerification() {
       return;
     }
 
-    navigate("/dashboard/inicio");
+    navigate("/dashboard/usuarios");
   }
 
   const buttonLabel = action === "change-password" ? "Salvar" : "Finalizar";
