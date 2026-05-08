@@ -1,10 +1,14 @@
 import { Container } from "../../components/Container";
-import { HamburguerMenu } from "../../components/HamburguerMenu";
+import { SideMenu } from "../../components/SideMenu";
 
 export function DashboardUsers() {
   return (
     <Container>
-      <HamburguerMenu />
+      <SideMenu />
+      <div>
+        <h1>Usuários</h1>
+        teste teste
+      </div>
     </Container>
   );
 }

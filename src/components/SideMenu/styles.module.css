@@ -1,0 +1,116 @@
+.hamburger {
+  display: none;
+  position: fixed;
+  left: 10px;
+  top: 10px;
+  background: transparent;
+  border: none;
+  color: var(--title);
+  padding: var(--size-sm);
+  cursor: pointer;
+  align-items: center;
+}
+
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.menu {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 240px;
+  min-height: 100dvh;
+  background-color: var(--primary-light);
+  padding: var(--size-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-xl);
+  z-index: 160;
+  transition: transform 0.3s ease;
+}
+
+.menu ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-md);
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menuHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeButton {
+  display: none;
+  position: fixed;
+  left: 10px;
+  top: 10px;
+  background: none;
+  border: none;
+  color: var(--title);
+  cursor: pointer;
+  padding: var(--size-sm);
+  align-items: center;
+  z-index: 200;
+}
+
+.menu li a {
+  display: flex;
+  align-items: center;
+  gap: var(--size-md);
+  font-weight: normal;
+  color: var(--text-default);
+  padding: var(--size-sm) var(--size-md);
+  border-radius: var(--size-sm);
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+  text-decoration: none;
+}
+
+.menu li a:hover {
+  background-color: var(--primary-light-contrast);
+  color: var(--title);
+}
+
+.menu li a.active {
+  color: var(--secondary);
+}
+
+.menu li a.active:hover {
+  color: var(--secondary);
+}
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .closeButton {
+    display: flex;
+  }
+
+  .overlay {
+    display: block;
+  }
+
+  .menuHeader {
+    position: relative;
+  }
+
+  .menu {
+    transform: translateX(-100%);
+  }
+
+  .menuOpen {
+    transform: translateX(0);
+  }
+}
