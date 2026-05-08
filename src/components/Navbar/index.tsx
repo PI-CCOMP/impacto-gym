@@ -17,7 +17,7 @@ export function Navbar() {
         </li>
         <li>
           <NavLink
-            to="/aviso"
+            to="/avisos"
             className={({ isActive }) => (isActive ? styles.active : "")}
           >
             <MessageSquare />

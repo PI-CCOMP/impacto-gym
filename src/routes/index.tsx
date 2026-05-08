@@ -27,7 +27,7 @@ import { Page404 } from "../pages/Member/Page404";
 import { DashboardLogin } from "../pages/Dashboard/DashboardLogin";
 import { DashboardForgotPassword } from "../pages/Dashboard/DashboardForgotPassword";
 import { DashboardMFAVerification } from "../pages/Dashboard/DashboardMFAVerifiacation";
-import { DashboardHome } from "../pages/Dashboard/DashboardHome";
+import { DashboardUsers } from "../pages/Dashboard/DashboardUsers";
 
 export function AppRoutes() {
   const location = useLocation();
@@ -69,7 +69,7 @@ export function AppRoutes() {
           element={<DashboardForgotPassword />}
         />
         <Route path="/dashboard/mfa" element={<DashboardMFAVerification />} />
-        <Route path="/dashboard/inicio" element={<DashboardHome />} />
+        <Route path="/dashboard/usuarios" element={<DashboardUsers />} />
       </Route>
 
       <Route path="*" element={<Page404 />} />
