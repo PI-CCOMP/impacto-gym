@@ -1,6 +1,7 @@
 .container {
   background-color: var(--primary-light);
   display: flex;
+  align-items: center;
   gap: var(--size-md);
   padding: var(--size-md);
   border-radius: var(--size-sm);
@@ -36,6 +37,15 @@
   position: absolute;
   top: -0.1rem;
   right: -0.1rem;
+}
+
+.dashboard {
+  background-color: var(--primary);
+  padding: 0;
+}
+
+.dashboard:not([data-state="current"]):hover {
+  outline: transparent;
 }
 
 .img {

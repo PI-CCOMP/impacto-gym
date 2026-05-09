@@ -1,6 +1,6 @@
 import styles from "./styles.module.css";
-
-import { Dumbbell } from "lucide-react";
+import { Dumbbell, X } from "lucide-react";
+import { ActionButton } from "../ActionButton";
 
 type TrainingCardProps = {
   dataState: string;
@@ -8,6 +8,8 @@ type TrainingCardProps = {
   alt: string;
   trainingName: string;
   muscleGroups: string[];
+  variant?: "default" | "dashboard";
+  onUnlink?: () => void;
 };
 
 export function TrainingCard({
@@ -16,12 +18,21 @@ export function TrainingCard({
   alt,
   trainingName,
   muscleGroups,
+  variant = "default",
+  onUnlink,
 }: TrainingCardProps) {
   return (
-    <div className={styles.container} data-state={dataState}>
+    <div
+      className={`${styles.container} ${
+        variant === "dashboard" ? styles.dashboard : ""
+      }`}
+      data-state={dataState}
+    >
       <img src={image} alt={alt} className={styles.img} />
+
       <div className={styles.content}>
         <h2>{trainingName}</h2>
+
         {muscleGroups && (
           <div className={styles.muscleGroups}>
             {muscleGroups.map((muscleGroup, index) => (
@@ -33,6 +44,18 @@ export function TrainingCard({
           </div>
         )}
       </div>
+
+      {onUnlink && (
+        <ActionButton
+          variant="close"
+          icon={<X size={16} />}
+          title="Desvincular treino"
+          onClick={(e) => {
+            e.stopPropagation();
+            onUnlink();
+          }}
+        />
+      )}
     </div>
   );
 }
