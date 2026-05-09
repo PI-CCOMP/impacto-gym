@@ -1,14 +1,13 @@
 .hamburger {
   display: none;
-  position: fixed;
-  left: 10px;
-  top: 10px;
+  position: static;
   background: transparent;
   border: none;
   color: var(--title);
   padding: var(--size-sm);
   cursor: pointer;
   align-items: center;
+  padding: var(--size-md);
 }
 
 .overlay {
