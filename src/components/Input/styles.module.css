@@ -12,8 +12,17 @@
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
   width: 100%;
+}
+
+.leftIcon {
+  position: absolute;
+  left: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--title);
+  pointer-events: none;
 }
 
 .input {
@@ -26,8 +35,10 @@
   padding: var(--size-md);
   padding-right: 4rem;
   min-height: 4.4rem;
-  text-overflow: ellipsis;
-  transition: border-color 0.3s ease-in-out;
+}
+
+.inputWithIcon {
+  padding-left: 4.8rem;
 }
 
 .input:focus {

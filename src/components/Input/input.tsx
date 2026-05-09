@@ -5,6 +5,7 @@ import styles from "./styles.module.css";
 type InputProps = {
   labelText?: string;
   errorMessage?: string;
+  leftIcon?: React.ReactNode;
 } & React.ComponentProps<"input">;
 
 export function Input({
@@ -12,6 +13,7 @@ export function Input({
   id,
   errorMessage,
   type,
+  leftIcon,
   ...rest
 }: InputProps) {
   const [showPassword, setShowPassword] = useState(false);
@@ -28,10 +30,14 @@ export function Input({
       )}
 
       <div className={styles.inputWrapper}>
+        {leftIcon && <span className={styles.leftIcon}>{leftIcon}</span>}
+
         <input
           id={id}
           type={inputType}
-          className={`${styles.input} ${errorMessage ? styles.inputError : ""}`}
+          className={`${styles.input} ${
+            errorMessage ? styles.inputError : ""
+          } ${leftIcon ? styles.inputWithIcon : ""}`}
           {...rest}
         />
 
