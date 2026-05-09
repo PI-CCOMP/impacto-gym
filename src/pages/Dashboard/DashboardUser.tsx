@@ -67,7 +67,7 @@ export function DashboardUser() {
   return (
     <DashboardGrid>
       <SideMenu />
-      <Container>
+      <Container style={{ paddingTop: 0, minHeight: "unset" }}>
         <Row typeRow="row-space">
           <h1>Usuário</h1>
           {mockLoggedUser.role === "admin" && (
