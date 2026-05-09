@@ -3,19 +3,34 @@
   justify-content: space-between;
   align-items: center;
   gap: var(--size-md);
-}
-
-.container > :first-child {
   width: 100%;
 }
 
+.responsive {
+  flex-wrap: wrap;
+}
+
 @media (max-width: 768px) {
-  .container {
-    flex-wrap: wrap;
+  .responsive {
     justify-content: center;
   }
 
-  .container > :first-child {
+  .responsive > :first-child {
+    width: 100%;
     flex: 0 0 100%;
+  }
+
+  .responsive > :first-child input {
+    width: 100%;
+  }
+}
+
+.sideBySide {
+  flex-wrap: nowrap;
+}
+
+@media (max-width: 768px) {
+  .sideBySide {
+    justify-content: space-between;
   }
 }
