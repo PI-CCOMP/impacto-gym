@@ -1,0 +1,110 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 300;
+  animation: fadeIn 0.15s ease;
+}
+
+.modal {
+  position: relative;
+  background-color: var(--primary-light);
+  border-radius: var(--size-sm);
+  padding: var(--size-xl);
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-sm);
+  animation: slideUp 0.2s ease;
+}
+
+.closeButton {
+  position: absolute;
+  top: var(--size-md);
+  left: var(--size-md);
+  background: none;
+  border: none;
+  color: var(--text-default);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+
+.closeButton:hover {
+  color: var(--title);
+}
+
+.title {
+  text-align: center;
+  color: var(--title);
+  margin: 0;
+  padding-top: var(--size-sm);
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--text-default);
+  margin: 0;
+}
+
+.label {
+  color: var(--text-default);
+  margin-top: var(--size-sm);
+}
+
+.input {
+  width: 100%;
+  background-color: var(--primary);
+  border: 1px solid var(--primary-light-contrast);
+  border-radius: var(--size-sm);
+  color: var(--title);
+  padding: var(--size-sm) var(--size-md);
+  box-sizing: border-box;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--secondary);
+}
+
+.saveButton {
+  margin-top: var(--size-md);
+  width: 100%;
+  padding: var(--size-sm);
+  background-color: var(--secondary);
+  color: var(--title);
+  border: none;
+  border-radius: var(--size-sm);
+
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.saveButton:hover {
+  opacity: 0.85;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
