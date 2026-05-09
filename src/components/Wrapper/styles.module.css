@@ -2,6 +2,6 @@
   background-color: var(--primary);
   min-height: 100dvh;
   width: 100%;
-  max-width: 1024px;
+  max-width: 768px;
   margin: 0 auto;
 }

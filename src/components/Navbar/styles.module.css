@@ -2,7 +2,7 @@
   position: sticky;
   bottom: 0;
   width: 100%;
-  max-width: 1024px;
+  max-width: 768px;
 }
 
 .menu {
@@ -28,11 +28,4 @@
 
 .menu li a.active {
   color: var(--secondary);
-}
-
-@media (max-width: 1024px) {
-  .menu {
-    justify-content: center;
-    gap: calc(var(--size-xl) * 4);
-  }
 }
