@@ -1,0 +1,32 @@
+.button {
+  width: 3.2rem;
+  height: 3.2rem;
+  background-color: var(--primary-light);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.button:hover {
+  background-color: var(--primary-light-contrast);
+}
+
+.edit {
+  color: var(--secondary);
+}
+
+.delete,
+.close {
+  color: var(--error);
+}
+
+.view {
+  color: var(--text-dark);
+}
+
+.accept {
+  color: var(--success);
+}
