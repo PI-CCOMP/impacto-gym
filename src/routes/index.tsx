@@ -29,6 +29,8 @@ import { DashboardForgotPassword } from "../pages/Dashboard/DashboardForgotPassw
 import { DashboardMFAVerification } from "../pages/Dashboard/DashboardMFAVerifiacation";
 import { DashboardUsers } from "../pages/Dashboard/DashboardUsers";
 import { DashboardUser } from "../pages/Dashboard/DashboardUser";
+import { DashboardTraining } from "../pages/Dashboard/DashboardTraining";
+import { DashboardEditUser } from "../pages/Dashboard/DashboardEditUser";
 
 export function AppRoutes() {
   const location = useLocation();
@@ -72,6 +74,11 @@ export function AppRoutes() {
         <Route path="/dashboard/mfa" element={<DashboardMFAVerification />} />
         <Route path="/dashboard/usuarios" element={<DashboardUsers />} />
         <Route path="/dashboard/usuario/:id" element={<DashboardUser />} />
+        <Route
+          path="/dashboard/usuario/:id/editar"
+          element={<DashboardEditUser />}
+        />
+        <Route path="/dashboard/treino/:id" element={<DashboardTraining />} />
       </Route>
 
       <Route path="*" element={<Page404 />} />
