@@ -84,6 +84,10 @@ export function DashboardLogin() {
                   value: "instructor",
                   label: "Instrutor",
                 },
+                {
+                  value: "receptionist",
+                  label: "Recepcionista",
+                },
               ]}
             />
             <Input
