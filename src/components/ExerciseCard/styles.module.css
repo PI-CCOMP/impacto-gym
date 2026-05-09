@@ -3,6 +3,8 @@
   align-items: center;
   gap: var(--size-md);
   cursor: pointer;
+  box-sizing: border-box;
+  border: 2px solid transparent;
 }
 
 .img {
@@ -13,4 +15,10 @@
 
 .container p {
   font-weight: bold;
+}
+
+.selected {
+  border-color: var(--secondary);
+  padding: calc(var(--size-sm) - 2px);
+  border-radius: var(--size-sm);
 }

@@ -17,6 +17,7 @@ export type Exercise = {
   image: string;
   alt: string;
   muscleGroupImage: string;
+  muscleGroup: string;
   series: { series: number; kg: number; reps: number }[];
 };
 
@@ -27,6 +28,7 @@ export const mockExercises: Exercise[] = [
     image: supinoImg,
     alt: "Supino Reto",
     muscleGroupImage: peitoImg,
+    muscleGroup: "Peitoral",
     series: [
       { series: 1, kg: 40, reps: 12 },
       { series: 2, kg: 42, reps: 10 },
@@ -39,6 +41,7 @@ export const mockExercises: Exercise[] = [
     image: supinoImg,
     alt: "Crucifixo",
     muscleGroupImage: peitoImg,
+    muscleGroup: "Peitoral",
     series: [
       { series: 1, kg: 20, reps: 15 },
       { series: 2, kg: 22, reps: 12 },
@@ -50,6 +53,7 @@ export const mockExercises: Exercise[] = [
     image: supinoImg,
     alt: "Abdominal",
     muscleGroupImage: peitoImg,
+    muscleGroup: "Abdômen",
     series: [
       { series: 1, kg: 0, reps: 20 },
       { series: 2, kg: 0, reps: 20 },
@@ -62,6 +66,7 @@ export const mockExercises: Exercise[] = [
     image: supinoImg,
     alt: "Remada",
     muscleGroupImage: peitoImg,
+    muscleGroup: "Costas",
     series: [
       { series: 1, kg: 50, reps: 10 },
       { series: 2, kg: 55, reps: 8 },
@@ -73,6 +78,7 @@ export const mockExercises: Exercise[] = [
     image: supinoImg,
     alt: "Puxada",
     muscleGroupImage: peitoImg,
+    muscleGroup: "Costas",
     series: [
       { series: 1, kg: 60, reps: 10 },
       { series: 2, kg: 60, reps: 8 },
@@ -85,6 +91,7 @@ export const mockExercises: Exercise[] = [
     image: supinoImg,
     alt: "Agachamento",
     muscleGroupImage: peitoImg,
+    muscleGroup: "Pernas",
     series: [
       { series: 1, kg: 80, reps: 10 },
       { series: 2, kg: 85, reps: 8 },
@@ -97,6 +104,7 @@ export const mockExercises: Exercise[] = [
     image: supinoImg,
     alt: "Leg Press",
     muscleGroupImage: peitoImg,
+    muscleGroup: "Pernas",
     series: [
       { series: 1, kg: 120, reps: 12 },
       { series: 2, kg: 130, reps: 10 },
@@ -278,125 +286,239 @@ export type UserRow = {
   name: string;
   cpf: string;
   profile: UserRole;
-  /** Só existe quando profile === "Aluno" */
+  image?: string;
+  email: string;
+  gender: "Masculino" | "Feminino" | "Outro";
+  createdAt: number;
+  // só para Aluno
   instructor?: string;
+  goal?: string;
+  experience?: string;
+  disability?: string;
+  medicalRestriction?: string;
+  // treinos vinculados (ids de mockTrainings)
+  trainingIds?: string[];
 };
 
 export const mockUsers: UserRow[] = [
-  // 12 Alunos
   {
     id: "u1",
     name: "Rafael Augusto Moreira Silva",
     cpf: "123.456.789-10",
     profile: "Aluno",
+    email: "rafael@email.com",
+    gender: "Masculino",
+    createdAt: new Date("2025-01-10").getTime(),
     instructor: "Mateus",
+    goal: "Hipertrofia",
+    experience: "Intermediário",
+    disability: "Nenhuma",
+    medicalRestriction: "Nenhuma",
+    trainingIds: ["1", "2"],
   },
   {
     id: "u2",
     name: "Camilla Fernandes de Almeida",
     cpf: "123.456.789-10",
     profile: "Aluno",
+    email: "camilla@email.com",
+    gender: "Feminino",
+    createdAt: new Date("2025-02-14").getTime(),
     instructor: "N/A",
+    goal: "Emagrecimento",
+    experience: "Iniciante",
+    disability: "Nenhuma",
+    medicalRestriction: "Lordose",
+    trainingIds: ["3"],
   },
   {
     id: "u3",
     name: "Isabela Freitas Carvalho Andrade",
     cpf: "123.456.789-10",
     profile: "Aluno",
+    email: "isabela@email.com",
+    gender: "Feminino",
+    createdAt: new Date("2025-03-05").getTime(),
     instructor: "Bassiro",
+    goal: "Condicionamento",
+    experience: "Avançado",
+    disability: "Nenhuma",
+    medicalRestriction: "Nenhuma",
+    trainingIds: ["1"],
   },
   {
     id: "u4",
     name: "Thiago Henrique Martins Souza",
     cpf: "123.456.789-10",
     profile: "Aluno",
+    email: "thiago@email.com",
+    gender: "Masculino",
+    createdAt: new Date("2025-04-20").getTime(),
     instructor: "N/A",
+    goal: "Força",
+    experience: "Intermediário",
+    disability: "Nenhuma",
+    medicalRestriction: "Hérnia de disco",
+    trainingIds: ["2"],
   },
   {
     id: "u5",
     name: "Mariana Lopes Ferreira",
     cpf: "123.456.789-10",
     profile: "Aluno",
+    email: "mariana@email.com",
+    gender: "Feminino",
+    createdAt: new Date("2025-05-01").getTime(),
     instructor: "Luiz",
+    goal: "Emagrecimento",
+    experience: "Iniciante",
+    disability: "Nenhuma",
+    medicalRestriction: "Nenhuma",
+    trainingIds: ["3"],
   },
   {
     id: "u6",
     name: "Lucas Gabrielle de Souza Medeiros",
     cpf: "123.456.789-10",
     profile: "Aluno",
+    email: "lucas@email.com",
+    gender: "Masculino",
+    createdAt: new Date("2025-06-18").getTime(),
     instructor: "Catarina",
+    goal: "Hipertrofia",
+    experience: "Avançado",
+    disability: "Nenhuma",
+    medicalRestriction: "Nenhuma",
+    trainingIds: ["1", "2", "3"],
   },
   {
     id: "u7",
     name: "Fellipe Antônio da Rocha Mancebo",
     cpf: "123.456.789-10",
     profile: "Aluno",
+    email: "fellipe@email.com",
+    gender: "Masculino",
+    createdAt: new Date("2025-07-22").getTime(),
     instructor: "Eric",
+    goal: "Força",
+    experience: "Intermediário",
+    disability: "Nenhuma",
+    medicalRestriction: "Nenhuma",
+    trainingIds: ["2"],
   },
   {
     id: "u8",
     name: "Fernanda Castro Aldarques",
     cpf: "123.456.789-10",
     profile: "Aluno",
+    email: "fernanda@email.com",
+    gender: "Feminino",
+    createdAt: new Date("2025-08-09").getTime(),
     instructor: "Catarina",
+    goal: "Condicionamento",
+    experience: "Iniciante",
+    disability: "Nenhuma",
+    medicalRestriction: "Nenhuma",
+    trainingIds: ["3"],
   },
   {
     id: "u9",
     name: "Bruno Henrique Teixeira Lima",
     cpf: "123.456.789-10",
     profile: "Aluno",
+    email: "bruno@email.com",
+    gender: "Masculino",
+    createdAt: new Date("2025-09-03").getTime(),
     instructor: "Mateus",
+    goal: "Hipertrofia",
+    experience: "Avançado",
+    disability: "Nenhuma",
+    medicalRestriction: "Nenhuma",
+    trainingIds: ["1", "3"],
   },
   {
     id: "u10",
     name: "Giovana Ramos de Oliveira",
     cpf: "123.456.789-10",
     profile: "Aluno",
+    email: "giovana@email.com",
+    gender: "Feminino",
+    createdAt: new Date("2025-10-11").getTime(),
     instructor: "Luiz",
+    goal: "Emagrecimento",
+    experience: "Iniciante",
+    disability: "Nenhuma",
+    medicalRestriction: "Escoliose",
+    trainingIds: ["3"],
   },
   {
     id: "u11",
     name: "André Luis Barbosa Cunha",
     cpf: "123.456.789-10",
     profile: "Aluno",
+    email: "andre@email.com",
+    gender: "Masculino",
+    createdAt: new Date("2025-11-02").getTime(),
     instructor: "Bassiro",
+    goal: "Força",
+    experience: "Intermediário",
+    disability: "Nenhuma",
+    medicalRestriction: "Nenhuma",
+    trainingIds: ["2"],
   },
   {
     id: "u12",
     name: "Patrícia Souza Monteiro",
     cpf: "123.456.789-10",
     profile: "Aluno",
+    email: "patricia@email.com",
+    gender: "Feminino",
+    createdAt: new Date("2025-12-15").getTime(),
     instructor: "Eric",
+    goal: "Condicionamento",
+    experience: "Avançado",
+    disability: "Surdez parcial",
+    medicalRestriction: "Nenhuma",
+    trainingIds: ["1"],
   },
-
-  // 2 Instrutores
+  // Instrutores
   {
     id: "u13",
     name: "Mateus Carvalho Duarte",
     cpf: "123.456.789-10",
     profile: "Instrutor",
+    email: "mateus@email.com",
+    gender: "Masculino",
+    createdAt: new Date("2024-06-01").getTime(),
   },
   {
     id: "u14",
     name: "Catarina Alves Pereira",
     cpf: "123.456.789-10",
     profile: "Instrutor",
+    email: "catarina@email.com",
+    gender: "Feminino",
+    createdAt: new Date("2024-07-15").getTime(),
   },
-
-  // 1 Recepcionista
+  // Recepcionista
   {
     id: "u15",
     name: "Luiz Fernando Gomes",
     cpf: "123.456.789-10",
     profile: "Recepcionista",
+    email: "luiz@email.com",
+    gender: "Masculino",
+    createdAt: new Date("2024-08-20").getTime(),
   },
-
-  // 1 Administrador
+  // Administrador
   {
     id: "u16",
     name: "Beatriz Oliveira Figueiredo",
     cpf: "123.456.789-10",
     profile: "Administrador",
+    email: "beatriz@email.com",
+    gender: "Feminino",
+    createdAt: new Date("2024-01-01").getTime(),
   },
 ];
 

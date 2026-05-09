@@ -253,7 +253,7 @@ export function DashboardUsers() {
         <Line />
 
         <Container style={{ padding: "0" }}>
-          <h1>Aprovar Cadastro</h1>
+          <h2>Aprovar Cadastro</h2>
 
           <Input
             type="text"

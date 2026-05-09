@@ -5,6 +5,7 @@ type ExerciseCardProps = {
   image: string;
   alt: string;
   exerciseName: string;
+  selected?: boolean;
   onClick?: () => void;
 };
 
@@ -13,11 +14,12 @@ export function ExerciseCard({
   image,
   alt,
   exerciseName,
+  selected,
   onClick,
 }: ExerciseCardProps) {
   return (
     <div
-      className={styles.container}
+      className={`${styles.container} ${selected ? styles.selected : ""}`}
       onClick={onClick}
       style={{ cursor: onClick ? "pointer" : "default" }}
     >
