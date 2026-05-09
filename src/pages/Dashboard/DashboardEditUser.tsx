@@ -99,7 +99,7 @@ export function DashboardEditUser() {
   return (
     <DashboardGrid>
       <SideMenu />
-      <Container style={{ paddingTop: 0 }}>
+      <Container>
         <PageHeader onBack={() => navigate(-1)}>Editar Usuário</PageHeader>
 
         <form onSubmit={handleSubmit}>

@@ -117,7 +117,7 @@ export function DashboardTraining() {
   return (
     <DashboardGrid>
       <SideMenu />
-      <Container style={{ paddingTop: 0 }}>
+      <Container>
         <h1>Treinos</h1>
 
         <DashboardRow>

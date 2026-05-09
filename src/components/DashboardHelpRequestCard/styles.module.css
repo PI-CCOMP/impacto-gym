@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  align-items: center;
+  background-color: var(--gray-800);
+  padding: var(--size-md);
+  border-radius: var(--size-sm);
+  gap: var(--size-md);
+  width: 100%;
+}
+
+.img {
+  width: 60px;
+  height: 60px;
+  border-radius: 100%;
+  object-fit: cover;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.content p {
+  margin: 0;
+  font-size: 1.4rem;
+}

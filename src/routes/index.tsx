@@ -33,6 +33,7 @@ import { DashboardEditUser } from "../pages/Dashboard/DashboardEditUser";
 import { DashboardTraining } from "../pages/Dashboard/DashboardTraining";
 import { DashboardTrainingDetail } from "../pages/Dashboard/DashboardTrainingDetail";
 import { DashboardEditTraining } from "../pages/Dashboard/DashboardEditTraining";
+import { DashboardHelp } from "../pages/Dashboard/DashboardHelp";
 
 export function AppRoutes() {
   const location = useLocation();
@@ -88,6 +89,10 @@ export function AppRoutes() {
         <Route
           path="/dashboard/treino/:id/editar"
           element={<DashboardEditTraining />}
+        />
+        <Route
+          path="/dashboard/solicitacoes_auxilio"
+          element={<DashboardHelp />}
         />
       </Route>
 

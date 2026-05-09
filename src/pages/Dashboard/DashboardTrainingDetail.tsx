@@ -87,7 +87,7 @@ export function DashboardTrainingDetail() {
   return (
     <DashboardGrid>
       <SideMenu />
-      <Container style={{ paddingTop: 0 }}>
+      <Container>
         <DashboardRow variant="sideBySide" style={{ paddingTop: 0 }}>
           <PageHeader onBack={() => navigate(-1)}>
             {training.trainingName}

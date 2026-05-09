@@ -124,7 +124,7 @@ export function DashboardUsers() {
   return (
     <DashboardGrid>
       <SideMenu />
-      <Container style={{ paddingTop: 0 }}>
+      <Container>
         <h1>Usuários</h1>
 
         <DashboardRow>
