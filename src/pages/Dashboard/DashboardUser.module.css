@@ -1,0 +1,22 @@
+ul {
+  list-style-type: none;
+}
+
+ul li {
+  display: flex;
+  gap: var(--size-sm);
+}
+
+.contentUser {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-lg);
+  padding: var(--size-xl) 0;
+}
+
+.trainingContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-lg);
+  padding-top: var(--size-md);
+}

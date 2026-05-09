@@ -252,94 +252,96 @@ export function DashboardUsers() {
 
         <Line />
 
-        <h1>Aprovar Cadastro</h1>
+        <Container style={{ padding: "0" }}>
+          <h1>Aprovar Cadastro</h1>
 
-        <Input
-          type="text"
-          id="pending-search"
-          name="pending-search"
-          placeholder="Nome do usuário"
-          leftIcon={<Search />}
-          value={pendingSearch}
-          onChange={handlePendingSearch}
-        />
-
-        <div>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>CPF</th>
-                <th>Laudo</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedPending.map((reg) => (
-                <tr key={reg.id}>
-                  <td data-label="Nome">{reg.name}</td>
-                  <td data-label="CPF">{reg.cpf}</td>
-                  <td data-label="Laudo">
-                    <a
-                      href={reg.medicalReportUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      download={reg.medicalReportName}
-                      className={styles.reportLink}
-                    >
-                      <FileText size={14} />
-                      {reg.medicalReportName}
-                    </a>
-                  </td>
-                  <td data-label="Ações">
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: "var(--size-md)",
-                        justifyContent: "flex-end",
-                      }}
-                    >
-                      <ActionButton
-                        variant="accept"
-                        icon={<Check size={16} />}
-                        title="Aprovar cadastro"
-                        onClick={() => handleApprove(reg.id)}
-                      />
-                      <ActionButton
-                        variant="delete"
-                        icon={<X size={16} />}
-                        title="Rejeitar cadastro"
-                        onClick={() => handleReject(reg.id)}
-                      />
-                    </div>
-                  </td>
-                </tr>
-              ))}
-
-              {paginatedPending.length === 0 && (
-                <tr>
-                  <td
-                    colSpan={4}
-                    style={{ textAlign: "center", padding: "var(--size-xl)" }}
-                  >
-                    Nenhum cadastro pendente.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-
-          <Pagination
-            total={filteredPending.length}
-            page={pendingPage}
-            pageSize={pendingPageSize}
-            onPageChange={setPendingPage}
-            onPageSizeChange={(size) => {
-              setPendingPageSize(size);
-              setPendingPage(1);
-            }}
+          <Input
+            type="text"
+            id="pending-search"
+            name="pending-search"
+            placeholder="Nome do usuário"
+            leftIcon={<Search />}
+            value={pendingSearch}
+            onChange={handlePendingSearch}
           />
-        </div>
+
+          <div>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>CPF</th>
+                  <th>Laudo</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {paginatedPending.map((reg) => (
+                  <tr key={reg.id}>
+                    <td data-label="Nome">{reg.name}</td>
+                    <td data-label="CPF">{reg.cpf}</td>
+                    <td data-label="Laudo">
+                      <a
+                        href={reg.medicalReportUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        download={reg.medicalReportName}
+                        className={styles.reportLink}
+                      >
+                        <FileText size={14} />
+                        {reg.medicalReportName}
+                      </a>
+                    </td>
+                    <td data-label="Ações">
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "var(--size-md)",
+                          justifyContent: "flex-end",
+                        }}
+                      >
+                        <ActionButton
+                          variant="accept"
+                          icon={<Check size={16} />}
+                          title="Aprovar cadastro"
+                          onClick={() => handleApprove(reg.id)}
+                        />
+                        <ActionButton
+                          variant="delete"
+                          icon={<X size={16} />}
+                          title="Rejeitar cadastro"
+                          onClick={() => handleReject(reg.id)}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+
+                {paginatedPending.length === 0 && (
+                  <tr>
+                    <td
+                      colSpan={4}
+                      style={{ textAlign: "center", padding: "var(--size-xl)" }}
+                    >
+                      Nenhum cadastro pendente.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+
+            <Pagination
+              total={filteredPending.length}
+              page={pendingPage}
+              pageSize={pendingPageSize}
+              onPageChange={setPendingPage}
+              onPageSizeChange={(size) => {
+                setPendingPageSize(size);
+                setPendingPage(1);
+              }}
+            />
+          </div>
+        </Container>
       </Container>
       {editingUser && (
         <QuickEditModal
