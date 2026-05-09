@@ -13,3 +13,11 @@
 .button:hover {
   background-color: var(--secondary-hover);
 }
+
+.red {
+  background-color: var(--error);
+}
+
+.red:hover {
+  background-color: color-mix(in srgb, var(--error) 65%, #000);
+}
