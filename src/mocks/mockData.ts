@@ -264,3 +264,254 @@ export const mockHistoryTrainings: HistoryTraining[] = [
     totalVolume: 2950,
   },
 ];
+
+// Dashboard Users
+
+export type UserRole =
+  | "Aluno"
+  | "Instrutor"
+  | "Recepcionista"
+  | "Administrador";
+
+export type UserRow = {
+  id: string;
+  name: string;
+  cpf: string;
+  profile: UserRole;
+  /** Só existe quando profile === "Aluno" */
+  instructor?: string;
+};
+
+export const mockUsers: UserRow[] = [
+  // 12 Alunos
+  {
+    id: "u1",
+    name: "Rafael Augusto Moreira Silva",
+    cpf: "123.456.789-10",
+    profile: "Aluno",
+    instructor: "Mateus",
+  },
+  {
+    id: "u2",
+    name: "Camilla Fernandes de Almeida",
+    cpf: "123.456.789-10",
+    profile: "Aluno",
+    instructor: "N/A",
+  },
+  {
+    id: "u3",
+    name: "Isabela Freitas Carvalho Andrade",
+    cpf: "123.456.789-10",
+    profile: "Aluno",
+    instructor: "Bassiro",
+  },
+  {
+    id: "u4",
+    name: "Thiago Henrique Martins Souza",
+    cpf: "123.456.789-10",
+    profile: "Aluno",
+    instructor: "N/A",
+  },
+  {
+    id: "u5",
+    name: "Mariana Lopes Ferreira",
+    cpf: "123.456.789-10",
+    profile: "Aluno",
+    instructor: "Luiz",
+  },
+  {
+    id: "u6",
+    name: "Lucas Gabrielle de Souza Medeiros",
+    cpf: "123.456.789-10",
+    profile: "Aluno",
+    instructor: "Catarina",
+  },
+  {
+    id: "u7",
+    name: "Fellipe Antônio da Rocha Mancebo",
+    cpf: "123.456.789-10",
+    profile: "Aluno",
+    instructor: "Eric",
+  },
+  {
+    id: "u8",
+    name: "Fernanda Castro Aldarques",
+    cpf: "123.456.789-10",
+    profile: "Aluno",
+    instructor: "Catarina",
+  },
+  {
+    id: "u9",
+    name: "Bruno Henrique Teixeira Lima",
+    cpf: "123.456.789-10",
+    profile: "Aluno",
+    instructor: "Mateus",
+  },
+  {
+    id: "u10",
+    name: "Giovana Ramos de Oliveira",
+    cpf: "123.456.789-10",
+    profile: "Aluno",
+    instructor: "Luiz",
+  },
+  {
+    id: "u11",
+    name: "André Luis Barbosa Cunha",
+    cpf: "123.456.789-10",
+    profile: "Aluno",
+    instructor: "Bassiro",
+  },
+  {
+    id: "u12",
+    name: "Patrícia Souza Monteiro",
+    cpf: "123.456.789-10",
+    profile: "Aluno",
+    instructor: "Eric",
+  },
+
+  // 2 Instrutores
+  {
+    id: "u13",
+    name: "Mateus Carvalho Duarte",
+    cpf: "123.456.789-10",
+    profile: "Instrutor",
+  },
+  {
+    id: "u14",
+    name: "Catarina Alves Pereira",
+    cpf: "123.456.789-10",
+    profile: "Instrutor",
+  },
+
+  // 1 Recepcionista
+  {
+    id: "u15",
+    name: "Luiz Fernando Gomes",
+    cpf: "123.456.789-10",
+    profile: "Recepcionista",
+  },
+
+  // 1 Administrador
+  {
+    id: "u16",
+    name: "Beatriz Oliveira Figueiredo",
+    cpf: "123.456.789-10",
+    profile: "Administrador",
+  },
+];
+
+// Logged User + Permissions
+//
+// Em produção, esses dados vêm do endpoint /me ou /auth/login:
+// {
+//   id: number,
+//   name: string,
+//   role: "admin" | "instructor" | "receptionist" | "member",
+//   permissions: Permission[]   ← backend controla; frontend só renderiza
+// }
+
+export type Permission =
+  | "view_member"
+  | "edit_member"
+  | "delete_member"
+  | "edit_workout"
+  | "view_financial";
+
+export type LoggedUser = {
+  id: number;
+  name: string;
+  role: "admin" | "instructor" | "receptionist" | "member";
+  permissions: Permission[];
+};
+
+export const mockLoggedUserAdmin: LoggedUser = {
+  id: 1,
+  name: "Beatriz Oliveira",
+  role: "admin",
+  permissions: [
+    "view_member",
+    "edit_member",
+    "delete_member",
+    "edit_workout",
+    "view_financial",
+  ],
+};
+
+export const mockLoggedUserInstructor: LoggedUser = {
+  id: 2,
+  name: "Mateus Carvalho",
+  role: "instructor",
+  permissions: ["view_member", "edit_member", "edit_workout"],
+};
+
+export const mockLoggedUserReceptionist: LoggedUser = {
+  id: 3,
+  name: "Luiz Fernando",
+  role: "receptionist",
+  permissions: ["view_member", "edit_member"],
+};
+
+/** Troque aqui para testar cada perfil */
+export const mockLoggedUser: LoggedUser = mockLoggedUserAdmin;
+// export const mockLoggedUser: LoggedUser = mockLoggedUserInstructor;
+// export const mockLoggedUser: LoggedUser = mockLoggedUserReceptionist;
+
+// Cadastros Pendentes (Aprovar Cadastro)
+//
+// Em produção vêm do endpoint GET /registrations?status=pending
+// O backend só retorna aqui cadastros com laudo anexado —
+// a regra de "só com laudo" é validada no backend.
+
+export type PendingRegistration = {
+  id: string;
+  name: string;
+  cpf: string;
+  /** URL do laudo médico para download/visualização */
+  medicalReportUrl: string;
+  /** Nome de exibição do arquivo */
+  medicalReportName: string;
+  submittedAt: number;
+};
+
+export const mockPendingRegistrations: PendingRegistration[] = [
+  {
+    id: "pr1",
+    name: "Carlos Eduardo Nascimento",
+    cpf: "123.456.789-10",
+    medicalReportUrl: "/mock-files/laudo-carlos.pdf",
+    medicalReportName: "laudo-carlos.pdf",
+    submittedAt: new Date("2026-05-08T09:30:00").getTime(),
+  },
+  {
+    id: "pr2",
+    name: "Juliana Moraes Ribeiro",
+    cpf: "123.456.789-10",
+    medicalReportUrl: "/mock-files/laudo-juliana.pdf",
+    medicalReportName: "laudo-juliana.pdf",
+    submittedAt: new Date("2026-05-08T11:00:00").getTime(),
+  },
+  {
+    id: "pr3",
+    name: "Diego Santana Pires",
+    cpf: "123.456.789-10",
+    medicalReportUrl: "/mock-files/laudo-diego.pdf",
+    medicalReportName: "laudo-diego.pdf",
+    submittedAt: new Date("2026-05-09T08:15:00").getTime(),
+  },
+  {
+    id: "pr4",
+    name: "Aline Torres Vasconcelos",
+    cpf: "123.456.789-10",
+    medicalReportUrl: "/mock-files/laudo-aline.pdf",
+    medicalReportName: "laudo-aline.pdf",
+    submittedAt: new Date("2026-05-09T10:45:00").getTime(),
+  },
+  {
+    id: "pr5",
+    name: "Renato Fonseca Almeida",
+    cpf: "123.456.789-10",
+    medicalReportUrl: "/mock-files/laudo-renato.pdf",
+    medicalReportName: "laudo-renato.pdf",
+    submittedAt: new Date("2026-05-09T14:00:00").getTime(),
+  },
+];
