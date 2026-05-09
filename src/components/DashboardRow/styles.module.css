@@ -5,14 +5,17 @@
   gap: var(--size-md);
 }
 
-@media (max-width: 1024px) {
+.container > :first-child {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
   .container {
     flex-wrap: wrap;
     justify-content: center;
   }
 
   .container > :first-child {
-    width: 100%;
     flex: 0 0 100%;
   }
 }
