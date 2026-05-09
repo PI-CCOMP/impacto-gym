@@ -142,7 +142,7 @@ export function DashboardTrainingDetail() {
             gap: "var(--size-md)",
           }}
         >
-          <DashboardRow variant="sideBySide">
+          <DashboardRow>
             <h2>Alunos Vinculados</h2>
             {canEdit && (
               <ActionButton
