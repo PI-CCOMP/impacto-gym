@@ -1,0 +1,67 @@
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--size-lg);
+  flex-wrap: wrap;
+  padding-top: var(--size-md);
+}
+
+.pagination * {
+  font-size: 1.2rem;
+}
+
+.info {
+  color: var(--text-default);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: var(--size-sm);
+}
+
+.sizeLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--size-sm);
+  color: var(--text-default);
+}
+
+.sizeSelect {
+  background-color: var(--primary-light);
+  border: 1px solid var(--primary-light-contrast);
+  border-radius: var(--size-sm);
+  color: var(--text-default);
+  padding: var(--size-xxs) var(--size-sm);
+  cursor: pointer;
+}
+
+.arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  background: var(--primary-light);
+  border: 1px solid var(--primary-light-contrast);
+  border-radius: var(--size-sm);
+  color: var(--text-default);
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.arrow:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.arrow:not(:disabled):hover {
+  background-color: var(--primary-light-contrast);
+}
+
+.pages {
+  color: var(--text-default);
+  min-width: 3rem;
+  text-align: center;
+}
