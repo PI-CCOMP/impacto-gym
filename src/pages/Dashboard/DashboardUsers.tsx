@@ -8,6 +8,7 @@ import {
   Check,
   X,
   FileText,
+  Plus,
 } from "lucide-react";
 
 import { DashboardGrid } from "../../components/DashboardGrid";
@@ -125,7 +126,10 @@ export function DashboardUsers() {
     <DashboardGrid>
       <SideMenu />
       <Container>
-        <h1>Usuários</h1>
+        <DashboardRow variant="sideBySide">
+          <h1>Usuários</h1>
+          <ActionButton icon={<Plus size={16} />} />
+        </DashboardRow>
 
         <DashboardRow>
           <Input

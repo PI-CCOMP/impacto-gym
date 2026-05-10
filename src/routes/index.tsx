@@ -30,6 +30,7 @@ import { DashboardMFAVerification } from "../pages/Dashboard/DashboardMFAVerifia
 import { DashboardUsers } from "../pages/Dashboard/DashboardUsers";
 import { DashboardUser } from "../pages/Dashboard/DashboardUser";
 import { DashboardEditUser } from "../pages/Dashboard/DashboardEditUser";
+import { DashboardCreateUser } from "../pages/Dashboard/DashboardCreateUser";
 import { DashboardTraining } from "../pages/Dashboard/DashboardTraining";
 import { DashboardTrainingDetail } from "../pages/Dashboard/DashboardTrainingDetail";
 import { DashboardEditTraining } from "../pages/Dashboard/DashboardEditTraining";
@@ -80,6 +81,10 @@ export function AppRoutes() {
         <Route path="/dashboard/mfa" element={<DashboardMFAVerification />} />
         <Route path="/dashboard/usuarios" element={<DashboardUsers />} />
         <Route path="/dashboard/usuario/:id" element={<DashboardUser />} />
+        <Route
+          path="/dashboard/usuarios/criar"
+          element={<DashboardCreateUser />}
+        />
         <Route
           path="/dashboard/usuario/:id/editar"
           element={<DashboardEditUser />}
