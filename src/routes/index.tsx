@@ -35,6 +35,8 @@ import { DashboardTrainingDetail } from "../pages/Dashboard/DashboardTrainingDet
 import { DashboardEditTraining } from "../pages/Dashboard/DashboardEditTraining";
 import { DashboardHelp } from "../pages/Dashboard/DashboardHelp";
 import { DashboardAlert } from "../pages/Dashboard/DashboardAlert";
+import { DashboardSettings } from "../pages/Dashboard/DashboardSettings";
+import { DashboardChangeEmail } from "../pages/Dashboard/DashboardChangeEmail";
 
 export function AppRoutes() {
   const location = useLocation();
@@ -59,14 +61,14 @@ export function AppRoutes() {
         <Route path="/avisos" element={<Alert />} />
         <Route path="/historico" element={<History />} />
         <Route path="/historico/:id" element={<HistoryDetail />} />
-        <Route path="/configuracao" element={<Settings />} />
-        <Route path="/configuracao/perfil" element={<Profile />} />
-        <Route path="/configuracao/faq" element={<Faq />} />
+        <Route path="/configuracoes" element={<Settings />} />
+        <Route path="/configuracoes/perfil" element={<Profile />} />
+        <Route path="/configuracoes/faq" element={<Faq />} />
         <Route
-          path="/configuracao/alterar-senha"
+          path="/configuracoes/alterar-senha"
           element={<ForgotPassword />}
         />
-        <Route path="/configuracao/alterar-email" element={<ChangeEmail />} />
+        <Route path="/configuracoes/alterar-email" element={<ChangeEmail />} />
       </Route>
 
       <Route element={<DashboardLayout />}>
@@ -96,6 +98,14 @@ export function AppRoutes() {
           element={<DashboardHelp />}
         />
         <Route path="/dashboard/avisos" element={<DashboardAlert />} />
+        <Route
+          path="/dashboard/configuracoes"
+          element={<DashboardSettings />}
+        />
+        <Route
+          path="/dashboard/configuracoes/alterar-email"
+          element={<DashboardChangeEmail />}
+        />
       </Route>
 
       <Route path="*" element={<Page404 />} />

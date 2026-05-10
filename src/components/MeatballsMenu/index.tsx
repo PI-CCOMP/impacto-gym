@@ -22,7 +22,7 @@ export function MeatballsMenu() {
       {open && (
         <ul className={styles.meatballsMenuOptions}>
           <li>
-            <Link to={"/configuracao"}>
+            <Link to={"/configuracoes"}>
               <Settings />
               Configurações
             </Link>
