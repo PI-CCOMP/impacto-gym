@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { DashboardGrid } from "../../components/DashboardGrid";
 import { Container } from "../../components/Container";
 import { PageHeader } from "../../components/PageHeader";
 import { Input } from "../../components/Input/input";
