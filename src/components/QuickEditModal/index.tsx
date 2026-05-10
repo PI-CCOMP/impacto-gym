@@ -4,11 +4,17 @@ import styles from "./styles.module.css";
 
 type QuickEditModalProps = {
   name: string;
+  title?: string;
   onSave: (newName: string) => void;
   onClose: () => void;
 };
 
-export function QuickEditModal({ name, onSave, onClose }: QuickEditModalProps) {
+export function QuickEditModal({
+  name,
+  title = "Edição rápida!",
+  onSave,
+  onClose,
+}: QuickEditModalProps) {
   const [value, setValue] = useState(name);
 
   function handleSave() {
@@ -25,7 +31,7 @@ export function QuickEditModal({ name, onSave, onClose }: QuickEditModalProps) {
           <X size={18} />
         </button>
 
-        <h2 className={styles.title}>Edição rápida!</h2>
+        <h2 className={styles.title}>{title}</h2>
         <p className={styles.subtitle}>Preencha o campo abaixo</p>
 
         <label className={styles.label} htmlFor="quick-edit-name">

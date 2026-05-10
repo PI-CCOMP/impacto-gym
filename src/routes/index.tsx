@@ -34,6 +34,7 @@ import { DashboardTraining } from "../pages/Dashboard/DashboardTraining";
 import { DashboardTrainingDetail } from "../pages/Dashboard/DashboardTrainingDetail";
 import { DashboardEditTraining } from "../pages/Dashboard/DashboardEditTraining";
 import { DashboardHelp } from "../pages/Dashboard/DashboardHelp";
+import { DashboardAlert } from "../pages/Dashboard/DashboardAlert";
 
 export function AppRoutes() {
   const location = useLocation();
@@ -94,6 +95,7 @@ export function AppRoutes() {
           path="/dashboard/solicitacoes_auxilio"
           element={<DashboardHelp />}
         />
+        <Route path="/dashboard/avisos" element={<DashboardAlert />} />
       </Route>
 
       <Route path="*" element={<Page404 />} />
