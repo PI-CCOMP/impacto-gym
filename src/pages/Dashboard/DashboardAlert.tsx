@@ -14,9 +14,8 @@ import { ButtonStroke } from "../../components/ButtonStroke";
 
 import { mockAlerts, mockLoggedUser, type Alert } from "../../mocks/mockData";
 
-function formatDate(timestamp: number) {
-  return new Date(timestamp).toLocaleDateString("pt-BR");
-}
+import { formatDate } from "../../utils/formatDate";
+import { can } from "../../utils/permissions";
 
 export function DashboardAlert() {
   const [alerts, setAlerts] = useState<Alert[]>(mockAlerts);
@@ -25,11 +24,6 @@ export function DashboardAlert() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-
-  const canManage =
-    mockLoggedUser.role === "admin" ||
-    mockLoggedUser.role === "instructor" ||
-    mockLoggedUser.role === "receptionist";
 
   function handleCreate(description: string) {
     const newAlert: Alert = {
@@ -64,10 +58,10 @@ export function DashboardAlert() {
   return (
     <DashboardGrid>
       <SideMenu />
-      <Container>
+      <Container isDashboard>
         <DashboardRow variant="sideBySide">
           <h1>Avisos</h1>
-          {canManage && (
+          {can.manageAlerts && (
             <ActionButton
               variant="accept"
               icon={<Plus size={16} />}
@@ -93,8 +87,12 @@ export function DashboardAlert() {
               author={alert.author}
               date={formatDate(alert.publishedAt)}
               description={alert.description}
-              onEdit={canManage ? () => setEditingAlert(alert) : undefined}
-              onDelete={canManage ? () => setDeletingAlert(alert) : undefined}
+              onEdit={
+                can.manageAlerts ? () => setEditingAlert(alert) : undefined
+              }
+              onDelete={
+                can.manageAlerts ? () => setDeletingAlert(alert) : undefined
+              }
             />
           ))}
         </div>

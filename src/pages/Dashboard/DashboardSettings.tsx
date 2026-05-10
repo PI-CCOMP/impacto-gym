@@ -9,7 +9,7 @@ export function DashboardSettings() {
   return (
     <DashboardGrid>
       <SideMenu />
-      <Container>
+      <Container isDashboard>
         <h1>Configurações</h1>
         <MenuItem
           sectionTitle="E-mail"

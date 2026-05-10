@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import { Container } from "../../components/Container";
@@ -6,82 +6,64 @@ import { PageHeader } from "../../components/PageHeader";
 import { Logo } from "../../components/Logo";
 import { FormHeader } from "../../components/FormHeader";
 import { Button } from "../../components/Button";
+import { Toast } from "../../components/Toast";
+
+import { useMFAForm } from "../../hooks/useMFAForm";
 
 import styles from "./Auth.module.css";
 
 type LocationState = {
-  action?: "change-password";
+  action?: "change-password" | "change-email";
+  pendingEmail?: string;
+  redirectTo?: string;
 };
 
 export function DashboardMFAVerification() {
   const navigate = useNavigate();
   const location = useLocation();
-
   const state = location.state as LocationState | null;
-
   const action = state?.action;
+  const [showToast, setShowToast] = useState(false);
 
-  const [digits, setDigits] = useState(["", "", "", ""]);
-  const [error, setError] = useState("");
-
-  const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
-
-  useEffect(() => {
-    inputsRef.current[0]?.focus();
-  }, []);
-
-  function handleDigitChange(index: number, value: string) {
-    const digit = value.replace(/\D/g, "").slice(-1);
-
-    const updated = [...digits];
-    updated[index] = digit;
-
-    setDigits(updated);
-    setError("");
-
-    if (digit && index < 3) {
-      inputsRef.current[index + 1]?.focus();
-    }
-  }
-
-  function handleKeyDown(
-    index: number,
-    e: React.KeyboardEvent<HTMLInputElement>,
-  ) {
-    if (e.key === "Backspace" && !digits[index] && index > 0) {
-      inputsRef.current[index - 1]?.focus();
-    }
-  }
-
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    const code = digits.join("");
-
-    if (code.length < 4) {
-      setError("Digite o código completo de 4 dígitos.");
-      return;
-    }
-
-    // verificar código MFA aqui
+  const {
+    digits,
+    error,
+    inputsRef,
+    handleDigitChange,
+    handleKeyDown,
+    handleSubmit,
+  } = useMFAForm((code) => {
     console.log("Código MFA:", code);
 
     if (action === "change-password") {
       navigate("/dashboard/login");
-      return;
+    } else if (action === "change-email") {
+      // TODO: api.changeEmail({ email: state.pendingEmail, mfaCode: code })
+      setShowToast(true);
+    } else {
+      navigate("/dashboard/configuracoes");
     }
+  });
 
-    navigate("/dashboard/usuarios");
-  }
-
-  const buttonLabel = action === "change-password" ? "Salvar" : "Finalizar";
+  const buttonLabel =
+    action === "change-password" || action === "change-email"
+      ? "Salvar"
+      : "Finalizar";
 
   return (
     <Container>
+      {showToast && (
+        <Toast
+          message="E-mail alterado com sucesso!"
+          duration={2000}
+          onClose={() =>
+            navigate(state?.redirectTo ?? "/dashboard/configuracoes")
+          }
+        />
+      )}
+
       <PageHeader onBack={() => navigate(-1)}>Verificar Código</PageHeader>
-
       <Logo />
-
       <FormHeader subtitle="Digite o código de 4 dígitos que enviamos para você">
         Verifique seu e-mail!
       </FormHeader>
@@ -100,15 +82,11 @@ export function DashboardMFAVerification() {
               value={digit}
               onChange={(e) => handleDigitChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
-              className={`${styles.digitInput} ${
-                error ? styles.digitInputError : ""
-              }`}
+              className={`${styles.digitInput} ${error ? styles.digitInputError : ""}`}
             />
           ))}
         </div>
-
         {error && <p className={styles.errorMessage}>{error}</p>}
-
         <Button type="submit">{buttonLabel}</Button>
       </form>
     </Container>

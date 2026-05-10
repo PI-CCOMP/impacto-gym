@@ -13,7 +13,7 @@ import { ExerciseCard } from "../../components/ExerciseCard";
 import { Pagination } from "../../components/Pagination";
 import { Line } from "../../components/Line";
 import { Button } from "../../components/Button";
-import { ExerciseConfigModal } from "../../components/ExerciseConfigModal.tsx";
+import { ExerciseConfigModal } from "../../components/ExerciseConfigModal";
 import { QuickEditModal } from "../../components/QuickEditModal";
 import { Toast } from "../../components/Toast";
 
@@ -23,7 +23,9 @@ import {
   mockLoggedUser,
 } from "../../mocks/mockData";
 
-const MUSCLE_GROUPS = ["Peitoral", "Costas", "Braços", "Pernas", "Abdômen"];
+import { MUSCLE_GROUPS } from "../../utils/formOptions";
+
+import { can } from "../../utils/permissions";
 
 export function DashboardTraining() {
   const navigate = useNavigate();
@@ -49,8 +51,6 @@ export function DashboardTraining() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showNameModal, setShowNameModal] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
-
-  const canView = mockLoggedUser.role !== "receptionist";
 
   function toggleMuscle(muscle: string) {
     setSelectedMuscles((prev) =>
@@ -103,11 +103,11 @@ export function DashboardTraining() {
     exercisePage * exercisePageSize,
   );
 
-  if (!canView) {
+  if (!can.viewTrainings) {
     return (
       <DashboardGrid>
         <SideMenu />
-        <Container>
+        <Container isDashboard>
           <h1>Acesso não autorizado.</h1>
         </Container>
       </DashboardGrid>
@@ -117,7 +117,7 @@ export function DashboardTraining() {
   return (
     <DashboardGrid>
       <SideMenu />
-      <Container>
+      <Container isDashboard>
         <h1>Treinos</h1>
 
         <DashboardRow>

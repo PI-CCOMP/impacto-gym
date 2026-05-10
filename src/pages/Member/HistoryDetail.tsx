@@ -8,6 +8,8 @@ import { WorkoutTraining } from "../../components/WorkoutTraining";
 
 import { mockHistoryTrainings } from "../../mocks/mockData";
 
+import { formatDateWeekday } from "../../utils/formatDate";
+
 export function HistoryDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -15,11 +17,7 @@ export function HistoryDetail() {
 
   if (!training) return <p>Treino não encontrado.</p>;
 
-  const formatted = new Date(training.finishedAt).toLocaleDateString("pt-BR", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-  });
+  const formatted = formatDateWeekday(training.finishedAt);
 
   return (
     <>

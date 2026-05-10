@@ -14,7 +14,7 @@ import { ExerciseCard } from "../../components/ExerciseCard";
 import { Pagination } from "../../components/Pagination";
 import { Button } from "../../components/Button";
 import { ButtonStroke } from "../../components/ButtonStroke";
-import { ExerciseConfigModal } from "../../components/ExerciseConfigModal.tsx";
+import { ExerciseConfigModal } from "../../components/ExerciseConfigModal";
 import { QuickEditModal } from "../../components/QuickEditModal";
 import { Toast } from "../../components/Toast";
 
@@ -24,24 +24,16 @@ import {
   mockLoggedUser,
 } from "../../mocks/mockData";
 
-const MUSCLE_GROUPS = [
-  "Peitoral",
-  "Costas",
-  "Pernas",
-  "Ombros",
-  "Bíceps",
-  "Tríceps",
-  "Abdômen",
-];
+import { MUSCLE_GROUPS } from "../../utils/formOptions";
+
+import { can } from "../../utils/permissions";
 
 export function DashboardEditTraining() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // Busca o treino inicial nos mocks
   const training = mockTrainings.find((t) => t.id === id);
 
-  // Estados dos dados
   const [trainingName, setTrainingName] = useState(
     training?.trainingName ?? "",
   );
@@ -49,7 +41,6 @@ export function DashboardEditTraining() {
     training?.exercises.map((ex) => ex.id) ?? [],
   );
 
-  // Estados de Busca e Filtro
   const [exerciseSearch, setExerciseSearch] = useState("");
   const [selectedExerciseMuscles, setSelectedExerciseMuscles] = useState<
     string[]
@@ -57,7 +48,6 @@ export function DashboardEditTraining() {
   const [exercisePage, setExercisePage] = useState(1);
   const exercisePageSize = 6;
 
-  // Estados de Modais e Toasts
   const [configuringExercise, setConfiguringExercise] = useState<{
     id: string;
     name: string;
@@ -70,7 +60,7 @@ export function DashboardEditTraining() {
     return (
       <DashboardGrid>
         <SideMenu />
-        <Container>
+        <Container isDashboard>
           <PageHeader onBack={() => navigate(-1)}>
             Treino não encontrado
           </PageHeader>
@@ -119,18 +109,15 @@ export function DashboardEditTraining() {
     setTimeout(() => navigate(-1), 2000);
   };
 
-  const canEdit =
-    mockLoggedUser.role === "admin" || mockLoggedUser.role === "instructor";
-
   return (
     <DashboardGrid>
       <SideMenu />
-      <Container style={{ paddingTop: "var(--size-sm)" }}>
+      <Container isDashboard>
         <DashboardRow variant="sideBySide">
           <PageHeader onBack={() => navigate(-1)}>
             {training.trainingName}
           </PageHeader>
-          {canEdit && (
+          {can.editTraining && (
             <ActionButton
               variant="edit"
               icon={<Edit2 size={16} />}

@@ -7,23 +7,9 @@ import { Navbar } from "../../components/Navbar";
 
 import { mockHistoryTrainings } from "../../mocks/mockData";
 
+import { formatDateWeekday } from "../../utils/formatDate";
+
 export function History() {
-  const formatDate = (timestamp: number) => {
-    const date = new Date(timestamp);
-
-    const weekday = date.toLocaleDateString("pt-BR", {
-      weekday: "short",
-    });
-
-    const day = date.getDate();
-
-    const month = date.toLocaleDateString("pt-BR", {
-      month: "short",
-    });
-
-    return `${weekday} - ${day} de ${month}`;
-  };
-
   return (
     <>
       <Container>
@@ -40,7 +26,7 @@ export function History() {
             trainingName={historyTraining.trainingName}
             image={historyTraining.image}
             alt={historyTraining.alt}
-            finishedAt={formatDate(historyTraining.finishedAt)}
+            finishedAt={formatDateWeekday(historyTraining.finishedAt)}
             muscleGroups={historyTraining.muscleGroups}
           />
         ))}

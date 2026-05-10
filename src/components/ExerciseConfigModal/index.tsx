@@ -2,6 +2,7 @@ import { X, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../Button";
 import { Input } from "../Input/input";
+
 import styles from "./styles.module.css";
 
 type Series = {

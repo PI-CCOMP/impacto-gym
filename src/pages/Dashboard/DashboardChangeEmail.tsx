@@ -29,14 +29,20 @@ export function DashboardChangeEmail() {
     const newError = validateEmailRequired(value);
     setError(newError);
     if (newError) return;
-    console.log("Alterar e-mail:", value);
-    // navigate para MFA depois
+
+    navigate("/dashboard/mfa", {
+      state: {
+        action: "change-email",
+        pendingEmail: value,
+        redirectTo: "/dashboard/configuracoes",
+      },
+    });
   }
 
   return (
     <Container>
       <Wrapper>
-        <Container>
+        <Container isDashboard>
           <PageHeader onBack={() => navigate(-1)}>Alterar E-mail</PageHeader>
           <form onSubmit={handleSubmit}>
             <Input

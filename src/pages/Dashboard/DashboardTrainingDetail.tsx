@@ -17,6 +17,8 @@ import { Toast } from "../../components/Toast";
 
 import { mockTrainings, mockUsers, mockLoggedUser } from "../../mocks/mockData";
 
+import { can } from "../../utils/permissions";
+
 import styles from "./DashboardUsers.module.css";
 
 export function DashboardTrainingDetail() {
@@ -41,7 +43,7 @@ export function DashboardTrainingDetail() {
     return (
       <DashboardGrid>
         <SideMenu />
-        <Container>
+        <Container isDashboard>
           <PageHeader onBack={() => navigate(-1)}>
             Treino não encontrado.
           </PageHeader>
@@ -49,9 +51,6 @@ export function DashboardTrainingDetail() {
       </DashboardGrid>
     );
   }
-
-  const canEdit =
-    mockLoggedUser.role === "admin" || mockLoggedUser.role === "instructor";
 
   const linkedUsers = mockUsers.filter((u) => linkedUserIds.includes(u.id));
 
@@ -87,12 +86,12 @@ export function DashboardTrainingDetail() {
   return (
     <DashboardGrid>
       <SideMenu />
-      <Container>
+      <Container isDashboard>
         <DashboardRow variant="sideBySide" style={{ paddingTop: 0 }}>
           <PageHeader onBack={() => navigate(-1)}>
             {training.trainingName}
           </PageHeader>
-          {canEdit && (
+          {can.editTraining && (
             <ActionButton
               variant="edit"
               icon={<Edit2 size={16} />}
@@ -144,7 +143,7 @@ export function DashboardTrainingDetail() {
         >
           <DashboardRow>
             <h2>Alunos Vinculados</h2>
-            {canEdit && (
+            {can.editTraining && (
               <ActionButton
                 variant="accept"
                 icon={<Plus size={16} />}
@@ -159,7 +158,7 @@ export function DashboardTrainingDetail() {
               <tr>
                 <th>Nome</th>
                 <th>CPF</th>
-                {canEdit && <th></th>}
+                {can.editTraining && <th></th>}
               </tr>
             </thead>
             <tbody>
@@ -167,7 +166,7 @@ export function DashboardTrainingDetail() {
                 <tr key={user.id}>
                   <td data-label="Nome">{user.name}</td>
                   <td data-label="CPF">{user.cpf}</td>
-                  {canEdit && (
+                  {can.editTraining && (
                     <td data-label="Ações">
                       <div
                         style={{
@@ -201,7 +200,7 @@ export function DashboardTrainingDetail() {
           </table>
         </div>
 
-        {canEdit && (
+        {can.editTraining && (
           <Button variant="red" onClick={handleDeleteTraining}>
             Deletar Treino
           </Button>

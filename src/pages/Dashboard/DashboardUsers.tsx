@@ -30,16 +30,13 @@ import {
   mockUsers,
   mockLoggedUser,
   mockPendingRegistrations,
-  type Permission,
   type UserRole,
   type PendingRegistration,
 } from "../../mocks/mockData";
 
-import styles from "./DashboardUsers.module.css";
+import { hasPermission } from "../../utils/permissions";
 
-function hasPermission(permission: Permission): boolean {
-  return mockLoggedUser.permissions.includes(permission);
-}
+import styles from "./DashboardUsers.module.css";
 
 export function DashboardUsers() {
   const [page, setPage] = useState(1);
@@ -126,14 +123,14 @@ export function DashboardUsers() {
 
   function handleConfirmDelete() {
     // Em produção: await api.delete(`/users/${deletingUser.id}`)
-    setDeletingUser(null); // fecha o toast de confirmação
-    setShowSuccessToast(true); // abre o toast de sucesso
+    setDeletingUser(null);
+    setShowSuccessToast(true);
   }
 
   return (
     <DashboardGrid>
       <SideMenu />
-      <Container>
+      <Container isDashboard>
         <DashboardRow variant="sideBySide">
           <h1>Usuários</h1>
           <ActionButton

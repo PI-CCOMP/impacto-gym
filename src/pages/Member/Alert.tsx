@@ -8,20 +8,9 @@ import { Navbar } from "../../components/Navbar";
 
 import { mockAlerts } from "../../mocks/mockData";
 
+import { formatDateTime } from "../../utils/formatDate";
+
 export function Alert() {
-  const formatDate = (timestamp: number) => {
-    const date = new Date(timestamp);
-
-    return (
-      date.toLocaleDateString("pt-BR") +
-      " às " +
-      date.toLocaleTimeString("pt-BR", {
-        hour: "2-digit",
-        minute: "2-digit",
-      })
-    );
-  };
-
   return (
     <>
       <Container>
@@ -39,7 +28,7 @@ export function Alert() {
               id={alert.id}
               author={alert.author}
               image={alert.image}
-              date={formatDate(alert.publishedAt)}
+              date={formatDateTime(alert.publishedAt)}
               description={alert.description}
             />
             {mockAlerts.length > 1 && index < mockAlerts.length - 1 && <Line />}

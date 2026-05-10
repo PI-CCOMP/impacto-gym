@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { DashboardGrid } from "../../components/DashboardGrid";
 import { SideMenu } from "../../components/SideMenu";
 import { Container } from "../../components/Container";
@@ -5,32 +6,26 @@ import { DashboardHelpRequestCard } from "../../components/DashboardHelpRequestC
 
 import {
   mockUsers,
-  mockExercises,
+  mockTrainings,
   mockHelpRequests,
+  type HelpRequest,
 } from "../../mocks/mockData";
 
 export function DashboardHelp() {
-  const requestsData = [
-    {
-      id: "hr1",
-      user: mockUsers.find((u) => u.name.includes("Rafael")),
-      exercise: "Supino Reto",
-    },
-    {
-      id: "hr2",
-      user: mockUsers.find((u) => u.name.includes("Lucas")),
-      exercise: "Leg Press",
-    },
-    {
-      id: "hr3",
-      user: mockUsers.find((u) => u.name.includes("Mariana")),
-      exercise: "Remada Curvada",
-    },
-  ];
+  const [requests, setRequests] = useState<HelpRequest[]>(mockHelpRequests);
 
-  const handleAccept = (id: string) => {
+  function getRequestData(req: HelpRequest) {
+    const user = mockUsers.find((u) => u.trainingIds?.includes(req.trainingId));
+    const training = mockTrainings.find((t) => t.id === req.trainingId);
+    const exercise = training?.exercises.find((e) => e.id === req.exerciseId);
+    return { user, exercise };
+  }
+
+  function handleAccept(id: string) {
+    // Em produção: await api.patch(`/help-requests/${id}`, { status: "accepted" })
     console.log("Aceitou solicitação:", id);
-  };
+    setRequests((prev) => prev.filter((r) => r.id !== id));
+  }
 
   return (
     <DashboardGrid>
@@ -38,16 +33,25 @@ export function DashboardHelp() {
       <Container>
         <h1>Solicitação Auxílio</h1>
 
+        {requests.length === 0 && (
+          <p>Nenhuma solicitação de auxílio no momento.</p>
+        )}
+
         <div>
-          {requestsData.map((request) => (
-            <DashboardHelpRequestCard
-              key={request.id}
-              userName={request.user?.name || "Usuário desconhecido"}
-              userImage={request.user?.image}
-              exerciseName={request.exercise}
-              onAccept={() => handleAccept(request.id)}
-            />
-          ))}
+          {requests.map((req) => {
+            const { user, exercise } = getRequestData(req);
+            return (
+              <DashboardHelpRequestCard
+                key={req.id}
+                userName={user?.name ?? "Usuário desconhecido"}
+                userImage={user?.image ?? ""}
+                exerciseName={
+                  exercise?.exerciseName ?? "Exercício desconhecido"
+                }
+                onAccept={() => handleAccept(req.id)}
+              />
+            );
+          })}
         </div>
       </Container>
     </DashboardGrid>

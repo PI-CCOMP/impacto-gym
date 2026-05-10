@@ -13,6 +13,14 @@ import { Button } from "../../components/Button";
 import { mockUsers } from "../../mocks/mockData";
 import { validateName, validateEmail } from "../../validators";
 
+import {
+  GENDER_OPTIONS,
+  GOAL_OPTIONS,
+  EXPERIENCE_OPTIONS,
+  DISABILITY_OPTIONS,
+  RESTRICTION_OPTIONS,
+} from "../../utils/formOptions";
+
 import supinoImg from "../../assets/img/supino-reto.jpg";
 
 const errorStyle: React.CSSProperties = {
@@ -99,7 +107,7 @@ export function DashboardEditUser() {
   return (
     <DashboardGrid>
       <SideMenu />
-      <Container>
+      <Container isDashboard>
         <PageHeader onBack={() => navigate(-1)}>Editar Usuário</PageHeader>
 
         <form onSubmit={handleSubmit}>
@@ -187,11 +195,7 @@ export function DashboardEditUser() {
               labelText="Sexo"
               value={gender}
               onChange={setGender}
-              options={[
-                { value: "Masculino", label: "Masculino" },
-                { value: "Feminino", label: "Feminino" },
-                { value: "Outro", label: "Outro" },
-              ]}
+              options={GENDER_OPTIONS}
             />
           )}
 
@@ -204,32 +208,18 @@ export function DashboardEditUser() {
                 labelText="Objetivo"
                 value={goal}
                 onChange={setGoal}
-                options={[
-                  { value: "Hipertrofia", label: "Hipertrofia" },
-                  { value: "Emagrecimento", label: "Emagrecimento" },
-                  { value: "Condicionamento", label: "Condicionamento" },
-                  { value: "Força", label: "Força" },
-                  {
-                    value: "Recomendação Médica",
-                    label: "Recomendação Médica",
-                  },
-                ]}
+                options={GOAL_OPTIONS}
               />
               <Select
                 id="experience"
                 labelText="Experiência"
                 value={experience}
                 onChange={setExperience}
-                options={[
-                  { value: "Iniciante", label: "Iniciante" },
-                  { value: "Intermediário", label: "Intermediário" },
-                  { value: "Avançado", label: "Avançado" },
-                ]}
+                options={EXPERIENCE_OPTIONS}
               />
             </>
           )}
 
-          {/* Informações Médicas — só Aluno */}
           {isAluno && (
             <>
               <b>Informações Médicas</b>
@@ -238,47 +228,14 @@ export function DashboardEditUser() {
                 labelText="Deficiência"
                 value={disability}
                 onChange={setDisability}
-                options={[
-                  { value: "Nenhuma", label: "Nenhuma" },
-                  { value: "Visual", label: "Visual" },
-                  { value: "Auditiva", label: "Auditiva" },
-                  { value: "Motora", label: "Motora" },
-                  { value: "Intelectual", label: "Intelectual" },
-                  { value: "Múltipla", label: "Múltipla" },
-                  { value: "Outra", label: "Outra" },
-                ]}
+                options={DISABILITY_OPTIONS}
               />
               <Select
                 id="medicalRestriction"
                 labelText="Restrição Médica"
                 value={medicalRestriction}
                 onChange={setMedicalRestriction}
-                options={[
-                  { value: "Nenhuma", label: "Nenhuma" },
-                  {
-                    value: "Problemas cardíacos",
-                    label: "Problemas cardíacos",
-                  },
-                  {
-                    value: "Dores no peito",
-                    label:
-                      "Dores no peito durante esforço físico ou em repouso",
-                  },
-                  {
-                    value: "Tontura ou desmaios",
-                    label: "Tontura ou desmaios",
-                  },
-                  {
-                    value: "Problemas ósseos",
-                    label: "Problemas ósseos ou articulares",
-                  },
-                  {
-                    value: "Medicamentos",
-                    label: "Uso contínuo de medicamentos",
-                  },
-                  { value: "Cirurgias recentes", label: "Cirurgias recentes" },
-                  { value: "Outra", label: "Outra" },
-                ]}
+                options={RESTRICTION_OPTIONS}
               />
               <FileUpload
                 id="medicalReport"

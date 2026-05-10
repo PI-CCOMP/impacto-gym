@@ -30,8 +30,15 @@ export function ChangeEmail() {
     const newError = validateEmailRequired(value);
     setError(newError);
     if (newError) return;
-    console.log("Alterar e-mail:", value);
-    // navigate para MFA depois
+
+    navigate("/verificar-email", {
+      state: {
+        action: "change-email",
+        pendingEmail: value,
+        redirectTo: "/configuracoes",
+        showSuccessToast: true,
+      },
+    });
   }
 
   return (
@@ -57,8 +64,4 @@ export function ChangeEmail() {
       </form>
     </Container>
   );
-}
-
-{
-  /* to do: colcoar processo de mfa dps de aprovado confirmar e notificacao para confirmar  */
 }

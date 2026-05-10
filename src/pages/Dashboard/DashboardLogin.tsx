@@ -8,54 +8,25 @@ import { Select } from "../../components/Select";
 import { Input } from "../../components/Input/input";
 import { Button } from "../../components/Button";
 
-import dashboardHeroImg from "../../assets/img/dashboard-hero.jpeg";
+import { useLoginForm } from "../../hooks/useLoginForm";
 
-import { validateEmailRequired, validatePassword } from "../../validators";
+import dashboardHeroImg from "../../assets/img/dashboard-hero.jpeg";
 
 import styles from "./Auth.module.css";
 
 export function DashboardLogin() {
   const navigate = useNavigate();
+  const [role, setRole] = useState("");
 
-  const [values, setValues] = useState({ email: "", password: "" });
-  const [errors, setErrors] = useState({ email: "", password: "" });
-  const [touched, setTouched] = useState({ email: false, password: false });
-  const [submitAttempted, setSubmitAttempted] = useState(false);
-
-  function validate(name: string, value: string): string {
-    if (name === "email") return validateEmailRequired(value);
-    if (name === "password") return validatePassword(value);
-    return "";
-  }
-
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const { name, value } = e.target;
-    setValues((prev) => ({ ...prev, [name]: value }));
-    setTouched((prev) => ({ ...prev, [name]: true }));
-    setErrors((prev) => ({ ...prev, [name]: validate(name, value) }));
-  }
+  const { values, handleChange, handleSubmitValidate, getError } =
+    useLoginForm();
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setSubmitAttempted(true);
-    const newErrors = {
-      email: validate("email", values.email),
-      password: validate("password", values.password),
-    };
-    setErrors(newErrors);
-    if (newErrors.email || newErrors.password) return;
-    console.log("Login!", {
-      email: values.email,
-      password: values.password,
-    });
+    if (!handleSubmitValidate()) return;
+    console.log("Login!", values);
     navigate("/dashboard/usuarios");
   }
-
-  function getError(name: "email" | "password") {
-    return touched[name] || submitAttempted ? errors[name] : "";
-  }
-
-  const [role, setRole] = useState("");
 
   return (
     <Container style={{ justifyContent: "center" }}>
@@ -76,18 +47,9 @@ export function DashboardLogin() {
               value={role}
               onChange={setRole}
               options={[
-                {
-                  value: "admin",
-                  label: "Administrador",
-                },
-                {
-                  value: "instructor",
-                  label: "Instrutor",
-                },
-                {
-                  value: "receptionist",
-                  label: "Recepcionista",
-                },
+                { value: "admin", label: "Administrador" },
+                { value: "instructor", label: "Instrutor" },
+                { value: "receptionist", label: "Recepcionista" },
               ]}
             />
             <Input

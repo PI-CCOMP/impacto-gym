@@ -17,6 +17,15 @@ import {
   formatCPF,
 } from "../../validators";
 
+import {
+  GENDER_OPTIONS,
+  GOAL_OPTIONS,
+  EXPERIENCE_OPTIONS,
+  DISABILITY_OPTIONS,
+  RESTRICTION_OPTIONS,
+  PROFILE_OPTIONS,
+} from "../../utils/formOptions";
+
 export function DashboardCreateUser() {
   const navigate = useNavigate();
 
@@ -75,7 +84,7 @@ export function DashboardCreateUser() {
   return (
     <DashboardGrid>
       <SideMenu />
-      <Container>
+      <Container isDashboard>
         <PageHeader onBack={() => navigate(-1)}>Criar Usuário</PageHeader>
 
         <form onSubmit={handleSubmit}>
@@ -138,12 +147,7 @@ export function DashboardCreateUser() {
             labelText="Tipo de Perfil"
             value={profile}
             onChange={setProfile}
-            options={[
-              { value: "Aluno", label: "Aluno" },
-              { value: "Instrutor", label: "Instrutor" },
-              { value: "Recepcionista", label: "Recepcionista" },
-              { value: "Administrador", label: "Administrador" },
-            ]}
+            options={PROFILE_OPTIONS}
           />
 
           <Select
@@ -151,11 +155,7 @@ export function DashboardCreateUser() {
             labelText="Sexo"
             value={gender}
             onChange={setGender}
-            options={[
-              { value: "Masculino", label: "Masculino" },
-              { value: "Feminino", label: "Feminino" },
-              { value: "Outro", label: "Outro" },
-            ]}
+            options={GENDER_OPTIONS}
           />
 
           {isAluno && (
@@ -166,27 +166,14 @@ export function DashboardCreateUser() {
                 labelText="Objetivo"
                 value={goal}
                 onChange={setGoal}
-                options={[
-                  { value: "Hipertrofia", label: "Hipertrofia" },
-                  { value: "Emagrecimento", label: "Emagrecimento" },
-                  { value: "Condicionamento", label: "Condicionamento" },
-                  { value: "Força", label: "Força" },
-                  {
-                    value: "Recomendação Médica",
-                    label: "Recomendação Médica",
-                  },
-                ]}
+                options={GOAL_OPTIONS}
               />
               <Select
                 id="experience"
                 labelText="Experiência"
                 value={experience}
                 onChange={setExperience}
-                options={[
-                  { value: "Iniciante", label: "Iniciante" },
-                  { value: "Intermediário", label: "Intermediário" },
-                  { value: "Avançado", label: "Avançado" },
-                ]}
+                options={EXPERIENCE_OPTIONS}
               />
             </>
           )}
@@ -199,47 +186,14 @@ export function DashboardCreateUser() {
                 labelText="Deficiência"
                 value={disability}
                 onChange={setDisability}
-                options={[
-                  { value: "Nenhuma", label: "Nenhuma" },
-                  { value: "Visual", label: "Visual" },
-                  { value: "Auditiva", label: "Auditiva" },
-                  { value: "Motora", label: "Motora" },
-                  { value: "Intelectual", label: "Intelectual" },
-                  { value: "Múltipla", label: "Múltipla" },
-                  { value: "Outra", label: "Outra" },
-                ]}
+                options={DISABILITY_OPTIONS}
               />
               <Select
                 id="medicalRestriction"
                 labelText="Restrição Médica"
                 value={medicalRestriction}
                 onChange={setMedicalRestriction}
-                options={[
-                  { value: "Nenhuma", label: "Nenhuma" },
-                  {
-                    value: "Problemas cardíacos",
-                    label: "Problemas cardíacos",
-                  },
-                  {
-                    value: "Dores no peito",
-                    label:
-                      "Dores no peito durante esforço físico ou em repouso",
-                  },
-                  {
-                    value: "Tontura ou desmaios",
-                    label: "Tontura ou desmaios",
-                  },
-                  {
-                    value: "Problemas ósseos",
-                    label: "Problemas ósseos ou articulares",
-                  },
-                  {
-                    value: "Medicamentos",
-                    label: "Uso contínuo de medicamentos",
-                  },
-                  { value: "Cirurgias recentes", label: "Cirurgias recentes" },
-                  { value: "Outra", label: "Outra" },
-                ]}
+                options={RESTRICTION_OPTIONS}
               />
               <FileUpload
                 id="medicalReport"

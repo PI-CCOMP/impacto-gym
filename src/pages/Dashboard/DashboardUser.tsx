@@ -10,27 +10,18 @@ import { ActionButton } from "../../components/ActionButton";
 import { UserCard } from "../../components/UserCard";
 import { Line } from "../../components/Line";
 import { TrainingCard } from "../../components/TrainingCard";
-
-import {
-  mockUsers,
-  mockTrainings,
-  mockLoggedUser,
-  type Permission,
-} from "../../mocks/mockData";
-
-import supinoImg from "../../assets/img/supino-reto.jpg";
-import styles from "./DashboardUser.module.css";
 import { Button } from "../../components/Button";
 import { Toast } from "../../components/Toast";
 import { ButtonStroke } from "../../components/ButtonStroke";
 
-function hasPermission(permission: Permission): boolean {
-  return mockLoggedUser.permissions.includes(permission);
-}
+import supinoImg from "../../assets/img/supino-reto.jpg";
 
-function formatDate(timestamp: number) {
-  return new Date(timestamp).toLocaleDateString("pt-BR");
-}
+import styles from "./DashboardUser.module.css";
+
+import { mockUsers, mockTrainings, mockLoggedUser } from "../../mocks/mockData";
+
+import { formatDate } from "../../utils/formatDate";
+import { hasPermission, can } from "../../utils/permissions";
 
 export function DashboardUser() {
   const { id } = useParams();
@@ -41,7 +32,7 @@ export function DashboardUser() {
     return (
       <DashboardGrid>
         <SideMenu />
-        <Container>
+        <Container isDashboard>
           <h1>Usuário não encontrado.</h1>
         </Container>
       </DashboardGrid>
@@ -54,10 +45,6 @@ export function DashboardUser() {
   const linkedTrainings = isAluno
     ? mockTrainings.filter((t) => user.trainingIds?.includes(t.id))
     : [];
-
-  // instrutor e adm podem desvincular treino — back valida de verdade
-  const canUnlink =
-    mockLoggedUser.role === "admin" || mockLoggedUser.role === "instructor";
 
   const navigate = useNavigate();
 
@@ -88,7 +75,6 @@ export function DashboardUser() {
           />
 
           <div className={styles.contentUser}>
-            {/* Informações Pessoais — todos os perfis */}
             <ul>
               <h2>Informações Pessoais</h2>
               <li>
@@ -101,7 +87,6 @@ export function DashboardUser() {
               </li>
             </ul>
 
-            {/* Informações de Treino — só Aluno */}
             {isAluno && (
               <ul>
                 <h2>Informações de Treino</h2>
@@ -116,7 +101,6 @@ export function DashboardUser() {
               </ul>
             )}
 
-            {/* Informações Médicas — só Aluno */}
             {isAluno && (
               <ul>
                 <h2>Informações Médicas</h2>
@@ -131,7 +115,6 @@ export function DashboardUser() {
               </ul>
             )}
 
-            {/* Dados da Conta — todos os perfis */}
             <ul>
               <h2>Dados da Conta</h2>
               <li>
@@ -169,7 +152,7 @@ export function DashboardUser() {
                         trainingName={training.trainingName}
                         muscleGroups={training.muscleGroups}
                         onUnlink={
-                          canUnlink
+                          can.unlinkTraining
                             ? (e) => {
                                 e.stopPropagation();
                                 console.log(
