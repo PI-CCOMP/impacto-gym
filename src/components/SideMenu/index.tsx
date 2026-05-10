@@ -87,7 +87,7 @@ export function SideMenu() {
 
           <li>
             <NavLink
-              to="dashboard/configuracoes"
+              to="/dashboard/configuracoes"
               className={({ isActive }) =>
                 `${styles.navLink} ${isActive ? styles.active : ""}`
               }
