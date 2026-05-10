@@ -65,7 +65,7 @@ export function DashboardAlert() {
     <DashboardGrid>
       <SideMenu />
       <Container>
-        <DashboardRow>
+        <DashboardRow variant="sideBySide">
           <h1>Avisos</h1>
           {canManage && (
             <ActionButton
