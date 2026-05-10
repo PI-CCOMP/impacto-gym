@@ -1,6 +1,6 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
 
-import { getActiveTraining } from "../../utils/activeTrainig";
+import { getActiveTraining } from "../../utils/activeTraining";
 import {
   mockExercises,
   exerciseBelongsToActiveTraining,

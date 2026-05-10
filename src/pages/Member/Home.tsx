@@ -16,7 +16,7 @@ import noDataImg from "../../assets/img/undraw_no-data_ig65.svg";
 import {
   getActiveTraining,
   clearActiveTraining,
-} from "../../utils/activeTrainig";
+} from "../../utils/activeTraining";
 
 import { mockUser, mockTrainings } from "../../mocks/mockData";
 

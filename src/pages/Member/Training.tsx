@@ -14,7 +14,7 @@ import {
   getActiveTraining,
   setActiveTraining,
   clearActiveTraining,
-} from "../../utils/activeTrainig";
+} from "../../utils/activeTraining";
 
 import { mockTrainings } from "../../mocks/mockData";
 
