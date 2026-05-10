@@ -69,7 +69,7 @@ export function DashboardCreateUser() {
         medicalReportFile,
       }),
     });
-    navigate(-1);
+    navigate("/dashboard/usuarios", { state: { created: true } });
   }
 
   return (

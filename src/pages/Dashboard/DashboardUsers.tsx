@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+
 import {
   Search,
   RectangleEllipsis,
@@ -45,6 +46,12 @@ export function DashboardUsers() {
   const [pageSize, setPageSize] = useState(10);
   const [search, setSearch] = useState("");
   const [selectedRoles, setSelectedRoles] = useState<UserRole[]>([]);
+  const navigate = useNavigate();
+
+  const location = useLocation();
+  const [showCreatedToast, setShowCreatedToast] = useState(
+    location.state?.created === true,
+  );
 
   function toggleRole(role: UserRole) {
     setSelectedRoles((prev) =>
@@ -108,6 +115,7 @@ export function DashboardUsers() {
   function handleSaveName(newName: string) {
     // Em produção: await api.patch(`/users/${editingUser.id}`, { name: newName })
     console.log("Salvar:", editingUser?.id, newName);
+    navigate("/dashboard/usuarios", { state: { created: true } });
   }
 
   const [deletingUser, setDeletingUser] = useState<{
@@ -128,7 +136,11 @@ export function DashboardUsers() {
       <Container>
         <DashboardRow variant="sideBySide">
           <h1>Usuários</h1>
-          <ActionButton icon={<Plus size={16} />} />
+          <ActionButton
+            icon={<Plus size={16} />}
+            title="Criar usuário"
+            onClick={() => navigate("/dashboard/usuarios/criar")}
+          />
         </DashboardRow>
 
         <DashboardRow>
@@ -369,6 +381,16 @@ export function DashboardUsers() {
           </Button>
           <ButtonStroke onClick={handleConfirmDelete}>Deletar</ButtonStroke>
         </Toast>
+      )}
+
+      {showCreatedToast && (
+        <Toast
+          message="criado com sucesso!"
+          highlight="Usuário"
+          highlightPosition="before"
+          icon={<Check />}
+          onClose={() => setShowCreatedToast(false)}
+        />
       )}
 
       {showSuccessToast && (
