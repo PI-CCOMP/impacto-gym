@@ -12,8 +12,19 @@ import {
 } from "lucide-react";
 
 import { Logo } from "../Logo";
+import { mockLoggedUser } from "../../mocks/mockData";
 
 import styles from "./styles.module.css";
+
+const role = mockLoggedUser.role;
+
+const canSee = {
+  usuarios: role === "admin" || role === "receptionist",
+  treinos: role === "admin" || role === "instructor",
+  solicitacoes: role === "admin" || role === "instructor",
+  avisos: role === "admin" || role === "instructor" || role === "receptionist",
+  configuracoes: true,
+};
 
 export function SideMenu() {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,51 +51,58 @@ export function SideMenu() {
         </div>
 
         <ul>
-          <li>
-            <NavLink
-              to="/dashboard/usuarios"
-              className={({ isActive }) =>
-                `${styles.navLink} ${isActive ? styles.active : ""}`
-              }
-              onClick={() => setIsOpen(false)}
-            >
-              <User /> Usuários
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/dashboard/treinos"
-              className={({ isActive }) =>
-                `${styles.navLink} ${isActive ? styles.active : ""}`
-              }
-              onClick={() => setIsOpen(false)}
-            >
-              <Dumbbell /> Treinos
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/dashboard/solicitacoes_auxilio"
-              className={({ isActive }) =>
-                `${styles.navLink} ${isActive ? styles.active : ""}`
-              }
-              onClick={() => setIsOpen(false)}
-            >
-              <HelpCircle /> Solicitações Auxílio
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/dashboard/avisos"
-              className={({ isActive }) =>
-                `${styles.navLink} ${isActive ? styles.active : ""}`
-              }
-              onClick={() => setIsOpen(false)}
-            >
-              <MessageSquareWarning /> Avisos
-            </NavLink>
-          </li>
-
+          {canSee.usuarios && (
+            <li>
+              <NavLink
+                to="/dashboard/usuarios"
+                className={({ isActive }) =>
+                  `${styles.navLink} ${isActive ? styles.active : ""}`
+                }
+                onClick={() => setIsOpen(false)}
+              >
+                <User /> Usuários
+              </NavLink>
+            </li>
+          )}
+          {canSee.treinos && (
+            <li>
+              <NavLink
+                to="/dashboard/treinos"
+                className={({ isActive }) =>
+                  `${styles.navLink} ${isActive ? styles.active : ""}`
+                }
+                onClick={() => setIsOpen(false)}
+              >
+                <Dumbbell /> Treinos
+              </NavLink>
+            </li>
+          )}
+          {canSee.solicitacoes && (
+            <li>
+              <NavLink
+                to="/dashboard/solicitacoes_auxilio"
+                className={({ isActive }) =>
+                  `${styles.navLink} ${isActive ? styles.active : ""}`
+                }
+                onClick={() => setIsOpen(false)}
+              >
+                <HelpCircle /> Solicitações Auxílio
+              </NavLink>
+            </li>
+          )}
+          {canSee.avisos && (
+            <li>
+              <NavLink
+                to="/dashboard/avisos"
+                className={({ isActive }) =>
+                  `${styles.navLink} ${isActive ? styles.active : ""}`
+                }
+                onClick={() => setIsOpen(false)}
+              >
+                <MessageSquareWarning /> Avisos
+              </NavLink>
+            </li>
+          )}
           <li>
             <NavLink
               to="/dashboard/configuracoes"
