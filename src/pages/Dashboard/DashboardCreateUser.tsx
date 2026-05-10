@@ -10,12 +10,7 @@ import { Select } from "../../components/Select";
 import { FileUpload } from "../../components/FileUpload";
 import { Button } from "../../components/Button";
 
-import {
-  validateName,
-  validateEmail,
-  validateCPF,
-  formatCPF,
-} from "../../validators";
+import { useUserForm } from "../../hooks/useUserForm";
 
 import {
   GENDER_OPTIONS,
@@ -26,58 +21,31 @@ import {
   PROFILE_OPTIONS,
 } from "../../utils/formOptions";
 
+const errorStyle: React.CSSProperties = {
+  color: "var(--error)",
+  fontSize: "1.2rem",
+  margin: 0,
+};
+
 export function DashboardCreateUser() {
   const navigate = useNavigate();
-
-  const [name, setName] = useState("");
-  const [cpf, setCpf] = useState("");
-  const [email, setEmail] = useState("");
-  const [gender, setGender] = useState("Masculino");
-  const [profile, setProfile] = useState("Aluno");
-  const [goal, setGoal] = useState("Hipertrofia");
-  const [experience, setExperience] = useState("Iniciante");
-  const [disability, setDisability] = useState("Nenhuma");
-  const [medicalRestriction, setMedicalRestriction] = useState("Nenhuma");
   const [medicalReportFile, setMedicalReportFile] = useState<File | null>(null);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [submitAttempted, setSubmitAttempted] = useState(false);
 
-  const isAluno = profile === "Aluno";
+  const {
+    values,
+    handleChange,
+    handleSubmitValidate,
+    getError,
+    requiresMedicalReport,
+  } = useUserForm({ mode: "create" });
 
-  function validate() {
-    const newErrors: Record<string, string> = {};
-    const nameError = validateName(name);
-    const cpfError = validateCPF(cpf);
-    const emailError = validateEmail(email);
-    if (nameError) newErrors.name = nameError;
-    if (cpfError) newErrors.cpf = cpfError;
-    if (emailError) newErrors.email = emailError;
-    return newErrors;
-  }
+  const isAluno = values.profile === "Aluno";
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSubmitAttempted(true);
-    const newErrors = validate();
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
+    if (!handleSubmitValidate(medicalReportFile)) return;
     // Em produção: await api.post('/users', { ... })
-    console.log("Criar usuário", {
-      name,
-      cpf,
-      email,
-      gender,
-      profile,
-      ...(isAluno && {
-        goal,
-        experience,
-        disability,
-        medicalRestriction,
-        medicalReportFile,
-      }),
-    });
+    console.log("Criar usuário", { ...values, medicalReportFile });
     navigate("/dashboard/usuarios", { state: { created: true } });
   }
 
@@ -96,16 +64,9 @@ export function DashboardCreateUser() {
             placeholder="Ex: Arthur"
             name="name"
             id="name"
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-              if (submitAttempted)
-                setErrors((prev) => ({
-                  ...prev,
-                  name: validateName(e.target.value),
-                }));
-            }}
-            errorMessage={submitAttempted ? errors.name : undefined}
+            value={values.name}
+            onChange={(e) => handleChange("name", e.target.value)}
+            errorMessage={getError("name")}
           />
 
           <Input
@@ -114,14 +75,9 @@ export function DashboardCreateUser() {
             placeholder="000.000.000-00"
             name="cpf"
             id="cpf"
-            value={cpf}
-            onChange={(e) => {
-              const formatted = formatCPF(e.target.value);
-              setCpf(formatted);
-              if (submitAttempted)
-                setErrors((prev) => ({ ...prev, cpf: validateCPF(formatted) }));
-            }}
-            errorMessage={submitAttempted ? errors.cpf : undefined}
+            value={values.cpf}
+            onChange={(e) => handleChange("cpf", e.target.value)}
+            errorMessage={getError("cpf")}
           />
 
           <Input
@@ -130,31 +86,24 @@ export function DashboardCreateUser() {
             placeholder="Ex: arthur@exemplo.com"
             name="email"
             id="email"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              if (submitAttempted)
-                setErrors((prev) => ({
-                  ...prev,
-                  email: validateEmail(e.target.value),
-                }));
-            }}
-            errorMessage={submitAttempted ? errors.email : undefined}
+            value={values.email}
+            onChange={(e) => handleChange("email", e.target.value)}
+            errorMessage={getError("email")}
           />
 
           <Select
             id="profile"
             labelText="Tipo de Perfil"
-            value={profile}
-            onChange={setProfile}
+            value={values.profile}
+            onChange={(val) => handleChange("profile", val)}
             options={PROFILE_OPTIONS}
           />
 
           <Select
             id="gender"
             labelText="Sexo"
-            value={gender}
-            onChange={setGender}
+            value={values.gender}
+            onChange={(val) => handleChange("gender", val)}
             options={GENDER_OPTIONS}
           />
 
@@ -164,15 +113,15 @@ export function DashboardCreateUser() {
               <Select
                 id="goal"
                 labelText="Objetivo"
-                value={goal}
-                onChange={setGoal}
+                value={values.goal}
+                onChange={(val) => handleChange("goal", val)}
                 options={GOAL_OPTIONS}
               />
               <Select
                 id="experience"
                 labelText="Experiência"
-                value={experience}
-                onChange={setExperience}
+                value={values.experience}
+                onChange={(val) => handleChange("experience", val)}
                 options={EXPERIENCE_OPTIONS}
               />
             </>
@@ -184,24 +133,31 @@ export function DashboardCreateUser() {
               <Select
                 id="disability"
                 labelText="Deficiência"
-                value={disability}
-                onChange={setDisability}
+                value={values.disability}
+                onChange={(val) => handleChange("disability", val)}
                 options={DISABILITY_OPTIONS}
               />
               <Select
                 id="medicalRestriction"
                 labelText="Restrição Médica"
-                value={medicalRestriction}
-                onChange={setMedicalRestriction}
+                value={values.medicalRestriction}
+                onChange={(val) => handleChange("medicalRestriction", val)}
                 options={RESTRICTION_OPTIONS}
               />
-              <FileUpload
-                id="medicalReport"
-                onFileChange={setMedicalReportFile}
-              >
-                Coloque seu documento ou laudo médico liberando a prática de
-                atividades físicas
-              </FileUpload>
+              {requiresMedicalReport && (
+                <>
+                  <FileUpload
+                    id="medicalReport"
+                    onFileChange={setMedicalReportFile}
+                  >
+                    Coloque seu documento ou laudo médico liberando a prática de
+                    atividades físicas
+                  </FileUpload>
+                  {getError("medicalReport") && (
+                    <p style={errorStyle}>{getError("medicalReport")}</p>
+                  )}
+                </>
+              )}
             </>
           )}
 

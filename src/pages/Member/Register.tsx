@@ -58,15 +58,6 @@ const DEFICIENCY_OPTIONS = [
   "múltipla",
   "outra-def",
 ];
-const RESTRICTION_OPTIONS = [
-  "problemas-cardiacos",
-  "dores-no-peito",
-  "tontura-desmaios",
-  "problemas-osseos",
-  "medicamentos",
-  "cirurgias-recentes",
-  "outra-rest",
-];
 
 const errorStyle: React.CSSProperties = {
   color: "var(--error)",
@@ -250,6 +241,17 @@ export function Register() {
                 name="gender"
                 value="feminino"
                 checked={formValues.gender === "feminino"}
+                onChange={(val) => handleRadioChange("gender", val)}
+              />
+              {/* TODO: substituir maleImg por uma imagem neutra para "Outro" quando disponível */}
+              <CheckboxCard
+                image={maleImg}
+                alt="Outro"
+                labelText="Outro"
+                id="outro"
+                name="gender"
+                value="outro"
+                checked={formValues.gender === "outro"}
                 onChange={(val) => handleRadioChange("gender", val)}
               />
             </Row>
