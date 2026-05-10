@@ -26,7 +26,7 @@ import { Page404 } from "../pages/Member/Page404";
 
 import { DashboardLogin } from "../pages/Dashboard/DashboardLogin";
 import { DashboardForgotPassword } from "../pages/Dashboard/DashboardForgotPassword";
-import { DashboardMFAVerification } from "../pages/Dashboard/DashboardMFAVerifiacation";
+import { DashboardMFAVerification } from "../pages/Dashboard/DashboardMFAVerification";
 import { DashboardUsers } from "../pages/Dashboard/DashboardUsers";
 import { DashboardUser } from "../pages/Dashboard/DashboardUser";
 import { DashboardEditUser } from "../pages/Dashboard/DashboardEditUser";
