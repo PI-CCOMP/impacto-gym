@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   background-color: var(--gray-800);
-  padding: var(--size-md);
+  padding: var(--size-md) 0;
   border-radius: var(--size-sm);
   gap: var(--size-md);
   width: 100%;
