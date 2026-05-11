@@ -26,11 +26,18 @@ export function ActiveTrainingCard({
   const progress = totalSeries > 0 ? (checkedCount / totalSeries) * 100 : 0;
 
   return (
-    <div className={styles.card}>
+    <section className={styles.card} aria-label="Treino em andamento">
       <p className={styles.label}>Treino em andamento</p>
       <strong className={styles.name}>{trainingName}</strong>
 
-      <div className={styles.progressWrapper}>
+      <div
+        className={styles.progressWrapper}
+        role="progressbar"
+        aria-valuenow={checkedCount}
+        aria-valuemin={0}
+        aria-valuemax={totalSeries}
+        aria-label={`${checkedCount} de ${totalSeries} séries concluídas`}
+      >
         <div className={styles.progressBar} style={{ width: `${progress}%` }} />
       </div>
       <span className={styles.progressText}>
@@ -43,6 +50,6 @@ export function ActiveTrainingCard({
         </Button>
         <ButtonStroke onClick={onFinish}>Encerrar</ButtonStroke>
       </div>
-    </div>
+    </section>
   );
 }

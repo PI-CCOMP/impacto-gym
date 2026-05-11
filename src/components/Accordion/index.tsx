@@ -27,16 +27,21 @@ export function Accordion({
     <div
       className={`${styles.container} ${transparent ? styles.transparent : ""}`}
     >
-      <div className={styles.topContent}>
+      <button
+        className={styles.topContent}
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+      >
         <p className={styles.title}>{title}</p>
-        <button className={styles.icon} onClick={() => setOpen(!open)}>
+        <span className={styles.icon} aria-hidden="true">
           {open ? <ChevronUp /> : <ChevronDown />}
-        </button>
-      </div>
+        </span>
+      </button>
       <div
         ref={contentRef}
         className={`${styles.content} ${open ? styles.active : ""}`}
         style={{ height, overflow: "hidden" }}
+        hidden={!open}
       >
         {children}
       </div>

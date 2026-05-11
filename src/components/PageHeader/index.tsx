@@ -19,9 +19,15 @@ export function PageHeader({ onBack, children }: PageHeaderProps) {
   }
 
   return (
-    <button onClick={handleBack} className={styles.previousPage}>
-      <ArrowLeft className={styles.icon} />
+    <header className={styles.previousPage}>
+      <button
+        onClick={handleBack}
+        className={styles.backButton}
+        aria-label="Voltar"
+      >
+        <ArrowLeft className={styles.icon} />
+      </button>
       <h1 className={styles.title}>{children}</h1>
-    </button>
+    </header>
   );
 }

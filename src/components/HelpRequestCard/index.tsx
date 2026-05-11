@@ -6,7 +6,7 @@ type HelpRequestCardProps = {
   exerciseName: string;
   image: string;
   alt: string;
-  requestedAt: number; // timestamp
+  requestedAt: number;
   onRemove: () => void;
 };
 
@@ -27,14 +27,12 @@ function formatRequestDate(timestamp: number): string {
     "nov",
     "dez",
   ];
-
   const weekday = weekdays[date.getDay()];
   const day = date.getDate();
   const month = months[date.getMonth()];
   const year = date.getFullYear();
   const hours = String(date.getHours()).padStart(2, "0");
   const minutes = String(date.getMinutes()).padStart(2, "0");
-
   return `${weekday} - ${day} de ${month} ${year} - ${hours}:${minutes}h`;
 }
 
@@ -47,13 +45,13 @@ export function HelpRequestCard({
   onRemove,
 }: HelpRequestCardProps) {
   return (
-    <div className={styles.container}>
+    <article className={styles.container}>
       <div className={styles.content}>
         <img src={image} alt={alt} className={styles.img} />
         <div className={styles.info}>
           <p className={styles.trainingName}>{trainingName}</p>
           <p className={styles.exerciseName}>{exerciseName}</p>
-          <p className={styles.date}>{formatRequestDate(requestedAt)}</p>
+          <time className={styles.date}>{formatRequestDate(requestedAt)}</time>
         </div>
       </div>
       <button
@@ -63,6 +61,6 @@ export function HelpRequestCard({
       >
         <X />
       </button>
-    </div>
+    </article>
   );
 }

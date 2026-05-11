@@ -28,19 +28,28 @@ export function Toast({
   }, [duration, onClose, children]);
 
   return (
-    <div className={styles.overlay}>
+    <div
+      className={styles.overlay}
+      role="dialog"
+      aria-modal="true"
+      aria-live="polite"
+    >
       <div className={styles.toast}>
-        <button className={styles.close} onClick={onClose}>
+        <button className={styles.close} onClick={onClose} aria-label="Fechar">
           <X />
         </button>
-        {icon && <div className={styles.icon}>{icon}</div>}
+        {icon && (
+          <div className={styles.icon} aria-hidden="true">
+            {icon}
+          </div>
+        )}
         <p className={styles.message}>
           {highlight && highlightPosition !== "after" && (
-            <span className={styles.highlight}>{highlight} </span>
+            <strong className={styles.highlight}>{highlight} </strong>
           )}
           {message}
           {highlight && highlightPosition === "after" && (
-            <span className={styles.highlight}> {highlight}</span>
+            <strong className={styles.highlight}> {highlight}</strong>
           )}
         </p>
         {children && <div className={styles.actions}>{children}</div>}

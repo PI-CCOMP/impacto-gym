@@ -21,15 +21,15 @@ export function TrainingHistoryCard({
 }: TrainingHistoryCardProps) {
   return (
     <Link to={`/historico/${id}`} className={styles.container}>
-      <div className={styles.content}>
+      <article className={styles.content}>
         <img src={image} alt={alt} className={styles.img} />
         <div className={styles.info}>
           <p className={styles.trainingName}>{trainingName}</p>
           <p className={styles.exerciseName}>{muscleGroups.join(" · ")}</p>
-          <p className={styles.date}>{finishedAt}</p>
+          <time className={styles.date}>{finishedAt}</time>
         </div>
-      </div>
-      <ChevronRight className={styles.showIcon} />
+      </article>
+      <ChevronRight className={styles.showIcon} aria-hidden="true" />
     </Link>
   );
 }

@@ -1,6 +1,5 @@
 import { ActionButton } from "../../components/ActionButton";
 import { Check } from "lucide-react";
-
 import styles from "./styles.module.css";
 
 type DashboardHelpRequestCardProps = {
@@ -17,7 +16,7 @@ export function DashboardHelpRequestCard({
   onAccept,
 }: DashboardHelpRequestCardProps) {
   return (
-    <div
+    <article
       className={styles.container}
       style={{ justifyContent: "space-between" }}
     >
@@ -25,7 +24,6 @@ export function DashboardHelpRequestCard({
         style={{ display: "flex", gap: "var(--size-md)", alignItems: "center" }}
       >
         <img src={userImage} className={styles.img} alt={userName} />
-
         <div className={styles.content}>
           <p>
             <strong>{userName}</strong>
@@ -36,12 +34,12 @@ export function DashboardHelpRequestCard({
           </p>
         </div>
       </div>
-
       <ActionButton
         icon={<Check size={18} />}
         variant="accept"
         onClick={onAccept}
+        aria-label={`Aceitar solicitação de ${userName}`}
       />
-    </div>
+    </article>
   );
 }

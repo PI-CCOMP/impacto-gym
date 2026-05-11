@@ -25,13 +25,24 @@ export function QuickEditModal({
   }
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <button className={styles.closeButton} onClick={onClose}>
+    <div className={styles.overlay} onClick={onClose} role="presentation">
+      <dialog
+        open
+        className={styles.modal}
+        onClick={(e) => e.stopPropagation()}
+        aria-labelledby="quick-edit-title"
+      >
+        <button
+          className={styles.closeButton}
+          onClick={onClose}
+          aria-label="Fechar"
+        >
           <X size={18} />
         </button>
 
-        <h2 className={styles.title}>{title}</h2>
+        <h2 id="quick-edit-title" className={styles.title}>
+          {title}
+        </h2>
         <p className={styles.subtitle}>Preencha o campo abaixo</p>
 
         <label className={styles.label} htmlFor="quick-edit-name">
@@ -49,7 +60,7 @@ export function QuickEditModal({
         <button className={styles.saveButton} onClick={handleSave}>
           Salvar
         </button>
-      </div>
+      </dialog>
     </div>
   );
 }

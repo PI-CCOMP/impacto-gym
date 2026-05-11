@@ -22,26 +22,24 @@ export function TrainingCard({
   onUnlink,
 }: TrainingCardProps) {
   return (
-    <div
-      className={`${styles.container} ${
-        variant === "dashboard" ? styles.dashboard : ""
-      }`}
+    <article
+      className={`${styles.container} ${variant === "dashboard" ? styles.dashboard : ""}`}
       data-state={dataState}
     >
       <img src={image} alt={alt} className={styles.img} />
 
       <div className={styles.content}>
-        <h2>{trainingName}</h2>
+        <h3>{trainingName}</h3>
 
         {muscleGroups && (
-          <div className={styles.muscleGroups}>
+          <ul className={styles.muscleGroups}>
             {muscleGroups.map((muscleGroup, index) => (
-              <span key={index}>
-                <Dumbbell className={styles.icon} />
+              <li key={index}>
+                <Dumbbell className={styles.icon} aria-hidden="true" />
                 {muscleGroup}
-              </span>
+              </li>
             ))}
-          </div>
+          </ul>
         )}
       </div>
 
@@ -56,6 +54,6 @@ export function TrainingCard({
           }}
         />
       )}
-    </div>
+    </article>
   );
 }

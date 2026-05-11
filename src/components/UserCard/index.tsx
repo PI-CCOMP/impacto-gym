@@ -12,7 +12,7 @@ type UserCardProps = {
 export function UserCard({ id, image, name, cpf, instructor }: UserCardProps) {
   return (
     <div className={styles.container}>
-      <img src={image} className={styles.img} />
+      <img src={image} alt={name} className={styles.img} />
       <div className={styles.content}>
         <p>{name}</p>
         <p>

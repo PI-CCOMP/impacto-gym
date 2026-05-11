@@ -1,9 +1,13 @@
 .previousPage {
   display: flex;
   align-items: center;
-  color: var(--title);
+}
+
+.previousPage button {
   background-color: transparent;
   border: none;
+  color: var(--title);
+  width: fit-content;
 }
 
 .title {

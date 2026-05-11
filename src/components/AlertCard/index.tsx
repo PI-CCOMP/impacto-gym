@@ -22,12 +22,12 @@ export function AlertCard({
   onDelete,
 }: AlertCardProps) {
   return (
-    <div className={styles.container}>
-      <div className={styles.content}>
+    <article className={styles.container}>
+      <header className={styles.content}>
         <img src={image} className={styles.img} alt={author} />
         <div style={{ flex: 1 }}>
-          <b>{author}</b>
-          <p className={styles.date}>{date}</p>
+          <strong>{author}</strong>
+          <time className={styles.date}> {date}</time>
         </div>
         <div style={{ display: "flex", gap: "var(--size-sm)" }}>
           {onEdit && (
@@ -47,8 +47,8 @@ export function AlertCard({
             />
           )}
         </div>
-      </div>
+      </header>
       <p>{description}</p>
-    </div>
+    </article>
   );
 }

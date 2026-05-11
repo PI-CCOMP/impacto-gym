@@ -18,13 +18,13 @@ export function ExerciseCard({
   onClick,
 }: ExerciseCardProps) {
   return (
-    <div
+    <article
       className={`${styles.container} ${selected ? styles.selected : ""}`}
       onClick={onClick}
       style={{ cursor: onClick ? "pointer" : "default" }}
     >
       <img src={image} alt={alt} className={styles.img} />
       <p>{exerciseName}</p>
-    </div>
+    </article>
   );
 }

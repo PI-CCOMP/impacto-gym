@@ -1,6 +1,6 @@
 import styles from "./styles.module.css";
 
-type ContainerProps = React.HTMLAttributes<HTMLDivElement> & {
+type ContainerProps = React.HTMLAttributes<HTMLElement> & {
   children: React.ReactNode;
   isDashboard?: boolean;
 };
@@ -12,11 +12,11 @@ export function Container({
   ...rest
 }: ContainerProps) {
   return (
-    <div
+    <main
       {...rest}
       className={`${styles.container} ${isDashboard ? styles.dashboard : ""} ${className ?? ""}`}
     >
       {children}
-    </div>
+    </main>
   );
 }

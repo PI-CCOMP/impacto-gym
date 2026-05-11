@@ -7,9 +7,9 @@ type FormHeaderProps = {
 
 export function FormHeader({ children, subtitle }: FormHeaderProps) {
   return (
-    <header className={styles.header}>
-      <h1 className={styles.title}>{children}</h1>
+    <hgroup className={styles.header}>
+      <h2 className={styles.title}>{children}</h2>
       {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
-    </header>
+    </hgroup>
   );
 }
