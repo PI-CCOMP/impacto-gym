@@ -25,6 +25,7 @@ import { QuickEditModal } from "../../components/QuickEditModal";
 import { Toast } from "../../components/Toast";
 import { Button } from "../../components/Button";
 import { ButtonStroke } from "../../components/ButtonStroke";
+import { MaskedCPF } from "../../components/MakedCPF";
 
 import {
   mockUsers,
@@ -189,7 +190,10 @@ export function DashboardUsers() {
               {paginated.map((user) => (
                 <tr key={user.id}>
                   <td data-label="Nome">{user.name}</td>
-                  <td data-label="CPF">{user.cpf}</td>
+                  <td data-label="CPF">
+                    <MaskedCPF cpf={user.cpf} />
+                  </td>
+
                   <td data-label="Perfil">{user.profile}</td>
                   <td data-label="Instrutor Vinculado">
                     {user.profile === "Aluno"
@@ -292,7 +296,9 @@ export function DashboardUsers() {
                 {paginatedPending.map((reg) => (
                   <tr key={reg.id}>
                     <td data-label="Nome">{reg.name}</td>
-                    <td data-label="CPF">{reg.cpf}</td>
+                    <td data-label="CPF">
+                      <MaskedCPF cpf={reg.cpf} />
+                    </td>
                     <td data-label="Laudo">
                       <a
                         href={reg.medicalReportUrl}

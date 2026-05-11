@@ -6,7 +6,7 @@
 .table th,
 .table td {
   text-align: center;
-  padding: var(--size-sm) 0;
+  padding: var(--size-sm) var(--size-md);
 }
 
 .table th:first-child,
