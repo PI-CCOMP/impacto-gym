@@ -10,6 +10,9 @@ import { Navbar } from "../../components/Navbar";
 import { ActiveTrainingCard } from "../../components/ActiveTrainingCard";
 import { Line } from "../../components/Line";
 import { EmptyResultsCard } from "../../components/EmptyResultsCard";
+import { Toast } from "../../components/Toast";
+import { Button } from "../../components/Button";
+import { ButtonStroke } from "../../components/ButtonStroke";
 
 import noDataImg from "../../assets/img/undraw_no-data_ig65.svg";
 
@@ -24,6 +27,7 @@ export function Home() {
   const navigate = useNavigate();
   const [activeTraining, setActiveTrainingState] =
     useState(getActiveTraining());
+  const [showConfirmToast, setShowConfirmToast] = useState(false);
 
   useEffect(() => {
     const handleFocus = () => setActiveTrainingState(getActiveTraining());
@@ -31,9 +35,18 @@ export function Home() {
     return () => window.removeEventListener("focus", handleFocus);
   }, []);
 
-  const handleEncerrar = () => {
+  const handleEncerrarClick = () => {
+    setShowConfirmToast(true);
+  };
+
+  const handleConfirmEncerrar = () => {
     clearActiveTraining();
     setActiveTrainingState(null);
+    setShowConfirmToast(false);
+  };
+
+  const handleCancelEncerrar = () => {
+    setShowConfirmToast(false);
   };
 
   const activeTrainingData = mockTrainings.find(
@@ -62,11 +75,12 @@ export function Home() {
               trainingName={activeTraining.trainingName}
               checkedCount={activeTraining.checkedSeries?.length ?? 0}
               totalSeries={totalSeries}
-              onFinish={handleEncerrar}
+              onFinish={handleEncerrarClick}
             />
             <Line />
           </>
         )}
+
         <h2>Selecione o seu treino</h2>
 
         {mockTrainings.length === 0 ? (
@@ -97,6 +111,19 @@ export function Home() {
           ))
         )}
       </Container>
+
+      {showConfirmToast && (
+        <Toast
+          message="Deseja encerrar o treino em andamento?"
+          onClose={handleCancelEncerrar}
+        >
+          <Button onClick={handleCancelEncerrar} style={{ marginTop: 0 }}>
+            Cancelar
+          </Button>
+          <ButtonStroke onClick={handleConfirmEncerrar}>Encerrar</ButtonStroke>
+        </Toast>
+      )}
+
       <Navbar />
     </>
   );
