@@ -1,5 +1,6 @@
 import { X } from "lucide-react";
 import styles from "./styles.module.css";
+import { formatDateFull } from "../../utils/formatDate";
 
 type HelpRequestCardProps = {
   trainingName: string;
@@ -9,32 +10,6 @@ type HelpRequestCardProps = {
   requestedAt: number;
   onRemove: () => void;
 };
-
-function formatRequestDate(timestamp: number): string {
-  const date = new Date(timestamp);
-  const weekdays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
-  const months = [
-    "jan",
-    "fev",
-    "mar",
-    "abr",
-    "mai",
-    "jun",
-    "jul",
-    "ago",
-    "set",
-    "out",
-    "nov",
-    "dez",
-  ];
-  const weekday = weekdays[date.getDay()];
-  const day = date.getDate();
-  const month = months[date.getMonth()];
-  const year = date.getFullYear();
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-  return `${weekday} - ${day} de ${month} ${year} - ${hours}:${minutes}h`;
-}
 
 export function HelpRequestCard({
   trainingName,
@@ -51,7 +26,7 @@ export function HelpRequestCard({
         <div className={styles.info}>
           <p className={styles.trainingName}>{trainingName}</p>
           <p className={styles.exerciseName}>{exerciseName}</p>
-          <time className={styles.date}>{formatRequestDate(requestedAt)}</time>
+          <time className={styles.date}>{formatDateFull(requestedAt)}</time>
         </div>
       </div>
       <button
