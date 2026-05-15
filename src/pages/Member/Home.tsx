@@ -14,7 +14,7 @@ import { Toast } from "../../components/Toast";
 import { Button } from "../../components/Button";
 import { ButtonStroke } from "../../components/ButtonStroke";
 
-import noDataImg from "../../assets/img/undraw_no-data_ig65.svg";
+import noDataImg from "../../assets/img/illustrations/undraw_no-data_ig65.svg";
 
 import {
   getActiveTraining,

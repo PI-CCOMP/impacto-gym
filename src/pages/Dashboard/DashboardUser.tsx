@@ -14,7 +14,7 @@ import { Button } from "../../components/Button";
 import { Toast } from "../../components/Toast";
 import { ButtonStroke } from "../../components/ButtonStroke";
 
-import supinoImg from "../../assets/img/supino-reto.jpg";
+import supinoImg from "../../assets/img/exercise/supino-reto.jpg";
 
 import styles from "./DashboardUser.module.css";
 

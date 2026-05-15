@@ -22,7 +22,7 @@ import {
   RESTRICTION_OPTIONS,
 } from "../../utils/formOptions";
 
-import supinoImg from "../../assets/img/supino-reto.jpg";
+import supinoImg from "../../assets/img/exercise/supino-reto.jpg";
 
 const errorStyle: React.CSSProperties = {
   color: "var(--error)",
