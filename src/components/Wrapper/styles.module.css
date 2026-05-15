@@ -4,4 +4,19 @@
   width: 100%;
   max-width: 768px;
   margin: 0 auto;
+  container-type: inline-size;
+}
+
+h1 {
+  font-size: clamp(1.75rem, 5cqi, 3rem);
+}
+h2 {
+  font-size: clamp(1.5rem, 4cqi, 2.25rem);
+}
+h3 {
+  font-size: clamp(1.25rem, 3.5cqi, 1.875rem);
+}
+h4,
+h5 {
+  font-size: clamp(1.1rem, 3cqi, 1.5rem);
 }
