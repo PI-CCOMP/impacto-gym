@@ -19,16 +19,11 @@
 }
 
 @media (max-width: 768px) {
-  thead {
+  .table thead {
     display: none;
   }
 
-  .table th,
-  .table td {
-    padding-bottom: 0;
-  }
-
-  tr {
+  .table tr {
     display: block;
     background-color: var(--primary-light);
     border: 2px solid var(--primary-light-contrast);
