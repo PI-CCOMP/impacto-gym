@@ -1,12 +1,25 @@
-import supinoImg from "../assets/img/supino-reto.jpg";
-import peitoImg from "../assets/img/peito.png";
+import supinogif from "../assets/img/exercise/supinogif.gif";
+import crucifixogif from "../assets/img/exercise/crucifixogif.gif";
+import abdominalgif from "../assets/img/exercise/abdominalgif.gif";
+import remadagif from "../assets/img/exercise/remadagif.gif";
+import puxadagif from "../assets/img/exercise/puxadagif.gif";
+import agachamentogif from "../assets/img/exercise/agachamentogif.gif";
+import legpressgif from "../assets/img/exercise/legpressgif.gif";
+
+import supinoImg from "../assets/img/exercise/supino-reto.jpg";
+import peitoImg from "../assets/img/muscleGroup/peito.png";
+import treinoHomem from "../assets/img/treino/homem.jpeg";
+import treinoMulher from "../assets/img/treino/mulher.jpg";
+import maleUser from "../assets/img/users/male.png";
+import femaleUser from "../assets/img/users/female.png";
+
 
 // User
 
 export const mockUser = {
   id: "u1",
   name: "Arthur",
-  profilePhoto: supinoImg,
+  profilePhoto: maleUser,
 };
 
 // Exercises
@@ -25,7 +38,7 @@ export const mockExercises: Exercise[] = [
   {
     id: "1",
     exerciseName: "Supino Reto",
-    image: supinoImg,
+    image: supinogif,
     alt: "Supino Reto",
     muscleGroupImage: peitoImg,
     muscleGroup: "Peitoral",
@@ -38,7 +51,7 @@ export const mockExercises: Exercise[] = [
   {
     id: "2",
     exerciseName: "Crucifixo",
-    image: supinoImg,
+    image: crucifixogif,
     alt: "Crucifixo",
     muscleGroupImage: peitoImg,
     muscleGroup: "Peitoral",
@@ -50,7 +63,7 @@ export const mockExercises: Exercise[] = [
   {
     id: "3",
     exerciseName: "Abdominal",
-    image: supinoImg,
+    image: abdominalgif,
     alt: "Abdominal",
     muscleGroupImage: peitoImg,
     muscleGroup: "Abdômen",
@@ -63,7 +76,7 @@ export const mockExercises: Exercise[] = [
   {
     id: "4",
     exerciseName: "Remada",
-    image: supinoImg,
+    image: remadagif,
     alt: "Remada",
     muscleGroupImage: peitoImg,
     muscleGroup: "Costas",
@@ -75,7 +88,7 @@ export const mockExercises: Exercise[] = [
   {
     id: "5",
     exerciseName: "Puxada",
-    image: supinoImg,
+    image: puxadagif,
     alt: "Puxada",
     muscleGroupImage: peitoImg,
     muscleGroup: "Costas",
@@ -88,7 +101,7 @@ export const mockExercises: Exercise[] = [
   {
     id: "6",
     exerciseName: "Agachamento",
-    image: supinoImg,
+    image: agachamentogif,
     alt: "Agachamento",
     muscleGroupImage: peitoImg,
     muscleGroup: "Pernas",
@@ -101,7 +114,7 @@ export const mockExercises: Exercise[] = [
   {
     id: "7",
     exerciseName: "Leg Press",
-    image: supinoImg,
+    image: legpressgif,
     alt: "Leg Press",
     muscleGroupImage: peitoImg,
     muscleGroup: "Pernas",
@@ -129,7 +142,7 @@ export const mockTrainings: Training[] = [
     id: "1",
     trainingName: "Treino A",
     author: "Catarina",
-    image: supinoImg,
+    image: treinoHomem,
     alt: "Foto do treino A",
     muscleGroups: ["Peitoral", "Abdômen"],
     exercises: [
@@ -142,7 +155,7 @@ export const mockTrainings: Training[] = [
     id: "2",
     trainingName: "Treino B",
     author: "Catarina",
-    image: supinoImg,
+    image: treinoMulher,
     alt: "Foto do treino B",
     muscleGroups: ["Costas", "Bíceps"],
     exercises: [
@@ -154,7 +167,7 @@ export const mockTrainings: Training[] = [
     id: "3",
     trainingName: "Treino C",
     author: "Catarina",
-    image: supinoImg,
+    image: treinoHomem,
     alt: "Foto do treino C",
     muscleGroups: ["Pernas", "Glúteos"],
     exercises: [
@@ -244,7 +257,7 @@ export const mockHistoryTrainings: HistoryTraining[] = [
     id: "1",
     trainingName: "Treino A",
     author: "Catarina",
-    image: supinoImg,
+    image: treinoHomem,
     alt: "Foto do treino A",
     finishedAt: new Date("2026-05-07T16:15:00").getTime(),
     muscleGroups: ["Peitoral", "Abdômen"],
@@ -260,7 +273,7 @@ export const mockHistoryTrainings: HistoryTraining[] = [
     id: "2",
     trainingName: "Treino B",
     author: "Catarina",
-    image: supinoImg,
+    image: treinoMulher,
     alt: "Foto do treino B",
     finishedAt: new Date("2026-05-08T10:15:00").getTime(),
     muscleGroups: ["Costas", "Bíceps"],

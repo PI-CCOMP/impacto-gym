@@ -4,8 +4,8 @@ import { Logo } from "../../components/Logo";
 
 import { Link } from "react-router-dom";
 
-import manBackground from "../../assets/img/homem.jpeg";
-import maleBackground from "../../assets/img/mulher.jpg";
+import manBackground from "../../assets/img/treino/homem.jpeg";
+import maleBackground from "../../assets/img/treino/mulher.jpg";
 
 import styles from "../Member/Auth.module.css";
 

@@ -10,7 +10,7 @@ import { Button } from "../../components/Button";
 
 import { useLoginForm } from "../../hooks/useLoginForm";
 
-import dashboardHeroImg from "../../assets/img/dashboard-hero.jpeg";
+import dashboardHeroImg from "../../assets/img/backgrounds/dashboard-hero.jpeg";
 
 import styles from "./Auth.module.css";
 

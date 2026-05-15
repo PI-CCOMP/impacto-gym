@@ -12,8 +12,8 @@ import { CheckboxCard } from "../../components/CheckboxCard";
 import { InputCheckbox } from "../../components/InputCheckbox";
 import { FileUpload } from "../../components/FileUpload";
 
-import maleImg from "../../assets/img/male.png";
-import femaleImg from "../../assets/img/female.png";
+import maleImg from "../../assets/img/users/male.png";
+import femaleImg from "../../assets/img/users/female.png";
 
 import { useRegistrarForm } from "../../hooks/useRegistrarForm";
 
