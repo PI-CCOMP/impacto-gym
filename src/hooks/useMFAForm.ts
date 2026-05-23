@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 
 export function useMFAForm(onSuccess: (code: string) => void) {
-  const [digits, setDigits] = useState(["", "", "", ""]);
+  const [digits, setDigits] = useState(["", "", "", "", "", ""]);
   const [error, setError] = useState("");
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
 
@@ -15,7 +15,7 @@ export function useMFAForm(onSuccess: (code: string) => void) {
     updated[index] = digit;
     setDigits(updated);
     setError("");
-    if (digit && index < 3) inputsRef.current[index + 1]?.focus();
+    if (digit && index < 5) inputsRef.current[index + 1]?.focus();
   }
 
   function handleKeyDown(
@@ -30,8 +30,8 @@ export function useMFAForm(onSuccess: (code: string) => void) {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const code = digits.join("");
-    if (code.length < 4) {
-      setError("Digite o código completo de 4 dígitos.");
+    if (code.length < 6) {
+      setError("Digite o código completo de 6 dígitos.");
       return;
     }
     onSuccess(code);

@@ -63,7 +63,7 @@ export function MFAVerification() {
 
       <PageHeader onBack={() => navigate(-1)}>Verificar Código</PageHeader>
       <Logo />
-      <FormHeader subtitle="Digite o código de 4 dígitos que enviamos para você">
+      <FormHeader subtitle="Digite o código de 6 dígitos que enviamos para você">
         Verifique seu e-mail!
       </FormHeader>
 
