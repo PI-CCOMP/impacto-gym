@@ -1,46 +1,61 @@
 # 🏋️ SISTEMA PARA MUSCULAÇÃO: APLICAÇÃO PARA ORGANIZAÇÃO DE FICHAS DE TREINO
 
-Um sistema de gerenciamento de treinos, alunos e administradores (instrutores e recepcionistas) para academia, desenvolvida com **React + TypeScript**.
+Uma aplicação web para gerenciamento de treinos, alunos e administradores (**instrutores e recepcionistas**) em academias, desenvolvida com **React + TypeScript**.
 
-O sistema possui uma experiência completa tanto para **alunos**, permitindo acompanhamento de treinos e progresso, quanto para **administradores/instrutores**, responsáveis pelo gerenciamento de usuários, treinos e suporte.
+O sistema foi projetado para organizar fichas de treino, facilitar o acompanhamento dos alunos e otimizar a gestão administrativa da academia.
+
+---
+
+## 🏋️ Sobre o Projeto
+
+A aplicação foi desenvolvida para centralizar e modernizar processos internos de academias, permitindo:
+
+- 👤 Gerenciamento de alunos
+- 🧑‍🏫 Área para instrutores
+- 🧾 Controle administrativo para recepção
+- 📋 Organização de fichas de treino
+- 📈 Histórico de treinos
+- 📢 Sistema de avisos
+- 🆘 Solicitações de ajuda
+- ⚙️ Configurações de perfil e conta
+
+O frontend é responsável pela experiência visual e interação do usuário com o sistema.
 
 ---
 
 ## ✨ Funcionalidades
 
 ### 👤 Área do Aluno
-- Cadastro e login
-- Recuperação de senha
-- Verificação MFA (autenticação)
+- Login e autenticação
+- Cadastro de conta
+- Recuperação de acesso
 - Perfil do usuário
+- Visualização de treinos
+- Exercícios detalhados
 - Histórico de treinos
-- Visualização de exercícios
-- Treinos personalizados
 - Solicitação de ajuda
 - Avisos da academia
-- FAQ e configurações
-- Alteração de senha e e-mail
+- Configurações da conta
+- FAQ e suporte
 
-### 🛠️ Dashboard Administrativo
+### 🧑‍🏫 Área Administrativa
 - Login administrativo
-- Gerenciamento de usuários
-- Criação e edição de alunos
-- Gerenciamento de treinos
-- Detalhamento de treinos
-- Solicitações de auxílio
-- Sistema de avisos
+- Gestão de alunos
+- Gestão de treinos
+- Organização de fichas
+- Controle de avisos
+- Solicitações de alunos
 - Configurações administrativas
-- Alteração de senha e e-mail
 
 ---
 
-## 🚀 Tecnologias Utilizadas
+## 🛠️ Tecnologias Utilizadas
 
 - **React**
 - **TypeScript**
 - **React Router DOM**
-- **CSS Modules**
 - **Vite**
+- **CSS Modules**
 - **HTML5**
 - **CSS3**
 
@@ -50,7 +65,7 @@ O sistema possui uma experiência completa tanto para **alunos**, permitindo aco
 
 ```bash
 src/
-│── assets/            # Imagens, fontes e recursos estáticos
+│── assets/            # Recursos estáticos
 │── components/        # Componentes reutilizáveis
 │── hooks/             # Hooks customizados
 │── layouts/           # Layouts da aplicação
@@ -59,84 +74,73 @@ src/
 │── routes/            # Gerenciamento de rotas
 │── styles/            # Estilos globais
 │── utils/             # Funções utilitárias
-│── validators.ts      # Validações de formulários
+│── validators.ts      # Validações
 │── App.tsx
 │── main.tsx
 ```
 
 ---
 
-## 🔐 Recursos de Segurança
+## 🔗 Integração com Backend
 
-O projeto inclui validações como:
+Esta aplicação se conecta à API responsável pelo gerenciamento de:
 
-- Validação de e-mail
-- Confirmação de e-mail
-- Validação de CPF
-- Senha forte:
-  - mínimo de 8 caracteres
-  - letra maiúscula
-  - letra minúscula
-  - número
-  - caractere especial
-- Confirmação de senha
-- MFA (Autenticação Multifator)
+- Usuários
+- Treinos
+- Histórico
+- Avisos
+- Sessões
+- Solicitações
+
+API do sistema:
+
+**🚀 API - SISTEMA PARA MUSCULAÇÃO: APLICAÇÃO PARA ORGANIZAÇÃO DE FICHAS DE TREINO**
 
 ---
 
-## 📷 Telas do Sistema
+## 🖥️ Principais Telas
 
-### Área do Aluno
+### 👤 Usuário
 - Home
 - Login
 - Cadastro
-- Treino
+- Perfil
+- Treinos
 - Exercícios
 - Histórico
-- Perfil
 - Configurações
 - FAQ
 
-### Dashboard Administrativo
-- Gerenciamento de Usuários
-- Gerenciamento de Treinos
+### 🧑‍🏫 Administração
+- Dashboard
+- Gestão de usuários
+- Gestão de treinos
 - Avisos
-- Solicitações de Auxílio
+- Solicitações
 - Configurações
 
 ---
 
-## 🌐 Rotas Principais
+## 🔐 Segurança e Validações
 
-### Usuário
-| Página | Rota |
-|--------|-------|
-| Home | `/inicio` |
-| Login | `/login` |
-| Registro | `/registro` |
-| Treino | `/treino/:idTreino` |
-| Exercício | `/exercicio/:idExercicio` |
-| Histórico | `/historico` |
-| Configurações | `/configuracoes` |
+A aplicação possui:
 
-### Dashboard
-| Página | Rota |
-|--------|-------|
-| Login Admin | `/dashboard` |
-| Usuários | `/dashboard/usuarios` |
-| Treinos | `/dashboard/treinos` |
-| Avisos | `/dashboard/avisos` |
-| Configurações | `/dashboard/configuracoes` |
+- Validação de formulários
+- Verificação de e-mail
+- Senhas seguras
+- Confirmação de senha
+- Controle de autenticação
+- Proteção de rotas privadas
+- MFA (Autenticação Multifator)
 
 ---
 
 ## 🎯 Objetivo do Projeto
 
-Este projeto foi desenvolvido com foco em:
+O objetivo da plataforma é:
 
-- Melhorar a experiência do aluno na academia
-- Facilitar a Gerenciamento de treinos
-- Centralizar comunicação e suporte
-- Modernizar processos administrativos
-
----
+- Organizar fichas de treino
+- Melhorar a gestão da academia
+- Facilitar o acompanhamento dos alunos
+- Centralizar informações importantes
+- Melhorar a comunicação entre academia e aluno
