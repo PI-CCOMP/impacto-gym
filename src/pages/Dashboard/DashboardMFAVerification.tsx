@@ -23,6 +23,7 @@ export function DashboardMFAVerification() {
   const location = useLocation();
   const state = location.state as LocationState | null;
   const action = state?.action;
+  const redirectTo = state?.redirectTo;
   const [showToast, setShowToast] = useState(false);
 
   const {
@@ -36,9 +37,8 @@ export function DashboardMFAVerification() {
     console.log("Código MFA:", code);
 
     if (action === "change-password") {
-      navigate("/dashboard/login");
+      navigate("/dashboard/nova-senha", { state: { redirectTo } });
     } else if (action === "change-email") {
-      // TODO: api.changeEmail({ email: state.pendingEmail, mfaCode: code })
       setShowToast(true);
     } else {
       navigate("/dashboard/configuracoes");
@@ -56,15 +56,13 @@ export function DashboardMFAVerification() {
         <Toast
           message="E-mail alterado com sucesso!"
           duration={2000}
-          onClose={() =>
-            navigate(state?.redirectTo ?? "/dashboard/configuracoes")
-          }
+          onClose={() => navigate(redirectTo ?? "/dashboard/configuracoes")}
         />
       )}
 
       <PageHeader onBack={() => navigate(-1)}>Verificar Código</PageHeader>
       <Logo />
-      <FormHeader subtitle="Digite o código de 4 dígitos que enviamos para você">
+      <FormHeader subtitle="Digite o código de 6 dígitos que enviamos para você">
         Verifique seu e-mail!
       </FormHeader>
 
@@ -73,9 +71,7 @@ export function DashboardMFAVerification() {
           {digits.map((digit, index) => (
             <input
               key={index}
-              ref={(el) => {
-                inputsRef.current[index] = el;
-              }}
+              ref={(el) => { inputsRef.current[index] = el; }}
               type="text"
               inputMode="numeric"
               maxLength={1}

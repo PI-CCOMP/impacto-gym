@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { Container } from "../../components/Container";
 import { Logo } from "../../components/Logo";
@@ -12,6 +12,9 @@ import { validateEmailRequired } from "../../validators";
 
 export function ForgotPassword() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isFromSettings = location.pathname === "/configuracoes/alterar-senha";
+
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
   const [touched, setTouched] = useState(false);
@@ -29,7 +32,13 @@ export function ForgotPassword() {
     const newError = validateEmailRequired(value);
     setError(newError);
     if (newError) return;
-    navigate(-1);
+
+    navigate("/verificar-email", {
+      state: {
+        action: "change-password",
+        redirectTo: isFromSettings ? "/configuracoes" : undefined,
+      },
+    });
   }
 
   return (

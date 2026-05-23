@@ -20,6 +20,7 @@ import { Settings } from "../pages/Member/Settings";
 import { Profile } from "../pages/Member/Profile";
 import { Faq } from "../pages/Member/Faq";
 import { ChangeEmail } from "../pages/Member/ChangeEmail";
+import { NewPassword } from "../pages/Member/NewPassword";
 import { Page404 } from "../pages/Page404";
 
 import { DashboardLogin } from "../pages/Dashboard/DashboardLogin";
@@ -36,6 +37,7 @@ import { DashboardHelp } from "../pages/Dashboard/DashboardHelp";
 import { DashboardAlert } from "../pages/Dashboard/DashboardAlert";
 import { DashboardSettings } from "../pages/Dashboard/DashboardSettings";
 import { DashboardChangeEmail } from "../pages/Dashboard/DashboardChangeEmail";
+import { DashboardNewPassword } from "../pages/Dashboard/DashboardNewPassword";
 
 export function AppRoutes() {
   const location = useLocation();
@@ -67,6 +69,7 @@ export function AppRoutes() {
           element={<ForgotPassword />}
         />
         <Route path="/configuracoes/alterar-email" element={<ChangeEmail />} />
+        <Route path="/nova-senha" element={<NewPassword />} />
       </Route>
 
       <Route element={<DashboardLayout />}>
@@ -107,6 +110,14 @@ export function AppRoutes() {
         <Route
           path="/dashboard/configuracoes/alterar-email"
           element={<DashboardChangeEmail />}
+        />
+        <Route
+          path="/dashboard/configuracoes/alterar-senha"
+          element={<DashboardForgotPassword />}
+        />
+        <Route
+          path="/dashboard/nova-senha"
+          element={<DashboardNewPassword />}
         />
       </Route>
 

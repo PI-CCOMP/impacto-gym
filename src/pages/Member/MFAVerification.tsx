@@ -1,12 +1,10 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { useState } from "react";
 
 import { Container } from "../../components/Container";
 import { PageHeader } from "../../components/PageHeader";
 import { Logo } from "../../components/Logo";
 import { FormHeader } from "../../components/FormHeader";
 import { Button } from "../../components/Button";
-import { Toast } from "../../components/Toast";
 
 import { useMFAForm } from "../../hooks/useMFAForm";
 
@@ -16,7 +14,6 @@ type LocationState = {
   action?: "change-password" | "change-email" | "register";
   pendingEmail?: string;
   redirectTo?: string;
-  showSuccessToast?: boolean;
 };
 
 export function MFAVerification() {
@@ -24,7 +21,7 @@ export function MFAVerification() {
   const location = useLocation();
   const state = location.state as LocationState | null;
   const action = state?.action;
-  const [showToast, setShowToast] = useState(false);
+  const redirectTo = state?.redirectTo;
 
   const {
     digits,
@@ -37,10 +34,11 @@ export function MFAVerification() {
     console.log("Código MFA:", code);
 
     if (action === "change-password") {
-      navigate("/login");
+      navigate("/nova-senha", { state: { redirectTo } });
     } else if (action === "change-email") {
-      // TODO: api.changeEmail({ email: state.pendingEmail, mfaCode: code })
-      setShowToast(true);
+      navigate(redirectTo ?? "/configuracoes", {
+        state: { showSuccessToast: true, toastMessage: "E-mail alterado com sucesso!" },
+      });
     } else {
       navigate("/login", { state: { showRegisterToast: true } });
     }
@@ -53,14 +51,6 @@ export function MFAVerification() {
 
   return (
     <Container>
-      {showToast && (
-        <Toast
-          message="E-mail alterado com sucesso!"
-          duration={2000}
-          onClose={() => navigate(state?.redirectTo ?? "/configuracoes")}
-        />
-      )}
-
       <PageHeader onBack={() => navigate(-1)}>Verificar Código</PageHeader>
       <Logo />
       <FormHeader subtitle="Digite o código de 6 dígitos que enviamos para você">

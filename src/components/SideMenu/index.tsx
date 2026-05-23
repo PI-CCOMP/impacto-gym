@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 import {
@@ -9,6 +9,7 @@ import {
   HelpCircle,
   MessageSquareWarning,
   Settings,
+  LogOut,
 } from "lucide-react";
 
 import { Logo } from "../Logo";
@@ -28,6 +29,7 @@ const canSee = {
 
 export function SideMenu() {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <>
@@ -115,6 +117,13 @@ export function SideMenu() {
             </NavLink>
           </li>
         </ul>
+
+        <button
+          className={styles.logout}
+          onClick={() => navigate("/dashboard")}
+        >
+          <LogOut /> Sair
+        </button>
       </nav>
     </>
   );

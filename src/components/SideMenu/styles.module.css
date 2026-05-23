@@ -114,3 +114,24 @@
     transform: translateX(0);
   }
 }
+
+.logout {
+  display: flex;
+  align-items: center;
+  gap: var(--size-md);
+  background: none;
+  border: none;
+  color: var(--text-default);
+  padding: var(--size-sm) var(--size-md);
+  border-radius: var(--size-sm);
+  cursor: pointer;
+  font-size: inherit;
+  width: 100%;
+  margin-top: auto;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.logout:hover {
+  background-color: var(--primary-light-contrast);
+  color: var(--title);
+}

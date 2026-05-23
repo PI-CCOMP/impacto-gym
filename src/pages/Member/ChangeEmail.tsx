@@ -43,7 +43,7 @@ export function ChangeEmail() {
 
   return (
     <Container>
-      <PageHeader>Alterar E-mail</PageHeader>
+      <PageHeader onBack={() => navigate(-1)}>Alterar E-mail</PageHeader>
       <Logo />
       <FormHeader subtitle="Preencha os campos abaixo">
         Altere seu e-mail!
