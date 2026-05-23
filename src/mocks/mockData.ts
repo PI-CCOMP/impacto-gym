@@ -328,6 +328,7 @@ export const mockUsers: UserRow[] = [
     profile: "Aluno",
     email: "rafael@email.com",
     gender: "Masculino",
+    image: profileAvatar,
     createdAt: new Date("2025-01-10").getTime(),
     instructor: "Mateus",
     goal: "Hipertrofia",
