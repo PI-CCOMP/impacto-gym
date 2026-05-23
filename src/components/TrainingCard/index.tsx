@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import styles from "./styles.module.css";
 import { Dumbbell, X } from "lucide-react";
 import { ActionButton } from "../ActionButton";
@@ -9,8 +10,38 @@ type TrainingCardProps = {
   trainingName: string;
   muscleGroups: string[];
   variant?: "default" | "dashboard";
+  /** Quando true exibe o GIF animado. Padrão: false (card — imagem estática). */
+  animated?: boolean;
   onUnlink?: () => void;
 };
+
+function StaticGif({
+  src,
+  alt,
+  className,
+}: {
+  src: string;
+  alt: string;
+  className: string;
+}) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      canvas.width = img.naturalWidth || 64;
+      canvas.height = img.naturalHeight || 64;
+      const ctx = canvas.getContext("2d");
+      ctx?.drawImage(img, 0, 0);
+    };
+    img.src = src;
+  }, [src]);
+
+  return <canvas ref={canvasRef} aria-label={alt} className={className} />;
+}
 
 export function TrainingCard({
   dataState,
@@ -19,6 +50,7 @@ export function TrainingCard({
   trainingName,
   muscleGroups,
   variant = "default",
+  animated = false,
   onUnlink,
 }: TrainingCardProps) {
   return (
@@ -26,7 +58,11 @@ export function TrainingCard({
       className={`${styles.container} ${variant === "dashboard" ? styles.dashboard : ""}`}
       data-state={dataState}
     >
-      <img src={image} alt={alt} className={styles.img} />
+      {animated ? (
+        <img src={image} alt={alt} className={styles.img} />
+      ) : (
+        <StaticGif src={image} alt={alt} className={styles.img} />
+      )}
 
       <div className={styles.content}>
         <h3>{trainingName}</h3>

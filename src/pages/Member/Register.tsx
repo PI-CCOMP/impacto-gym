@@ -12,8 +12,11 @@ import { CheckboxCard } from "../../components/CheckboxCard";
 import { InputCheckbox } from "../../components/InputCheckbox";
 import { FileUpload } from "../../components/FileUpload";
 
-import maleImg from "../../assets/img/male.png";
-import femaleImg from "../../assets/img/female.png";
+// Em produção: imagens de gênero e objetivo vêm da configuração do sistema (ex: GET /settings/onboarding-images)
+const maleImg =
+  "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&q=80";
+const femaleImg =
+  "https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=300&q=80";
 
 import { useRegistrarForm } from "../../hooks/useRegistrarForm";
 

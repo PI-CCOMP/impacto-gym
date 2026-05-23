@@ -3,8 +3,6 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import { AppLayout } from "../layouts/AppLayout";
 import { DashboardLayout } from "../layouts/DashboardLayout";
 
-import { Componentes } from "../Componentes";
-
 import { Index } from "../pages/Member/Index";
 import { Login } from "../pages/Member/Login";
 import { Register } from "../pages/Member/Register";
@@ -45,7 +43,6 @@ export function AppRoutes() {
   return (
     <Routes>
       <Route element={<AppLayout />}>
-        <Route path="/componentes" element={<Componentes />} />
         <Route path="/" element={<Index />} />
         <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Register />} />

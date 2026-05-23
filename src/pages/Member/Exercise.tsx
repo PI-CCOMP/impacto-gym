@@ -39,8 +39,8 @@ export function Exercise() {
   return (
     <Container>
       <PageHeader>{exercise.exerciseName}</PageHeader>
+      {/* GIF animado do exercício — em produção: campo gifUrl ou videoUrl da API */}
       <img src={exercise.image} alt={exercise.alt} className={styles.image} />
-      {/* depois trocar por vídeo */}
       <h2>{exercise.exerciseName}</h2>
       <Accordion title="Dicas" transparent>
         <ul className={styles.tipsList}>

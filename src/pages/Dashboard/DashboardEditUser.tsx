@@ -22,7 +22,7 @@ import {
   RESTRICTION_OPTIONS,
 } from "../../utils/formOptions";
 
-import supinoImg from "../../assets/img/supino-reto.jpg";
+import anonymousImg from "../../assets/img/profile/anonymous.png";
 
 const errorStyle: React.CSSProperties = {
   color: "var(--error)",
@@ -58,7 +58,7 @@ export function DashboardEditUser() {
 
   const [medicalReportFile, setMedicalReportFile] = useState<File | null>(null);
   const [previewPhoto, setPreviewPhoto] = useState<string>(
-    user?.image ?? supinoImg,
+    user?.image ?? anonymousImg,
   );
 
   // return condicional só depois dos hooks

@@ -14,7 +14,7 @@ import { Button } from "../../components/Button";
 import { Toast } from "../../components/Toast";
 import { ButtonStroke } from "../../components/ButtonStroke";
 
-import supinoImg from "../../assets/img/supino-reto.jpg";
+import anonymousImg from "../../assets/img/profile/anonymous.png";
 
 import styles from "./DashboardUser.module.css";
 
@@ -68,7 +68,7 @@ export function DashboardUser() {
 
         <div>
           <UserCard
-            image={user.image ?? supinoImg}
+            image={user.image ?? anonymousImg}
             name={user.name}
             cpf={user.cpf}
             instructor={user.instructor}

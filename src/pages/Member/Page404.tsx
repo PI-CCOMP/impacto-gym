@@ -4,7 +4,7 @@ import { Container } from "../../components/Container";
 
 import styles from "./Page404.module.css";
 
-import PageNotFoundImg from "../../assets/img/page-404.svg";
+import PageNotFoundImg from "../../assets/img/illustrations/page-404.svg";
 
 export function Page404() {
   return (
