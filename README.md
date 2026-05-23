@@ -1,8 +1,8 @@
-# 🏋️ Fitness Training Platform
+# 🏋️ SISTEMA PARA MUSCULAÇÃO: APLICAÇÃO PARA ORGANIZAÇÃO DE FICHAS DE TREINO
 
-Uma plataforma moderna de gerenciamento de treinos para academias, alunos e administradores, desenvolvida com **React + TypeScript**.
+Um sistema moderno de gerenciamento de treinos, alunos e administradores, desenvolvida com **React + TypeScript**.
 
-O sistema possui uma experiência completa tanto para **alunos**, permitindo acompanhamento de treinos e progresso, quanto para **administradores/professores**, responsáveis pelo gerenciamento de usuários, treinos e suporte.
+O sistema possui uma experiência completa tanto para **alunos**, permitindo acompanhamento de treinos e progresso, quanto para **administradores/instrutores**, responsáveis pelo gerenciamento de usuários, treinos e suporte.
 
 ---
 
@@ -23,9 +23,9 @@ O sistema possui uma experiência completa tanto para **alunos**, permitindo aco
 
 ### 🛠️ Dashboard Administrativo
 - Login administrativo
-- Gestão de usuários
+- Gerenciamento de usuários
 - Criação e edição de alunos
-- Gestão de treinos
+- Gerenciamento de treinos
 - Detalhamento de treinos
 - Solicitações de auxílio
 - Sistema de avisos
@@ -98,8 +98,8 @@ O projeto inclui validações como:
 - FAQ
 
 ### Dashboard Administrativo
-- Gestão de Usuários
-- Gestão de Treinos
+- Gerenciamento de Usuários
+- Gerenciamento de Treinos
 - Avisos
 - Solicitações de Auxílio
 - Configurações
@@ -135,7 +135,7 @@ O projeto inclui validações como:
 Este projeto foi desenvolvido com foco em:
 
 - Melhorar a experiência do aluno na academia
-- Facilitar a gestão de treinos
+- Facilitar a Gerenciamento de treinos
 - Centralizar comunicação e suporte
 - Modernizar processos administrativos
 
