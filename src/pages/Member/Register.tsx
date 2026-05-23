@@ -12,11 +12,15 @@ import { CheckboxCard } from "../../components/CheckboxCard";
 import { InputCheckbox } from "../../components/InputCheckbox";
 import { FileUpload } from "../../components/FileUpload";
 
-// Em produção: imagens de gênero e objetivo vêm da configuração do sistema (ex: GET /settings/onboarding-images)
-const maleImg =
-  "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&q=80";
-const femaleImg =
-  "https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=300&q=80";
+import maleImg from "../../assets/img/register/male.png";
+import femaleImg from "../../assets/img/register/female.png";
+import weightLossImg from "../../assets/img/register/emagrecimento.png";
+import hypertrophyImg from "../../assets/img/register/hipertrofia.png";
+import physicalConditioningImg from "../../assets/img/register/condicionamento_fisico.png";
+import medicalRecommendationImg from "../../assets/img/register/recomendacao_medica.png";
+import beginnerImg from "../../assets/img/register/iniciante.png";
+import intermediateImg from "../../assets/img/register/intermediario.png";
+import advancedImg from "../../assets/img/register/avancado.png";
 
 import { useRegistrarForm } from "../../hooks/useRegistrarForm";
 
@@ -246,7 +250,6 @@ export function Register() {
                 checked={formValues.gender === "feminino"}
                 onChange={(val) => handleRadioChange("gender", val)}
               />
-              {/* TODO: substituir maleImg por uma imagem neutra para "Outro" quando disponível */}
               <CheckboxCard
                 image={maleImg}
                 alt="Outro"
@@ -368,17 +371,25 @@ export function Register() {
           <>
             <Row>
               {[
-                { id: "emagrecimento", label: "Emagrecimento", img: maleImg },
-                { id: "hipertrofia", label: "Hipertrofia", img: femaleImg },
+                {
+                  id: "emagrecimento",
+                  label: "Emagrecimento",
+                  img: weightLossImg,
+                },
+                {
+                  id: "hipertrofia",
+                  label: "Hipertrofia",
+                  img: hypertrophyImg,
+                },
                 {
                   id: "condicionamento",
                   label: "Condicionamento Físico",
-                  img: femaleImg,
+                  img: physicalConditioningImg,
                 },
                 {
                   id: "recomendacao-medica",
                   label: "Recomendação Médica",
-                  img: femaleImg,
+                  img: medicalRecommendationImg,
                 },
               ].map(({ id, label, img }) => (
                 <CheckboxCard
@@ -404,9 +415,13 @@ export function Register() {
           <>
             <Row>
               {[
-                { id: "iniciante", label: "Iniciante", img: maleImg },
-                { id: "intermediario", label: "Intermediário", img: femaleImg },
-                { id: "avancado", label: "Avançado", img: femaleImg },
+                { id: "iniciante", label: "Iniciante", img: beginnerImg },
+                {
+                  id: "intermediario",
+                  label: "Intermediário",
+                  img: intermediateImg,
+                },
+                { id: "avancado", label: "Avançado", img: advancedImg },
               ].map(({ id, label, img }) => (
                 <CheckboxCard
                   key={id}
