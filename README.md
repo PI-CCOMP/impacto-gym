@@ -1,78 +1,142 @@
-# 🏋️ Impacto Gym — Sistema de Ficha de Treino Digital
+# 🏋️ Fitness Training Platform
 
-> Aplicativo web para modernizar o gerenciamento de treinos da academia Impacto Gym, substituindo fichas físicas por uma solução digital centralizada.
+Uma plataforma moderna de gerenciamento de treinos para academias, alunos e administradores, desenvolvida com **React + TypeScript**.
 
----
-
-## 🚧 Status do Projeto
-
-**Em desenvolvimento ativo.** O front-end está sendo construído com componentes individuais e testados. A integração com back-end e API RESTful está prevista para as próximas fases.
+O sistema possui uma experiência completa tanto para **alunos**, permitindo acompanhamento de treinos e progresso, quanto para **administradores/professores**, responsáveis pelo gerenciamento de usuários, treinos e suporte.
 
 ---
 
-## 🎯 Objetivo
+## ✨ Funcionalidades
 
-A Impacto Gym utilizava fichas de papel impressas em bobinas térmicas para registrar treinos — um processo frágil, suscetível a perdas e sem rastreabilidade do progresso dos alunos. Este sistema resolve esses problemas ao:
+### 👤 Área do Aluno
+- Cadastro e login
+- Recuperação de senha
+- Verificação MFA (autenticação)
+- Perfil do usuário
+- Histórico de treinos
+- Visualização de exercícios
+- Treinos personalizados
+- Solicitação de ajuda
+- Avisos da academia
+- FAQ e configurações
+- Alteração de senha e e-mail
 
-- Centralizar o histórico de cargas e exercícios de cada aluno
-- Permitir que instrutores criem e ajustem planos de treino digitalmente
-- Dar aos alunos acesso rápido ao treino do dia pelo smartphone
-- Reduzir o uso de papel e otimizar o tempo da equipe
-
----
-
-## ✅ O que já está pronto
-
-- [x] Levantamento de requisitos com o cliente (visitas, entrevistas, observação)
-- [x] Diagramas de Casos de Uso, Fluxo de Dados, Classes e Arquitetura de Software
-- [x] Modelagem conceitual, lógica e física do banco de dados (PostgreSQL)
-- [x] Protótipo navegável com testes de fluxo via Maze
-- [x] Componentização do front-end em React + TypeScript
-  - Componentes: `Input`, `Button`, `FileUpload`, dropdowns, checkboxes
-  - Estilização com `styled-components`
-  - Gerenciamento de estado com hooks (`useState`)
-  - Tipagem de props com TypeScript
-- [x] Testes unitários estáticos dos componentes (campos, uploads, interações)
-- [x] Estrutura de branches no GitHub (`main` + branch de desenvolvimento)
-- [x] Novas funcionalidades modeladas e prototipadas:
-  - Upload de laudos médicos no cadastro do aluno
-  - Sistema de avisos internos da academia
-  - Registro de carga por exercício
+### 🛠️ Dashboard Administrativo
+- Login administrativo
+- Gestão de usuários
+- Criação e edição de alunos
+- Gestão de treinos
+- Detalhamento de treinos
+- Solicitações de auxílio
+- Sistema de avisos
+- Configurações administrativas
+- Alteração de senha e e-mail
 
 ---
 
-## 🔜 Próximas etapas
+## 🚀 Tecnologias Utilizadas
 
-- [ ] Implementação do layout completo do front-end
-- [ ] Desenvolvimento do back-end com API RESTful + Mascaramento e criptografia de dados sensíveis (CPF, restrições médicas) — conformidade com LGPD
-- [ ] Integração front-end ↔ API ↔ banco de dados
-- [ ] Testes de qualidade, estabilidade e segurança
-- [ ] Funcionalidades futuras: relatórios de desempenho, gamificação, notificações automáticas
-
----
-
-## 🛠️ Tecnologias
-
-| Camada | Tecnologia |
-|---|---|
-| Front-end | React, TypeScript, styled-components |
-| Banco de Dados | PostgreSQL |
-| Versionamento | Git, GitHub |
-| Design / Prototipação | Figma, Maze |
-| Gestão do projeto | Jira (Kanban) |
-| Modelagem | Astah, Miro, brModelo |
+- **React**
+- **TypeScript**
+- **React Router DOM**
+- **CSS Modules**
+- **Vite**
+- **HTML5**
+- **CSS3**
 
 ---
 
-## 📁 Estrutura de Branches
+## 📁 Estrutura do Projeto
 
-```
-master          → código estável e revisado
-develop         → desenvolvimento de novas features e testes
+```bash
+src/
+│── assets/            # Imagens, fontes e recursos estáticos
+│── components/        # Componentes reutilizáveis
+│── hooks/             # Hooks customizados
+│── layouts/           # Layouts da aplicação
+│── mocks/             # Dados mockados
+│── pages/             # Páginas do sistema
+│── routes/            # Gerenciamento de rotas
+│── styles/            # Estilos globais
+│── utils/             # Funções utilitárias
+│── validators.ts      # Validações de formulários
+│── App.tsx
+│── main.tsx
 ```
 
 ---
 
-## 📄 Artigo
+## 🔐 Recursos de Segurança
 
-Este projeto é acompanhado de um artigo científico intitulado **"Sistema para Academia: Ficha de Treino Digital"**, desenvolvido como parte da disciplina de Projeto Integrador.
+O projeto inclui validações como:
+
+- Validação de e-mail
+- Confirmação de e-mail
+- Validação de CPF
+- Senha forte:
+  - mínimo de 8 caracteres
+  - letra maiúscula
+  - letra minúscula
+  - número
+  - caractere especial
+- Confirmação de senha
+- MFA (Autenticação Multifator)
+
+---
+
+## 📷 Telas do Sistema
+
+### Área do Aluno
+- Home
+- Login
+- Cadastro
+- Treino
+- Exercícios
+- Histórico
+- Perfil
+- Configurações
+- FAQ
+
+### Dashboard Administrativo
+- Gestão de Usuários
+- Gestão de Treinos
+- Avisos
+- Solicitações de Auxílio
+- Configurações
+
+---
+
+## 🌐 Rotas Principais
+
+### Usuário
+| Página | Rota |
+|--------|-------|
+| Home | `/inicio` |
+| Login | `/login` |
+| Registro | `/registro` |
+| Treino | `/treino/:idTreino` |
+| Exercício | `/exercicio/:idExercicio` |
+| Histórico | `/historico` |
+| Configurações | `/configuracoes` |
+
+### Dashboard
+| Página | Rota |
+|--------|-------|
+| Login Admin | `/dashboard` |
+| Usuários | `/dashboard/usuarios` |
+| Treinos | `/dashboard/treinos` |
+| Avisos | `/dashboard/avisos` |
+| Configurações | `/dashboard/configuracoes` |
+
+---
+
+## 🎯 Objetivo do Projeto
+
+Este projeto foi desenvolvido com foco em:
+
+- Melhorar a experiência do aluno na academia
+- Facilitar a gestão de treinos
+- Centralizar comunicação e suporte
+- Modernizar processos administrativos
+
+---
