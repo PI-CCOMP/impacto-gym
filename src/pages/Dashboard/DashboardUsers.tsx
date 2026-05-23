@@ -78,7 +78,6 @@ export function DashboardUsers() {
   const [pendingPageSize, setPendingPageSize] = useState(10);
   const [pendingSearch, setPendingSearch] = useState("");
 
-  // lista local — em produção virá do servidor; aqui simulamos approve/reject removendo do array
   const [pending, setPending] = useState<PendingRegistration[]>(
     mockPendingRegistrations,
   );
@@ -92,8 +91,10 @@ export function DashboardUsers() {
     setPending((prev) => prev.filter((p) => p.id !== id));
   }
 
-  function handleReject(id: string) {
-    setPending((prev) => prev.filter((p) => p.id !== id));
+  function handleConfirmReject() {
+    if (!rejectingReg) return;
+    setPending((prev) => prev.filter((p) => p.id !== rejectingReg.id));
+    setRejectingReg(null);
   }
 
   const filteredPending = pending.filter((p) =>
@@ -111,7 +112,6 @@ export function DashboardUsers() {
   } | null>(null);
 
   function handleSaveName(newName: string) {
-    // Em produção: await api.patch(`/users/${editingUser.id}`, { name: newName })
     console.log("Salvar:", editingUser?.id, newName);
     navigate("/dashboard/usuarios", { state: { created: true } });
   }
@@ -120,10 +120,15 @@ export function DashboardUsers() {
     id: string;
     name: string;
   } | null>(null);
+
+  const [rejectingReg, setRejectingReg] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
+
   const [showSuccessToast, setShowSuccessToast] = useState(false);
 
   function handleConfirmDelete() {
-    // Em produção: await api.delete(`/users/${deletingUser.id}`)
     setDeletingUser(null);
     setShowSuccessToast(true);
   }
@@ -193,7 +198,6 @@ export function DashboardUsers() {
                   <td data-label="CPF">
                     <MaskedCPF cpf={user.cpf} />
                   </td>
-
                   <td data-label="Perfil">{user.profile}</td>
                   <td data-label="Instrutor Vinculado">
                     {user.profile === "Aluno"
@@ -329,7 +333,9 @@ export function DashboardUsers() {
                           variant="delete"
                           icon={<X size={16} />}
                           title="Rejeitar cadastro"
-                          onClick={() => handleReject(reg.id)}
+                          onClick={() =>
+                            setRejectingReg({ id: reg.id, name: reg.name })
+                          }
                         />
                       </div>
                     </td>
@@ -362,6 +368,7 @@ export function DashboardUsers() {
           </div>
         </Container>
       </Container>
+
       {editingUser && (
         <QuickEditModal
           name={editingUser.name}
@@ -383,6 +390,22 @@ export function DashboardUsers() {
             Cancelar
           </Button>
           <ButtonStroke onClick={handleConfirmDelete}>Deletar</ButtonStroke>
+        </Toast>
+      )}
+
+      {rejectingReg && (
+        <Toast
+          message={`Você realmente quer rejeitar o cadastro de ${rejectingReg.name}?`}
+          icon={<X />}
+          onClose={() => setRejectingReg(null)}
+        >
+          <Button
+            style={{ marginTop: 0 }}
+            onClick={() => setRejectingReg(null)}
+          >
+            Cancelar
+          </Button>
+          <ButtonStroke onClick={handleConfirmReject}>Rejeitar</ButtonStroke>
         </Toast>
       )}
 
