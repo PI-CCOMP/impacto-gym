@@ -20,7 +20,7 @@ import { Settings } from "../pages/Member/Settings";
 import { Profile } from "../pages/Member/Profile";
 import { Faq } from "../pages/Member/Faq";
 import { ChangeEmail } from "../pages/Member/ChangeEmail";
-import { Page404 } from "../pages/Member/Page404";
+import { Page404 } from "../pages/Page404";
 
 import { DashboardLogin } from "../pages/Dashboard/DashboardLogin";
 import { DashboardForgotPassword } from "../pages/Dashboard/DashboardForgotPassword";
