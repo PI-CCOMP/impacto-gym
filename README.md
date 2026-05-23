@@ -1,6 +1,6 @@
 # 🏋️ SISTEMA PARA MUSCULAÇÃO: APLICAÇÃO PARA ORGANIZAÇÃO DE FICHAS DE TREINO
 
-Um sistema moderno de gerenciamento de treinos, alunos e administradores, desenvolvida com **React + TypeScript**.
+Um sistema de gerenciamento de treinos, alunos e administradores (instrutores e recepcionistas) para academia, desenvolvida com **React + TypeScript**.
 
 O sistema possui uma experiência completa tanto para **alunos**, permitindo acompanhamento de treinos e progresso, quanto para **administradores/instrutores**, responsáveis pelo gerenciamento de usuários, treinos e suporte.
 
