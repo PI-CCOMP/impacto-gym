@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Edit2, Plus, Search, Trash2, Check, X } from "lucide-react";
 
 import { DashboardGrid } from "../../components/DashboardGrid";
@@ -14,30 +14,166 @@ import { Button } from "../../components/Button";
 import { ButtonStroke } from "../../components/ButtonStroke";
 import { Input } from "../../components/Input/input";
 import { Toast } from "../../components/Toast";
-
-import { mockTrainings, mockUsers, mockLoggedUser } from "../../mocks/mockData";
-
+import {
+  apiDeleteAuthed,
+  apiGet,
+  apiGetAllPages,
+  apiPostAuthed,
+} from "../../services/api";
+import { normalizeMuscleGroups } from "../../utils/training";
 import { can } from "../../utils/permissions";
-
 import styles from "./DashboardUsers.module.css";
+
+type TrainingExercise = {
+  id_exercicio: number;
+  nome: string;
+  foto_url: string | null;
+  grupo_muscular: string;
+  series: number;
+  repeticoes: number;
+  carga_sugerida: number;
+  tempo_descanso: number;
+};
+type LinkedStudent = {
+  id_usuario: number;
+  id_aluno_treino: number;
+  nome: string;
+  cpf?: string;
+};
+type TrainingDetail = {
+  id_treino: number;
+  nome: string;
+  grupos_musculares: string[];
+  exercicios: TrainingExercise[];
+  alunos_vinculados: LinkedStudent[];
+};
+type TrainingDetailResponse = Omit<TrainingDetail, "grupos_musculares"> & {
+  grupos_musculares: unknown;
+};
+type Student = {
+  id_usuario: number;
+  nome: string;
+  status: string | null;
+};
+
+function displayGroup(group: string): string {
+  if (group === "Bracos") return "Braços";
+  if (group === "Abdomen") return "Abdômen";
+  return group;
+}
 
 export function DashboardTrainingDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-
-  const training = mockTrainings.find((t) => t.id === id);
-
-  const [linkedUserIds, setLinkedUserIds] = useState<string[]>(
-    mockUsers
-      .filter((u) => u.profile === "Aluno" && u.trainingIds?.includes(id ?? ""))
-      .map((u) => u.id),
-  );
+  const [training, setTraining] = useState<TrainingDetail | null>(null);
+  const [students, setStudents] = useState<Student[]>([]);
+  const [loading, setLoading] = useState(true);
   const [userSearch, setUserSearch] = useState("");
   const [showLinkModal, setShowLinkModal] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [showDeleteToast, setShowDeleteToast] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  const loadTraining = useCallback(async () => {
+    if (!id) return;
+    setLoading(true);
+    try {
+      const [detail, userResult] = await Promise.all([
+        apiGet<TrainingDetailResponse>(`/treinos/${id}`),
+        apiGetAllPages<Student>("/usuarios?perfil=aluno"),
+      ]);
+      setTraining({
+        ...detail,
+        grupos_musculares: normalizeMuscleGroups(detail.grupos_musculares),
+      });
+      setStudents(userResult.filter((student) => student.status === "ativo"));
+      setErrorMessage(null);
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Não foi possível carregar o treino.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    void loadTraining();
+  }, [loadTraining]);
+
+  const linkedIds = new Set(
+    training?.alunos_vinculados.map((student) => student.id_usuario) ?? [],
+  );
+  const availableStudents = students.filter(
+    (student) =>
+      !linkedIds.has(student.id_usuario) &&
+      student.nome.toLowerCase().includes(userSearch.toLowerCase()),
+  );
+
+  async function handleUnlink(userId: number) {
+    if (!id) return;
+    setSaving(true);
+    try {
+      await apiDeleteAuthed(`/treinos/${id}/alunos/${userId}`);
+      await loadTraining();
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Não foi possível desvincular o aluno.",
+      );
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleLink() {
+    if (!id || selectedUserId === null) return;
+    setSaving(true);
+    try {
+      await apiPostAuthed(`/treinos/${id}/alunos`, {
+        id_aluno: selectedUserId,
+      });
+      setShowLinkModal(false);
+      setSelectedUserId(null);
+      setUserSearch("");
+      await loadTraining();
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Não foi possível vincular o aluno.",
+      );
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleDeleteTraining() {
+    if (!id) return;
+    setSaving(true);
+    try {
+      await apiDeleteAuthed(`/treinos/${id}`);
+      setShowDeleteToast(false);
+      setShowSuccessToast(true);
+    } catch (error) {
+      setShowDeleteToast(false);
+      setErrorMessage(
+        error instanceof Error ? error.message : "Não foi possível excluir o treino.",
+      );
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (loading) {
+    return (
+      <DashboardGrid>
+        <SideMenu />
+        <Container isDashboard>
+          <p role="status">Carregando treino...</p>
+        </Container>
+      </DashboardGrid>
+    );
+  }
 
   if (!training) {
     return (
@@ -45,42 +181,11 @@ export function DashboardTrainingDetail() {
         <SideMenu />
         <Container isDashboard>
           <PageHeader onBack={() => navigate(-1)}>
-            Treino não encontrado.
+            {errorMessage ?? "Treino não encontrado."}
           </PageHeader>
         </Container>
       </DashboardGrid>
     );
-  }
-
-  const linkedUsers = mockUsers.filter((u) => linkedUserIds.includes(u.id));
-
-  const availableUsers = mockUsers.filter(
-    (u) =>
-      u.profile === "Aluno" &&
-      !linkedUserIds.includes(u.id) &&
-      u.name.toLowerCase().includes(userSearch.toLowerCase()),
-  );
-
-  function handleUnlink(userId: string) {
-    setLinkedUserIds((prev) => prev.filter((uid) => uid !== userId));
-  }
-
-  function handleLink() {
-    if (!selectedUserId) return;
-    setLinkedUserIds((prev) => [...prev, selectedUserId]);
-    setSelectedUserId(null);
-    setUserSearch("");
-    setShowLinkModal(false);
-  }
-
-  function handleDeleteTraining() {
-    if (linkedUserIds.length > 0) {
-      setErrorMessage(
-        "Remova todos os alunos vinculados antes de deletar o treino.",
-      );
-      return;
-    }
-    setShowDeleteToast(true);
   }
 
   return (
@@ -88,59 +193,38 @@ export function DashboardTrainingDetail() {
       <SideMenu />
       <Container isDashboard>
         <DashboardRow variant="sideBySide" style={{ paddingTop: 0 }}>
-          <PageHeader onBack={() => navigate(-1)}>
-            {training.trainingName}
-          </PageHeader>
+          <PageHeader onBack={() => navigate(-1)}>{training.nome}</PageHeader>
           {can.editTraining && (
             <ActionButton
               variant="edit"
               icon={<Edit2 size={16} />}
               onClick={() =>
-                navigate(`/dashboard/treino/${training.id}/editar`)
+                navigate(`/dashboard/treino/${training.id_treino}/editar`)
               }
             />
           )}
         </DashboardRow>
 
-        <div
-          style={{
-            display: "flex",
-            gap: "var(--size-sm)",
-            alignItems: "center",
-          }}
-        >
+        <div style={{ display: "flex", gap: "var(--size-sm)", alignItems: "center" }}>
           <b>Grupos Musculares:</b>
-          <p>{training.muscleGroups.join(", ")}</p>
+          <p>{training.grupos_musculares.map(displayGroup).join(", ")}</p>
         </div>
 
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "var(--size-md)",
-          }}
-        >
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--size-md)" }}>
           <h2>Exercícios</h2>
-          {training.exercises.map((exercise) => (
+          {training.exercicios.map((exercise) => (
             <ExerciseCard
-              key={exercise.id}
-              id={exercise.id}
-              image={exercise.image}
-              alt={exercise.alt}
-              exerciseName={exercise.exerciseName}
+              key={exercise.id_exercicio}
+              id={String(exercise.id_exercicio)}
+              image={exercise.foto_url}
+              alt={exercise.nome}
+              exerciseName={exercise.nome}
             />
           ))}
         </div>
 
         <Line />
-
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "var(--size-md)",
-          }}
-        >
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--size-md)" }}>
           <DashboardRow>
             <h2>Alunos Vinculados</h2>
             {can.editTraining && (
@@ -158,40 +242,29 @@ export function DashboardTrainingDetail() {
               <tr>
                 <th>Nome</th>
                 <th>CPF</th>
-                {can.editTraining && <th></th>}
+                {can.editTraining && <th>Ações</th>}
               </tr>
             </thead>
             <tbody>
-              {linkedUsers.map((user) => (
-                <tr key={user.id}>
-                  <td data-label="Nome">{user.name}</td>
-                  <td data-label="CPF">{user.cpf}</td>
+              {training.alunos_vinculados.map((student) => (
+                <tr key={student.id_aluno_treino}>
+                  <td data-label="Nome">{student.nome}</td>
+                  <td data-label="CPF">{student.cpf ?? "—"}</td>
                   {can.editTraining && (
                     <td data-label="Ações">
-                      <div
-                        style={{
-                          display: "flex",
-                          gap: "var(--size-md)",
-                          justifyContent: "flex-end",
-                        }}
-                      >
-                        <ActionButton
-                          variant="close"
-                          icon={<X size={16} />}
-                          title="Desvincular aluno"
-                          onClick={() => handleUnlink(user.id)}
-                        />
-                      </div>
+                      <ActionButton
+                        variant="close"
+                        icon={<X size={16} />}
+                        title="Desvincular aluno"
+                        onClick={() => void handleUnlink(student.id_usuario)}
+                      />
                     </td>
                   )}
                 </tr>
               ))}
-              {linkedUsers.length === 0 && (
+              {training.alunos_vinculados.length === 0 && (
                 <tr>
-                  <td
-                    colSpan={3}
-                    style={{ textAlign: "center", padding: "var(--size-xl)" }}
-                  >
+                  <td colSpan={3} style={{ textAlign: "center", padding: "var(--size-xl)" }}>
                     Nenhum aluno vinculado.
                   </td>
                 </tr>
@@ -201,7 +274,7 @@ export function DashboardTrainingDetail() {
         </div>
 
         {can.editTraining && (
-          <Button variant="red" onClick={handleDeleteTraining}>
+          <Button variant="red" onClick={() => setShowDeleteToast(true)}>
             Deletar Treino
           </Button>
         )}
@@ -235,19 +308,12 @@ export function DashboardTrainingDetail() {
                 overflowY: "auto",
                 boxSizing: "border-box",
               }}
-              onClick={(e) => e.stopPropagation()}
+              onClick={(event) => event.stopPropagation()}
             >
               <h2 style={{ textAlign: "center", margin: 0 }}>Vincular Aluno</h2>
-              <p
-                style={{
-                  textAlign: "center",
-                  margin: 0,
-                  color: "var(--text-default)",
-                }}
-              >
-                Busque e selecione um aluno
+              <p style={{ textAlign: "center", margin: 0, color: "var(--text-default)" }}>
+                Busque e selecione um aluno ativo
               </p>
-
               <Input
                 type="text"
                 id="link-user-search"
@@ -255,49 +321,39 @@ export function DashboardTrainingDetail() {
                 placeholder="Nome do aluno"
                 leftIcon={<Search />}
                 value={userSearch}
-                onChange={(e) => {
-                  setUserSearch(e.target.value);
+                onChange={(event) => {
+                  setUserSearch(event.target.value);
                   setSelectedUserId(null);
                 }}
               />
-
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "var(--size-sm)",
-                }}
-              >
-                {availableUsers.length === 0 && (
-                  <p
-                    style={{
-                      color: "var(--text-default)",
-                      textAlign: "center",
-                    }}
-                  >
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--size-sm)" }}>
+                {availableStudents.length === 0 && (
+                  <p style={{ color: "var(--text-default)", textAlign: "center" }}>
                     Nenhum aluno disponível.
                   </p>
                 )}
-                {availableUsers.map((user) => (
-                  <div
-                    key={user.id}
-                    onClick={() => setSelectedUserId(user.id)}
+                {availableStudents.map((student) => (
+                  <button
+                    key={student.id_usuario}
+                    type="button"
+                    onClick={() => setSelectedUserId(student.id_usuario)}
                     style={{
                       padding: "var(--size-sm) var(--size-md)",
                       borderRadius: "var(--size-sm)",
                       cursor: "pointer",
-                      border: `2px solid ${selectedUserId === user.id ? "var(--secondary)" : "var(--primary-light-contrast)"}`,
+                      border: `2px solid ${selectedUserId === student.id_usuario ? "var(--secondary)" : "var(--primary-light-contrast)"}`,
                       color: "var(--text-default)",
+                      background: "transparent",
+                      textAlign: "left",
                     }}
                   >
-                    {user.name}
-                  </div>
+                    {student.nome}
+                  </button>
                 ))}
               </div>
-
               <Button
-                onClick={handleLink}
-                disabled={!selectedUserId}
+                onClick={() => void handleLink()}
+                disabled={selectedUserId === null || saving}
                 style={{ marginTop: 0 }}
               >
                 Adicionar
@@ -308,28 +364,18 @@ export function DashboardTrainingDetail() {
 
         {showDeleteToast && (
           <Toast
-            message={`Você realmente quer deletar "${training.trainingName}"?`}
+            message={`Você realmente quer deletar "${training.nome}"?`}
             icon={<Trash2 />}
             onClose={() => setShowDeleteToast(false)}
           >
-            <Button
-              style={{ marginTop: 0 }}
-              onClick={() => setShowDeleteToast(false)}
-            >
+            <Button style={{ marginTop: 0 }} onClick={() => setShowDeleteToast(false)}>
               Cancelar
             </Button>
-            <ButtonStroke
-              onClick={() => {
-                console.log("Deletar treino", training.id);
-                setShowDeleteToast(false);
-                setShowSuccessToast(true);
-              }}
-            >
+            <ButtonStroke onClick={() => void handleDeleteTraining()}>
               Deletar
             </ButtonStroke>
           </Toast>
         )}
-
         {showSuccessToast && (
           <Toast
             message="excluído com sucesso!"
@@ -342,14 +388,10 @@ export function DashboardTrainingDetail() {
             }}
           />
         )}
-
         {errorMessage && (
-          <Toast
-            message={errorMessage}
-            icon={<X />}
-            onClose={() => setErrorMessage(null)}
-          />
+          <Toast message={errorMessage} icon={<X />} onClose={() => setErrorMessage(null)} />
         )}
+        {saving && <p role="status">Salvando...</p>}
       </Container>
     </DashboardGrid>
   );

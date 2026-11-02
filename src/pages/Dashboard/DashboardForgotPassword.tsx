@@ -10,6 +10,7 @@ import { Button } from "../../components/Button";
 import { Wrapper } from "../../components/Wrapper";
 
 import { validateEmailRequired } from "../../validators";
+import { apiPost } from "../../services/api";
 
 export function DashboardForgotPassword() {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ export function DashboardForgotPassword() {
   const [error, setError] = useState("");
   const [touched, setTouched] = useState(false);
   const [submitAttempted, setSubmitAttempted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setValue(e.target.value);
@@ -27,18 +29,31 @@ export function DashboardForgotPassword() {
     setError(validateEmailRequired(e.target.value));
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSubmitAttempted(true);
     const newError = validateEmailRequired(value);
     setError(newError);
     if (newError) return;
-    navigate("/dashboard/mfa", {
-      state: {
-        action: "change-password",
-        redirectTo: isFromSettings ? "/dashboard/configuracoes" : undefined,
-      },
-    });
+    setSubmitting(true);
+    try {
+      await apiPost("/auth/esqueci-senha", { email: value });
+      navigate("/dashboard/mfa", {
+        state: {
+          action: "change-password",
+          email: value,
+          redirectTo: isFromSettings ? "/dashboard/configuracoes" : undefined,
+        },
+      });
+    } catch (requestError) {
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : "Não foi possível solicitar a recuperação.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   const form = (
@@ -59,7 +74,9 @@ export function DashboardForgotPassword() {
           errorMessage={touched || submitAttempted ? error : ""}
           autoComplete="email"
         />
-        <Button type="submit">Avançar</Button>
+        <Button type="submit" disabled={submitting}>
+          {submitting ? "Enviando..." : "Avançar"}
+        </Button>
       </form>
     </>
   );

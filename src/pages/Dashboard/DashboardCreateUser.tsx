@@ -7,8 +7,9 @@ import { PageHeader } from "../../components/PageHeader";
 import { SideMenu } from "../../components/SideMenu";
 import { Input } from "../../components/Input/input";
 import { Select } from "../../components/Select";
-import { FileUpload } from "../../components/FileUpload";
+import { InputCheckbox } from "../../components/InputCheckbox";
 import { Button } from "../../components/Button";
+import { apiPostAuthed } from "../../services/api";
 
 import { useUserForm } from "../../hooks/useUserForm";
 
@@ -21,32 +22,69 @@ import {
   PROFILE_OPTIONS,
 } from "../../utils/formOptions";
 
-const errorStyle: React.CSSProperties = {
-  color: "var(--error)",
-  fontSize: "1.2rem",
-  margin: 0,
-};
-
 export function DashboardCreateUser() {
   const navigate = useNavigate();
-  const [medicalReportFile, setMedicalReportFile] = useState<File | null>(null);
-
   const {
     values,
     handleChange,
     handleSubmitValidate,
     getError,
     requiresMedicalReport,
+    handleMedicalToggle,
   } = useUserForm({ mode: "create" });
 
   const isAluno = values.profile === "Aluno";
+  const [requestError, setRequestError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!handleSubmitValidate(medicalReportFile)) return;
-    // Em produção: await api.post('/users', { ... })
-    console.log("Criar usuário", { ...values, medicalReportFile });
-    navigate("/dashboard/usuarios", { state: { created: true } });
+    if (!handleSubmitValidate()) return;
+    setRequestError("");
+    setSubmitting(true);
+    try {
+      const profile = {
+        Aluno: "aluno",
+        Instrutor: "instrutor",
+        Recepcionista: "recepcionista",
+        Administrador: "admin",
+      }[values.profile];
+      await apiPostAuthed("/usuarios", {
+        nome: values.name,
+        cpf: values.cpf,
+        email: values.email,
+        sexo:
+          values.gender === "Masculino"
+            ? "M"
+            : values.gender === "Feminino"
+              ? "F"
+              : "OUTRO",
+        perfil: profile,
+        ...(isAluno
+          ? {
+              aluno: {
+                objetivo: values.goal
+                  .normalize("NFD")
+                  .replace(/[\u0300-\u036f]/g, "")
+                  .replaceAll(" ", "_")
+                  .toLowerCase(),
+                nivel: values.experience.toLowerCase().replaceAll("á", "a"),
+                deficiencia: values.disability,
+                restricao_medica: values.medicalRestriction,
+              },
+            }
+          : {}),
+      });
+      navigate("/dashboard/usuarios", { state: { created: true } });
+    } catch (error) {
+      setRequestError(
+        error instanceof Error
+          ? error.message
+          : "Não foi possível criar o usuário.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -56,6 +94,7 @@ export function DashboardCreateUser() {
         <PageHeader onBack={() => navigate(-1)}>Criar Usuário</PageHeader>
 
         <form onSubmit={handleSubmit}>
+          {requestError && <p role="alert">{requestError}</p>}
           <b>Informações Pessoais</b>
 
           <Input
@@ -130,38 +169,54 @@ export function DashboardCreateUser() {
           {isAluno && (
             <>
               <b>Informações Médicas</b>
-              <Select
-                id="disability"
-                labelText="Deficiência"
-                value={values.disability}
-                onChange={(val) => handleChange("disability", val)}
-                options={DISABILITY_OPTIONS}
-              />
-              <Select
-                id="medicalRestriction"
-                labelText="Restrição Médica"
-                value={values.medicalRestriction}
-                onChange={(val) => handleChange("medicalRestriction", val)}
-                options={RESTRICTION_OPTIONS}
-              />
+              <b>Deficiência</b>
+              {DISABILITY_OPTIONS.map((option) => (
+                <InputCheckbox
+                  key={option.value}
+                  id={`disability-${option.value}`}
+                  labelText={option.label}
+                  checked={values.disability.includes(option.value)}
+                  disabled={
+                    option.value !== "nenhuma" &&
+                    values.disability.includes("nenhuma")
+                  }
+                  onChange={(_, checked) =>
+                    handleMedicalToggle("disability", option.value, checked)
+                  }
+                />
+              ))}
+              <b>Restrição médica</b>
+              {RESTRICTION_OPTIONS.map((option) => (
+                <InputCheckbox
+                  key={option.value}
+                  id={`restriction-${option.value}`}
+                  labelText={option.label}
+                  checked={values.medicalRestriction.includes(option.value)}
+                  disabled={
+                    option.value !== "nenhuma" &&
+                    values.medicalRestriction.includes("nenhuma")
+                  }
+                  onChange={(_, checked) =>
+                    handleMedicalToggle(
+                      "medicalRestriction",
+                      option.value,
+                      checked,
+                    )
+                  }
+                />
+              ))}
               {requiresMedicalReport && (
-                <>
-                  <FileUpload
-                    id="medicalReport"
-                    onFileChange={setMedicalReportFile}
-                  >
-                    Coloque seu documento ou laudo médico liberando a prática de
-                    atividades físicas
-                  </FileUpload>
-                  {getError("medicalReport") && (
-                    <p style={errorStyle}>{getError("medicalReport")}</p>
-                  )}
-                </>
+                <p style={{ marginTop: "var(--size-sm)" }}>
+                  O aluno poderá enviar o laudo depois da criação. O acesso
+                  permanece bloqueado até a aprovação do cadastro.
+                </p>
               )}
             </>
           )}
 
-          <Button type="submit">Criar Usuário</Button>
+          <Button type="submit" disabled={submitting}>
+            {submitting ? "Criando..." : "Criar Usuário"}
+          </Button>
         </form>
       </Container>
     </DashboardGrid>

@@ -5,7 +5,7 @@ import { formatDateFull } from "../../utils/formatDate";
 type HelpRequestCardProps = {
   trainingName: string;
   exerciseName: string;
-  image: string;
+  image: string | null;
   alt: string;
   requestedAt: number;
   onRemove: () => void;
@@ -22,7 +22,7 @@ export function HelpRequestCard({
   return (
     <article className={styles.container}>
       <div className={styles.content}>
-        <img src={image} alt={alt} className={styles.img} />
+        {image && <img src={image} alt={alt} className={styles.img} />}
         <div className={styles.info}>
           <p className={styles.trainingName}>{trainingName}</p>
           <p className={styles.exerciseName}>{exerciseName}</p>

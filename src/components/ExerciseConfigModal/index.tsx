@@ -1,11 +1,12 @@
-import { X, Plus, Trash2 } from "lucide-react";
+import { X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../Button";
 import { Input } from "../Input/input";
 
 import styles from "./styles.module.css";
 
-type Series = {
+export type ExerciseConfiguration = {
+  series: number;
   kg: number;
   reps: number;
   restSeconds: number;
@@ -13,115 +14,92 @@ type Series = {
 
 type ExerciseConfigModalProps = {
   exerciseName: string;
-  onSave: (series: Series[]) => void;
+  initialValue?: ExerciseConfiguration;
+  onSave: (configuration: ExerciseConfiguration) => void;
   onClose: () => void;
   onError: (message: string) => void;
 };
 
 export function ExerciseConfigModal({
   exerciseName,
+  initialValue,
   onSave,
   onClose,
   onError,
 }: ExerciseConfigModalProps) {
-  const [series, setSeries] = useState<Series[]>([
-    { kg: 0, reps: 0, restSeconds: 60 },
-  ]);
+  const [configuration, setConfiguration] = useState<ExerciseConfiguration>(
+    initialValue ?? { series: 3, kg: 0, reps: 12, restSeconds: 60 },
+  );
 
-  function handleChange(index: number, field: keyof Series, value: string) {
-    setSeries((prev) =>
-      prev.map((s, i) => (i === index ? { ...s, [field]: Number(value) } : s)),
-    );
-  }
-
-  function handleAddSeries() {
-    setSeries((prev) => [...prev, { kg: 0, reps: 0, restSeconds: 60 }]);
-  }
-
-  function handleRemoveSeries(index: number) {
-    if (series.length === 1) return;
-    setSeries((prev) => prev.filter((_, i) => i !== index));
+  function handleChange(field: keyof ExerciseConfiguration, value: string) {
+    setConfiguration((current) => ({ ...current, [field]: Number(value) }));
   }
 
   function handleSave() {
-    const hasEmpty = series.some((s) => s.reps === 0);
-    if (hasEmpty) {
-      onError("Preencha as repetições de todas as séries.");
+    if (
+      !Number.isInteger(configuration.series) ||
+      configuration.series < 1 ||
+      !Number.isInteger(configuration.reps) ||
+      configuration.reps < 1 ||
+      configuration.kg < 0 ||
+      configuration.restSeconds < 0
+    ) {
+      onError("Informe séries, repetições, carga e descanso válidos.");
       return;
     }
-    onSave(series);
+    onSave(configuration);
     onClose();
   }
 
   return (
     <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+      <div className={styles.modal} onClick={(event) => event.stopPropagation()}>
         <button className={styles.closeButton} onClick={onClose} type="button">
           <X size={18} />
         </button>
-
         <h2 className={styles.title}>{exerciseName}</h2>
-        <p className={styles.subtitle}>Configure as séries</p>
-
-        <div className={styles.seriesList}>
-          {series.map((s, index) => (
-            <div key={index} className={styles.seriesRow}>
-              <div className={styles.seriesHeader}>
-                <span className={styles.seriesLabel}>Série {index + 1}</span>
-                <button
-                  className={styles.removeButton}
-                  onClick={() => handleRemoveSeries(index)}
-                  disabled={series.length === 1}
-                  type="button"
-                >
-                  <Trash2 size={16} />
-                </button>
-              </div>
-
-              <div className={styles.fields}>
-                <Input
-                  labelText="Kg"
-                  type="number"
-                  id={`kg-${index}`}
-                  name={`kg-${index}`}
-                  min={0}
-                  value={s.kg}
-                  onChange={(e) => handleChange(index, "kg", e.target.value)}
-                />
-                <Input
-                  labelText="Reps"
-                  type="number"
-                  id={`reps-${index}`}
-                  name={`reps-${index}`}
-                  min={0}
-                  value={s.reps}
-                  onChange={(e) => handleChange(index, "reps", e.target.value)}
-                />
-                <Input
-                  labelText="Descanso (s)"
-                  type="number"
-                  id={`rest-${index}`}
-                  name={`rest-${index}`}
-                  min={0}
-                  value={s.restSeconds}
-                  onChange={(e) =>
-                    handleChange(index, "restSeconds", e.target.value)
-                  }
-                />
-              </div>
-            </div>
-          ))}
+        <p className={styles.subtitle}>Configure as séries do exercício</p>
+        <div className={styles.fields}>
+          <Input
+            labelText="Séries"
+            type="number"
+            id="series-count"
+            name="series-count"
+            min={1}
+            value={configuration.series}
+            onChange={(event) => handleChange("series", event.target.value)}
+          />
+          <Input
+            labelText="Repetições por série"
+            type="number"
+            id="series-reps"
+            name="series-reps"
+            min={1}
+            value={configuration.reps}
+            onChange={(event) => handleChange("reps", event.target.value)}
+          />
+          <Input
+            labelText="Carga sugerida (kg)"
+            type="number"
+            id="series-kg"
+            name="series-kg"
+            min={0}
+            step="0.01"
+            value={configuration.kg}
+            onChange={(event) => handleChange("kg", event.target.value)}
+          />
+          <Input
+            labelText="Descanso (s)"
+            type="number"
+            id="series-rest"
+            name="series-rest"
+            min={0}
+            value={configuration.restSeconds}
+            onChange={(event) =>
+              handleChange("restSeconds", event.target.value)
+            }
+          />
         </div>
-
-        <button
-          className={styles.addButton}
-          onClick={handleAddSeries}
-          type="button"
-        >
-          <Plus size={16} />
-          Adicionar Série
-        </button>
-
         <Button type="button" onClick={handleSave}>
           Salvar
         </Button>

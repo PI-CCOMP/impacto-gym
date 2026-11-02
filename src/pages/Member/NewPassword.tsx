@@ -10,9 +10,12 @@ import { Button } from "../../components/Button";
 import { Toast } from "../../components/Toast";
 
 import { validatePassword, validateConfirmPassword } from "../../validators";
+import { apiPost } from "../../services/api";
 
 type LocationState = {
   redirectTo?: string;
+  email?: string;
+  codigo?: string;
 };
 
 export function NewPassword() {
@@ -27,6 +30,8 @@ export function NewPassword() {
   const [touched, setTouched] = useState({ password: false, confirm: false });
   const [submitAttempted, setSubmitAttempted] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [requestError, setRequestError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   function handlePasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
     const val = e.target.value;
@@ -49,15 +54,33 @@ export function NewPassword() {
     }));
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSubmitAttempted(true);
     const pwErr = validatePassword(password);
     const cfErr = validateConfirmPassword(confirm, password);
     setErrors({ password: pwErr, confirm: cfErr });
     if (pwErr || cfErr) return;
-    // TODO: api.resetPassword({ password })
-    setShowToast(true);
+    if (!state?.email || !state.codigo) {
+      setRequestError("A solicitação expirou. Inicie novamente a recuperação.");
+      return;
+    }
+    setSubmitting(true);
+    setRequestError("");
+    try {
+      await apiPost("/auth/redefinir-senha", {
+        email: state.email,
+        codigo: state.codigo,
+        nova_senha: password,
+      });
+      setShowToast(true);
+    } catch (error) {
+      setRequestError(
+        error instanceof Error ? error.message : "Não foi possível alterar a senha.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -98,7 +121,10 @@ export function NewPassword() {
           errorMessage={touched.confirm || submitAttempted ? errors.confirm : ""}
           autoComplete="new-password"
         />
-        <Button type="submit">Salvar</Button>
+        {requestError && <p role="alert">{requestError}</p>}
+        <Button type="submit" disabled={submitting}>
+          {submitting ? "Salvando..." : "Salvar"}
+        </Button>
       </form>
     </Container>
   );

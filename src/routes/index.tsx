@@ -1,4 +1,5 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 import { AppLayout } from "../layouts/AppLayout";
 import { DashboardLayout } from "../layouts/DashboardLayout";
@@ -21,6 +22,7 @@ import { Profile } from "../pages/Member/Profile";
 import { Faq } from "../pages/Member/Faq";
 import { ChangeEmail } from "../pages/Member/ChangeEmail";
 import { NewPassword } from "../pages/Member/NewPassword";
+import { UploadMedicalReport } from "../pages/Member/UploadMedicalReport";
 import { Page404 } from "../pages/Page404";
 
 import { DashboardLogin } from "../pages/Dashboard/DashboardLogin";
@@ -38,9 +40,25 @@ import { DashboardAlert } from "../pages/Dashboard/DashboardAlert";
 import { DashboardSettings } from "../pages/Dashboard/DashboardSettings";
 import { DashboardChangeEmail } from "../pages/Dashboard/DashboardChangeEmail";
 import { DashboardNewPassword } from "../pages/Dashboard/DashboardNewPassword";
+import { RequireRole } from "./RequireRole";
 
 export function AppRoutes() {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleSessionExpired = (event: Event) => {
+      const { perfil } = (event as CustomEvent<{ perfil: string | null }>).detail;
+      navigate(perfil === "aluno" ? "/login" : "/dashboard", {
+        replace: true,
+        state: { sessionExpired: true },
+      });
+    };
+
+    window.addEventListener("auth:session-expired", handleSessionExpired);
+    return () =>
+      window.removeEventListener("auth:session-expired", handleSessionExpired);
+  }, [navigate]);
 
   return (
     <Routes>
@@ -50,6 +68,7 @@ export function AppRoutes() {
         <Route path="/registro" element={<Register />} />
         <Route path="/verificar-email" element={<MFAVerification />} />
         <Route path="/alterar-senha" element={<ForgotPassword />} />
+        <Route element={<RequireRole roles={["aluno"]} />}>
         <Route path="/inicio" element={<Home />} />
         <Route
           path="/treino/:idTreino"
@@ -69,7 +88,9 @@ export function AppRoutes() {
           element={<ForgotPassword />}
         />
         <Route path="/configuracoes/alterar-email" element={<ChangeEmail />} />
+        </Route>
         <Route path="/nova-senha" element={<NewPassword />} />
+        <Route path="/enviar-laudo" element={<UploadMedicalReport />} />
       </Route>
 
       <Route element={<DashboardLayout />}>
@@ -79,8 +100,10 @@ export function AppRoutes() {
           element={<DashboardForgotPassword />}
         />
         <Route path="/dashboard/mfa" element={<DashboardMFAVerification />} />
+        <Route element={<RequireRole roles={["admin", "instrutor", "recepcionista"]} />}>
         <Route path="/dashboard/usuarios" element={<DashboardUsers />} />
         <Route path="/dashboard/usuario/:id" element={<DashboardUser />} />
+        <Route element={<RequireRole roles={["admin"]} />}>
         <Route
           path="/dashboard/usuarios/criar"
           element={<DashboardCreateUser />}
@@ -89,6 +112,8 @@ export function AppRoutes() {
           path="/dashboard/usuario/:id/editar"
           element={<DashboardEditUser />}
         />
+        </Route>
+        <Route element={<RequireRole roles={["admin", "instrutor"]} />}>
         <Route path="/dashboard/treinos" element={<DashboardTraining />} />
         <Route
           path="/dashboard/treino/:id"
@@ -102,6 +127,7 @@ export function AppRoutes() {
           path="/dashboard/solicitacoes_auxilio"
           element={<DashboardHelp />}
         />
+        </Route>
         <Route path="/dashboard/avisos" element={<DashboardAlert />} />
         <Route
           path="/dashboard/configuracoes"
@@ -111,6 +137,7 @@ export function AppRoutes() {
           path="/dashboard/configuracoes/alterar-email"
           element={<DashboardChangeEmail />}
         />
+        </Route>
         <Route
           path="/dashboard/configuracoes/alterar-senha"
           element={<DashboardForgotPassword />}

@@ -1,5 +1,5 @@
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { Check, Edit2, Trash2 } from "lucide-react";
 
 import { DashboardGrid } from "../../components/DashboardGrid";
@@ -13,43 +13,147 @@ import { TrainingCard } from "../../components/TrainingCard";
 import { Button } from "../../components/Button";
 import { Toast } from "../../components/Toast";
 import { ButtonStroke } from "../../components/ButtonStroke";
+import {
+  apiDeleteAuthed,
+  apiGet,
+  fotoPerfilPrivada,
+} from "../../services/api";
 
 import anonymousImg from "../../assets/img/profile/anonymous.png";
-
+import exerciseSupino from "../../assets/img/exercise/supino.gif";
 import styles from "./DashboardUser.module.css";
 
-import { mockUsers, mockTrainings, mockLoggedUser } from "../../mocks/mockData";
+type UserDetail = {
+  id_usuario: number;
+  nome: string;
+  cpf?: string;
+  email?: string;
+  sexo?: string;
+  perfil: "aluno" | "instrutor" | "recepcionista" | "admin";
+  foto_url: string | null;
+  criado_em?: string;
+  aluno: {
+    id_aluno: number;
+    nivel: string;
+    objetivo: string;
+    deficiencia?: string[];
+    restricao_medica?: string[];
+    status: string;
+    id_instrutor: number | null;
+  } | null;
+  treinos_vinculados: {
+    id_aluno_treino: number;
+    id_treino: number;
+    nome_treino: string;
+  }[];
+};
 
-import { formatDate } from "../../utils/formatDate";
-import { hasPermission, can } from "../../utils/permissions";
+const profileLabels: Record<UserDetail["perfil"], string> = {
+  aluno: "Aluno",
+  instrutor: "Instrutor",
+  recepcionista: "Recepcionista",
+  admin: "Administrador",
+};
 
 export function DashboardUser() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const [user, setUser] = useState<UserDetail | null>(null);
+  const [photo, setPhoto] = useState(anonymousImg);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [showDeleteToast, setShowDeleteToast] = useState(false);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
-  const user = mockUsers.find((u) => u.id === id);
+  useEffect(() => {
+    let active = true;
+    async function loadUser() {
+      try {
+        const detail = await apiGet<UserDetail>(`/usuarios/${id}`);
+        if (!active) return;
+        setUser(detail);
+        if (detail.foto_url) {
+          const imageUrl = await fotoPerfilPrivada(detail.id_usuario);
+          if (active) setPhoto(imageUrl);
+        }
+      } catch (requestError) {
+        if (active) {
+          setError(
+            requestError instanceof Error
+              ? requestError.message
+              : "Não foi possível carregar o usuário.",
+          );
+        }
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+    void loadUser();
+    return () => {
+      active = false;
+    };
+  }, [id]);
 
-  if (!user) {
+  async function handleUnlink(trainingId: number) {
+    if (!user) return;
+    setError("");
+    try {
+      await apiDeleteAuthed(
+        `/usuarios/${user.id_usuario}/treinos/${trainingId}`,
+      );
+      setUser((current) =>
+        current
+          ? {
+              ...current,
+              treinos_vinculados: current.treinos_vinculados.filter(
+                (training) => training.id_aluno_treino !== trainingId,
+              ),
+            }
+          : current,
+      );
+    } catch (requestError) {
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : "Não foi possível desvincular o treino.",
+      );
+    }
+  }
+
+  async function handleDelete() {
+    if (!user) return;
+    setDeleting(true);
+    setError("");
+    try {
+      await apiDeleteAuthed(`/usuarios/${user.id_usuario}`);
+      setShowDeleteToast(false);
+      setShowSuccessToast(true);
+    } catch (requestError) {
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : "Não foi possível excluir o usuário.",
+      );
+    } finally {
+      setDeleting(false);
+    }
+  }
+
+  if (loading || !user) {
     return (
       <DashboardGrid>
         <SideMenu />
         <Container isDashboard>
-          <h1>Usuário não encontrado.</h1>
+          <h1>Usuário</h1>
+          {loading ? <p>Carregando...</p> : <p role="alert">{error}</p>}
         </Container>
       </DashboardGrid>
     );
   }
 
-  const isAluno = user.profile === "Aluno";
-
-  // treinos vinculados ao aluno
-  const linkedTrainings = isAluno
-    ? mockTrainings.filter((t) => user.trainingIds?.includes(t.id))
-    : [];
-
-  const navigate = useNavigate();
-
-  const [showDeleteToast, setShowDeleteToast] = useState(false);
-  const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const isAluno = user.perfil === "aluno";
+  const isAdmin = sessionStorage.getItem("perfil") === "admin";
 
   return (
     <DashboardGrid>
@@ -57,73 +161,90 @@ export function DashboardUser() {
       <Container style={{ paddingTop: 0, minHeight: "unset" }}>
         <Row typeRow="row-space">
           <h1>Usuário</h1>
-          {mockLoggedUser.role === "admin" && (
+          {isAdmin && (
             <ActionButton
               variant="edit"
               icon={<Edit2 size={16} />}
-              onClick={() => navigate(`/dashboard/usuario/${user.id}/editar`)}
+              onClick={() =>
+                navigate(`/dashboard/usuario/${user.id_usuario}/editar`)
+              }
             />
           )}
         </Row>
-
+        {error && <p role="alert">{error}</p>}
         <div>
           <UserCard
-            image={user.image ?? anonymousImg}
-            name={user.name}
-            cpf={user.cpf}
-            instructor={user.instructor}
+            id={String(user.id_usuario)}
+            image={photo}
+            name={user.nome}
+            cpf={user.cpf ?? "—"}
           />
 
           <div className={styles.contentUser}>
             <ul>
               <h2>Informações Pessoais</h2>
-              <li>
-                <b>E-mail:</b>
-                <p>{user.email}</p>
-              </li>
-              <li>
-                <b>Sexo:</b>
-                <p>{user.gender}</p>
-              </li>
+              {user.email && (
+                <li>
+                  <b>E-mail:</b>
+                  <p>{user.email}</p>
+                </li>
+              )}
+              {user.sexo && (
+                <li>
+                  <b>Sexo:</b>
+                  <p>{user.sexo}</p>
+                </li>
+              )}
             </ul>
 
-            {isAluno && (
-              <ul>
-                <h2>Informações de Treino</h2>
-                <li>
-                  <b>Objetivo:</b>
-                  <p>{user.goal ?? "—"}</p>
-                </li>
-                <li>
-                  <b>Experiência:</b>
-                  <p>{user.experience ?? "—"}</p>
-                </li>
-              </ul>
-            )}
-
-            {isAluno && (
-              <ul>
-                <h2>Informações Médicas</h2>
-                <li>
-                  <b>Deficiência:</b>
-                  <p>{user.disability ?? "—"}</p>
-                </li>
-                <li>
-                  <b>Restrição Médica:</b>
-                  <p>{user.medicalRestriction ?? "—"}</p>
-                </li>
-              </ul>
+            {isAluno && user.aluno && (
+              <>
+                <ul>
+                  <h2>Informações de Treino</h2>
+                  <li>
+                    <b>Objetivo:</b>
+                    <p>{user.aluno.objetivo}</p>
+                  </li>
+                  <li>
+                    <b>Experiência:</b>
+                    <p>{user.aluno.nivel}</p>
+                  </li>
+                  <li>
+                    <b>Status:</b>
+                    <p>{user.aluno.status}</p>
+                  </li>
+                </ul>
+                {(user.aluno.deficiencia || user.aluno.restricao_medica) && (
+                  <ul>
+                    <h2>Informações Médicas</h2>
+                    {user.aluno.deficiencia && (
+                      <li>
+                        <b>Deficiência:</b>
+                        <p>{user.aluno.deficiencia.join(", ")}</p>
+                      </li>
+                    )}
+                    {user.aluno.restricao_medica && (
+                      <li>
+                        <b>Restrição Médica:</b>
+                        <p>{user.aluno.restricao_medica.join(", ")}</p>
+                      </li>
+                    )}
+                  </ul>
+                )}
+              </>
             )}
 
             <ul>
               <h2>Dados da Conta</h2>
-              <li>
-                <b>Criada em:</b>
-                <p>{formatDate(user.createdAt)}</p>
-              </li>
+              {user.criado_em && (
+                <li>
+                  <b>Criada em:</b>
+                  <p>{new Date(user.criado_em).toLocaleDateString("pt-BR")}</p>
+                </li>
+              )}
               <li>
                 <b>Tipo:</b>
-                <p>{user.profile}</p>
+                <p>{profileLabels[user.perfil]}</p>
               </li>
             </ul>
           </div>
@@ -133,35 +254,29 @@ export function DashboardUser() {
               <Line />
               <div className={styles.trainingContent}>
                 <h1>Treinos Vinculados</h1>
-                {linkedTrainings.length === 0 ? (
+                {user.treinos_vinculados.length === 0 ? (
                   <p>Nenhum treino vinculado.</p>
                 ) : (
-                  linkedTrainings.map((training) => (
+                  user.treinos_vinculados.map((training) => (
                     <div
-                      key={training.id}
+                      key={training.id_aluno_treino}
                       onClick={() =>
-                        navigate(`/dashboard/treino/${training.id}`)
+                        navigate(
+                          `/dashboard/treino/${training.id_treino}`,
+                        )
                       }
                       style={{ cursor: "pointer" }}
                     >
                       <TrainingCard
                         variant="dashboard"
                         dataState="default"
-                        image={training.image}
-                        alt={training.alt}
-                        trainingName={training.trainingName}
-                        muscleGroups={training.muscleGroups}
+                        image={exerciseSupino}
+                        alt={training.nome_treino}
+                        trainingName={training.nome_treino}
+                        muscleGroups={[]}
                         onUnlink={
-                          can.unlinkTraining
-                            ? (e) => {
-                                e.stopPropagation();
-                                console.log(
-                                  "Desvincular treino",
-                                  training.id,
-                                  "do usuário",
-                                  user.id,
-                                );
-                              }
+                          isAdmin || sessionStorage.getItem("perfil") === "instrutor"
+                            ? () => void handleUnlink(training.id_aluno_treino)
                             : undefined
                         }
                       />
@@ -172,7 +287,7 @@ export function DashboardUser() {
             </>
           )}
         </div>
-        {mockLoggedUser.role === "admin" && (
+        {isAdmin && (
           <Button variant="red" onClick={() => setShowDeleteToast(true)}>
             Deletar Usuário
           </Button>
@@ -180,25 +295,19 @@ export function DashboardUser() {
 
         {showDeleteToast && (
           <Toast
-            message={`Você realmente quer deletar ${user.name}?`}
+            message={`Você realmente quer deletar ${user.nome}?`}
             icon={<Trash2 />}
             onClose={() => setShowDeleteToast(false)}
           >
             <Button
               style={{ marginTop: 0 }}
               onClick={() => setShowDeleteToast(false)}
+              disabled={deleting}
             >
               Cancelar
             </Button>
-            <ButtonStroke
-              onClick={() => {
-                // Em produção: await api.delete(`/users/${user.id}`)
-                console.log("Deletar usuário", user.id);
-                setShowDeleteToast(false);
-                setShowSuccessToast(true);
-              }}
-            >
-              Deletar
+            <ButtonStroke onClick={() => void handleDelete()} disabled={deleting}>
+              {deleting ? "Excluindo..." : "Deletar"}
             </ButtonStroke>
           </Toast>
         )}

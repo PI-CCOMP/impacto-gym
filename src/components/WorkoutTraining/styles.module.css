@@ -7,6 +7,7 @@
 
 .table {
   width: 100%;
+  table-layout: fixed;
   text-align: center;
   border-collapse: collapse;
 }
@@ -41,6 +42,7 @@
 .tableBody td {
   padding: var(--size-sm);
   text-align: center;
+  vertical-align: middle;
   font-size: var(--size-md);
 }
 
@@ -51,4 +53,20 @@
   cursor: pointer;
   display: block;
   margin: 0 auto;
+}
+
+.valueInput {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  padding: var(--size-2xs);
+  margin-inline: auto;
+  text-align: center;
+  text-align-last: center;
+  box-sizing: border-box;
+  color: var(--text);
+  background-color: var(--primary-light);
+  border: 1px solid var(--primary-light-contrast);
+  border-radius: var(--size-xs);
 }

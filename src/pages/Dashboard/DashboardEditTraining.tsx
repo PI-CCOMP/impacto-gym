@@ -1,139 +1,235 @@
-import { useState, useMemo } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { Search, X, Check, Edit2 } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Search, X, Check } from "lucide-react";
 
 import { DashboardGrid } from "../../components/DashboardGrid";
 import { SideMenu } from "../../components/SideMenu";
 import { Container } from "../../components/Container";
 import { PageHeader } from "../../components/PageHeader";
-import { ActionButton } from "../../components/ActionButton";
 import { DashboardRow } from "../../components/DashboardRow";
 import { Input } from "../../components/Input/input";
 import { InputCheckbox } from "../../components/InputCheckbox";
 import { ExerciseCard } from "../../components/ExerciseCard";
 import { Pagination } from "../../components/Pagination";
+import { Line } from "../../components/Line";
 import { Button } from "../../components/Button";
 import { ButtonStroke } from "../../components/ButtonStroke";
-import { ExerciseConfigModal } from "../../components/ExerciseConfigModal";
 import { QuickEditModal } from "../../components/QuickEditModal";
 import { Toast } from "../../components/Toast";
-
 import {
-  mockTrainings,
-  mockExercises,
-  mockLoggedUser,
-} from "../../mocks/mockData";
-
+  apiGet,
+  apiGetAllPages,
+  apiPutAuthed,
+} from "../../services/api";
 import { MUSCLE_GROUPS } from "../../utils/formOptions";
-
 import { can } from "../../utils/permissions";
+import exerciseSupino from "../../assets/img/exercise/supino.gif";
+
+type ExerciseItem = {
+  id_exercicio: number;
+  nome: string;
+  grupo_muscular: string;
+  foto_url: string | null;
+  video_url: string | null;
+};
+type SelectedExercise = {
+  exercise: ExerciseItem;
+  configuration: {
+    series: number;
+    kg: number;
+    reps: number;
+    restSeconds: number;
+  };
+};
+type TrainingDetail = {
+  id_treino: number;
+  nome: string;
+  exercicios: Array<
+    ExerciseItem & {
+      series: number;
+      repeticoes: number;
+      carga_sugerida: number;
+      tempo_descanso: number;
+    }
+  >;
+};
+
+function displayGroup(group: string): string {
+  if (group === "Bracos") return "Braços";
+  if (group === "Abdomen") return "Abdômen";
+  return group;
+}
 
 export function DashboardEditTraining() {
   const { id } = useParams();
   const navigate = useNavigate();
-
-  const training = mockTrainings.find((t) => t.id === id);
-
-  const [trainingName, setTrainingName] = useState(
-    training?.trainingName ?? "",
+  const [trainingName, setTrainingName] = useState("");
+  const [selectedExercises, setSelectedExercises] = useState<SelectedExercise[]>(
+    [],
   );
-  const [selectedExercises, setSelectedExercises] = useState<string[]>(
-    training?.exercises.map((ex) => ex.id) ?? [],
-  );
-
+  const [catalog, setCatalog] = useState<ExerciseItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [exerciseSearch, setExerciseSearch] = useState("");
   const [selectedExerciseMuscles, setSelectedExerciseMuscles] = useState<
     string[]
   >([]);
   const [exercisePage, setExercisePage] = useState(1);
   const exercisePageSize = 6;
-
-  const [configuringExercise, setConfiguringExercise] = useState<{
-    id: string;
-    name: string;
-  } | null>(null);
   const [showNameModal, setShowNameModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const loadData = useCallback(async () => {
+    if (!id) return;
+    setLoading(true);
+    try {
+      const [training, exerciseResult] = await Promise.all([
+        apiGet<TrainingDetail>(`/treinos/${id}`),
+        apiGetAllPages<ExerciseItem>("/exercicios"),
+      ]);
+      setTrainingName(training.nome);
+      setSelectedExercises(
+        training.exercicios.map((exercise) => ({
+          exercise,
+          configuration: {
+            series: exercise.series,
+            reps: exercise.repeticoes,
+            kg: Number(exercise.carga_sugerida),
+            restSeconds: exercise.tempo_descanso,
+          },
+        })),
+      );
+      setCatalog(exerciseResult);
+      setErrorMessage(null);
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Não foi possível carregar o treino.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, [id]);
 
-  if (!training) {
+  useEffect(() => {
+    void loadData();
+  }, [loadData]);
+
+  const filteredExercises = useMemo(
+    () =>
+      catalog.filter((exercise) => {
+        const matchesSearch = exercise.nome
+          .toLowerCase()
+          .includes(exerciseSearch.toLowerCase());
+        const matchesMuscle =
+          selectedExerciseMuscles.length === 0 ||
+          selectedExerciseMuscles.includes(
+            displayGroup(exercise.grupo_muscular),
+          );
+        return matchesSearch && matchesMuscle;
+      }),
+    [catalog, exerciseSearch, selectedExerciseMuscles],
+  );
+  const paginatedExercises = filteredExercises.slice(
+    (exercisePage - 1) * exercisePageSize,
+    exercisePage * exercisePageSize,
+  );
+  const selectedIds = new Set(
+    selectedExercises.map(({ exercise }) => exercise.id_exercicio),
+  );
+  const availableExercises = paginatedExercises.filter(
+    (exercise) => !selectedIds.has(exercise.id_exercicio),
+  );
+
+  function toggleExerciseMuscle(muscle: string) {
+    setSelectedExerciseMuscles((previous) =>
+      previous.includes(muscle)
+        ? previous.filter((item) => item !== muscle)
+        : [...previous, muscle],
+    );
+    setExercisePage(1);
+  }
+
+  function toggleTrainingExercise(exercise: ExerciseItem) {
+    setSelectedExercises((previous) => {
+      const selected = previous.some(
+        (item) => item.exercise.id_exercicio === exercise.id_exercicio,
+      );
+      if (selected) {
+        return previous.filter(
+          (item) => item.exercise.id_exercicio !== exercise.id_exercicio,
+        );
+      }
+      return [
+        ...previous,
+        {
+          exercise,
+          configuration: { series: 3, reps: 12, kg: 0, restSeconds: 60 },
+        },
+      ];
+    });
+  }
+
+  async function saveTraining(name = trainingName) {
+    if (!id) return;
+    if (selectedExercises.length < 3) {
+      setErrorMessage("O treino deve ter pelo menos 3 exercícios.");
+      return;
+    }
+    setSaving(true);
+    setErrorMessage(null);
+    try {
+      await apiPutAuthed(`/treinos/${id}`, {
+        nome: name,
+        exercicios: selectedExercises.map(({ exercise, configuration }) => ({
+          id_exercicio: exercise.id_exercicio,
+          series: configuration.series,
+          repeticoes: configuration.reps,
+          carga_sugerida: configuration.kg,
+          tempo_descanso: configuration.restSeconds,
+        })),
+      });
+      setShowNameModal(false);
+      setShowSuccessToast(true);
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Não foi possível salvar o treino.",
+      );
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (!can.editTraining) {
     return (
       <DashboardGrid>
         <SideMenu />
         <Container isDashboard>
-          <PageHeader onBack={() => navigate(-1)}>
-            Treino não encontrado
-          </PageHeader>
+          <PageHeader onBack={() => navigate(-1)}>Acesso não autorizado.</PageHeader>
         </Container>
       </DashboardGrid>
     );
   }
 
-  // Lógica de Filtro
-  const filteredExercises = useMemo(() => {
-    return mockExercises.filter((ex) => {
-      const matchesSearch = ex.exerciseName
-        .toLowerCase()
-        .includes(exerciseSearch.toLowerCase());
-      const matchesMuscle =
-        selectedExerciseMuscles.length === 0 ||
-        selectedExerciseMuscles.includes(ex.muscleGroup);
-      return matchesSearch && matchesMuscle;
-    });
-  }, [exerciseSearch, selectedExerciseMuscles]);
-
-  const paginatedExercises = filteredExercises.slice(
-    (exercisePage - 1) * exercisePageSize,
-    exercisePage * exercisePageSize,
-  );
-
-  const toggleExerciseMuscle = (muscle: string) => {
-    setSelectedExerciseMuscles((prev) =>
-      prev.includes(muscle)
-        ? prev.filter((m) => m !== muscle)
-        : [...prev, muscle],
+  if (loading) {
+    return (
+      <DashboardGrid>
+        <SideMenu />
+        <Container isDashboard>
+          <p role="status">Carregando treino...</p>
+        </Container>
+      </DashboardGrid>
     );
-  };
-
-  const handleSaveEdit = () => {
-    if (selectedExercises.length === 0) {
-      setErrorMessage("Selecione pelo menos um exercício.");
-      return;
-    }
-    console.log("Treino Editado:", {
-      id: training.id,
-      trainingName,
-      selectedExercises,
-    });
-    setShowSuccessToast(true);
-    setTimeout(() => navigate(-1), 2000);
-  };
+  }
 
   return (
     <DashboardGrid>
       <SideMenu />
       <Container isDashboard>
         <DashboardRow variant="sideBySide">
-          <PageHeader onBack={() => navigate(-1)}>
-            {training.trainingName}
-          </PageHeader>
-          {can.editTraining && (
-            <ActionButton
-              variant="edit"
-              icon={<Edit2 size={16} />}
-              onClick={() => setShowNameModal(true)}
-            />
-          )}
+          <PageHeader onBack={() => navigate(-1)}>{trainingName || "Editar treino"}</PageHeader>
         </DashboardRow>
 
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "var(--size-lg)",
-          }}
-        >
-          {/* DashboardRow envolvendo Input e Checkboxes */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--size-lg)" }}>
           <DashboardRow>
             <Input
               type="text"
@@ -142,22 +238,21 @@ export function DashboardEditTraining() {
               placeholder="Buscar exercício..."
               leftIcon={<Search />}
               value={exerciseSearch}
-              onChange={(e) => {
-                setExerciseSearch(e.target.value);
+              onChange={(event) => {
+                setExerciseSearch(event.target.value);
                 setExercisePage(1);
               }}
             />
-            {MUSCLE_GROUPS.map((m) => (
+            {MUSCLE_GROUPS.map((muscle) => (
               <InputCheckbox
-                key={m}
-                labelText={m}
-                checked={selectedExerciseMuscles.includes(m)}
-                onChange={() => toggleExerciseMuscle(m)}
+                key={muscle}
+                labelText={muscle}
+                checked={selectedExerciseMuscles.includes(muscle)}
+                onChange={() => toggleExerciseMuscle(muscle)}
               />
             ))}
           </DashboardRow>
 
-          {/* Grid de Exercícios */}
           <div
             style={{
               display: "grid",
@@ -165,28 +260,59 @@ export function DashboardEditTraining() {
               gap: "var(--size-md)",
             }}
           >
-            {paginatedExercises.map((exercise) => (
+            <h2>Escolhidos</h2>
+          </div>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+              gap: "var(--size-md)",
+            }}
+          >
+            {selectedExercises.map(({ exercise }) => (
               <ExerciseCard
-                key={exercise.id}
-                id={exercise.id}
-                image={exercise.image}
-                alt={exercise.alt}
-                exerciseName={exercise.exerciseName}
-                selected={selectedExercises.includes(exercise.id)}
-                onClick={() => {
-                  if (selectedExercises.includes(exercise.id)) {
-                    setSelectedExercises((prev) =>
-                      prev.filter((exId) => exId !== exercise.id),
-                    );
-                  } else {
-                    setConfiguringExercise({
-                      id: exercise.id,
-                      name: exercise.exerciseName,
-                    });
-                  }
-                }}
+                key={exercise.id_exercicio}
+                id={String(exercise.id_exercicio)}
+                image={exercise.foto_url ?? exerciseSupino}
+                alt={exercise.nome}
+                exerciseName={exercise.nome}
+                selected
+                onDoubleClick={() => toggleTrainingExercise(exercise)}
+                onRemove={() => toggleTrainingExercise(exercise)}
               />
             ))}
+            {selectedExercises.length === 0 && (
+              <p>Nenhum exercício escolhido.</p>
+            )}
+          </div>
+
+          <Line />
+          <h2>Não escolhidos</h2>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+              gap: "var(--size-md)",
+            }}
+          >
+            {availableExercises.map((exercise) => (
+              <div key={exercise.id_exercicio}>
+                <ExerciseCard
+                  id={String(exercise.id_exercicio)}
+                  image={exercise.foto_url ?? exerciseSupino}
+                  alt={exercise.nome}
+                  exerciseName={exercise.nome}
+                  onClick={() => toggleTrainingExercise(exercise)}
+                />
+              </div>
+            ))}
+            {availableExercises.length === 0 && (
+              <p>
+                {filteredExercises.length === 0
+                  ? "Nenhum exercício encontrado."
+                  : "Todos os exercícios desta página já foram escolhidos."}
+              </p>
+            )}
           </div>
 
           <Pagination
@@ -197,7 +323,8 @@ export function DashboardEditTraining() {
             onPageSizeChange={() => {}}
           />
 
-          {/* Botões de Ação: Cancelar (Button) primeiro, Salvar (ButtonStroke) depois à direita */}
+          <p>{selectedExercises.length} exercício(s) selecionado(s).</p>
+
           <div
             style={{
               display: "flex",
@@ -209,53 +336,39 @@ export function DashboardEditTraining() {
             <Button onClick={() => navigate(-1)} style={{ marginTop: 0 }}>
               Cancelar
             </Button>
-            <ButtonStroke onClick={handleSaveEdit}>
+            <ButtonStroke onClick={() => setShowNameModal(true)}>
               Salvar Alterações
             </ButtonStroke>
           </div>
         </div>
 
-        {/* Modais */}
-        {configuringExercise && (
-          <ExerciseConfigModal
-            exerciseName={configuringExercise.name}
-            onSave={(series) => {
-              setSelectedExercises((prev) => [...prev, configuringExercise.id]);
-              setConfiguringExercise(null);
-            }}
-            onClose={() => setConfiguringExercise(null)}
-            onError={(msg) => setErrorMessage(msg)}
-          />
-        )}
-
         {showNameModal && (
           <QuickEditModal
             name={trainingName}
+            title="Nome do treino"
             onSave={(newName) => {
               setTrainingName(newName);
-              setShowNameModal(false);
+              void saveTraining(newName);
             }}
             onClose={() => setShowNameModal(false)}
           />
         )}
-
         {errorMessage && (
-          <Toast
-            message={errorMessage}
-            icon={<X />}
-            onClose={() => setErrorMessage(null)}
-          />
+          <Toast message={errorMessage} icon={<X />} onClose={() => setErrorMessage(null)} />
         )}
-
         {showSuccessToast && (
           <Toast
             message="alterado com sucesso!"
             highlight="Treino"
             highlightPosition="before"
             icon={<Check />}
-            onClose={() => setShowSuccessToast(false)}
+            onClose={() => {
+              setShowSuccessToast(false);
+              navigate(`/dashboard/treino/${id}`);
+            }}
           />
         )}
+        {saving && <p role="status">Salvando treino...</p>}
       </Container>
     </DashboardGrid>
   );

@@ -10,7 +10,6 @@ import { Button } from "../../components/Button";
 import { Row } from "../../components/Row";
 import { CheckboxCard } from "../../components/CheckboxCard";
 import { InputCheckbox } from "../../components/InputCheckbox";
-import { FileUpload } from "../../components/FileUpload";
 
 import maleImg from "../../assets/img/register/male.png";
 import femaleImg from "../../assets/img/register/female.png";
@@ -23,8 +22,7 @@ import intermediateImg from "../../assets/img/register/intermediario.png";
 import advancedImg from "../../assets/img/register/avancado.png";
 
 import { useRegistrarForm } from "../../hooks/useRegistrarForm";
-
-import styles from "../Member/Auth.module.css";
+import { apiPost } from "../../services/api";
 
 const steps = [
   { id: 1, title: "Cadastre-se!", subtitle: "Preencha os campos abaixo" },
@@ -43,7 +41,7 @@ const steps = [
   {
     id: 6,
     title: "Laudo Médico",
-    subtitle: "Preencha o campo abaixo - Apenas PDF",
+    subtitle: "Você poderá enviar o laudo depois da confirmação do e-mail",
   },
   {
     id: 7,
@@ -62,8 +60,8 @@ const DEFICIENCY_OPTIONS = [
   "auditiva",
   "motora",
   "intelectual",
-  "múltipla",
-  "outra-def",
+  "multipla",
+  "outra",
 ];
 
 const errorStyle: React.CSSProperties = {
@@ -75,7 +73,8 @@ const errorStyle: React.CSSProperties = {
 export function Register() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
-  const [medicalReportFile, setMedicalReportFile] = useState<File | null>(null);
+  const [requestError, setRequestError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const {
     formValues,
@@ -93,9 +92,9 @@ export function Register() {
 
   const hasDeficiencyOrRestriction =
     (formValues.deficiency.length > 0 &&
-      !formValues.deficiency.includes("nenhuma-def")) ||
+      !formValues.deficiency.includes("nenhuma")) ||
     (formValues.medicalRestriction.length > 0 &&
-      !formValues.medicalRestriction.includes("nenhuma-rest"));
+      !formValues.medicalRestriction.includes("nenhuma"));
 
   const activeSteps = steps.filter(
     (step) => step.id !== 6 || hasDeficiencyOrRestriction,
@@ -104,7 +103,7 @@ export function Register() {
 
   function handleNextStep() {
     setSubmitAttempted(true);
-    const stepErrors = validateStep(currentStepData.id, medicalReportFile);
+    const stepErrors = validateStep(currentStepData.id);
     if (Object.keys(stepErrors).length > 0) {
       setErrors((prev) => ({ ...prev, ...stepErrors }));
       setTouched((prev) => ({
@@ -126,21 +125,50 @@ export function Register() {
     else setCurrentStep((prev) => prev - 1);
   }
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubmitAttempted(true);
-    const stepErrors = validateStep(currentStepData.id, medicalReportFile);
+    setRequestError("");
+    const stepErrors = validateStep(currentStepData.id);
     if (Object.keys(stepErrors).length > 0) {
       setErrors((prev) => ({ ...prev, ...stepErrors }));
       return;
     }
-    navigate("/verificar-email", {
-      state: {
-        redirectTo: "/login",
-        showSuccessToast: true,
-        action: "register",
-      },
-    });
+    setSubmitting(true);
+    try {
+      await apiPost("/cadastros", {
+        nome: formValues.name,
+        cpf: formValues.cpf,
+        email: formValues.email,
+        senha: formValues.password,
+        sexo:
+          formValues.gender === "masculino"
+            ? "M"
+            : formValues.gender === "feminino"
+              ? "F"
+              : "OUTRO",
+        deficiencia: formValues.deficiency,
+        restricao_medica: formValues.medicalRestriction,
+        objetivo: formValues.objective.replaceAll("-", "_"),
+        nivel: formValues.experience,
+      });
+      navigate("/verificar-email", {
+        state: {
+          email: formValues.email,
+          redirectTo: "/login",
+          showSuccessToast: true,
+          action: "register",
+        },
+      });
+    } catch (error) {
+      setRequestError(
+        error instanceof Error
+          ? error.message
+          : "Não foi possível criar a conta.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -229,7 +257,7 @@ export function Register() {
 
         {currentStepData.id === 3 && (
           <>
-            <Row>
+            <Row typeRow="row">
               <CheckboxCard
                 image={maleImg}
                 alt="Masculino"
@@ -271,10 +299,10 @@ export function Register() {
           <>
             <InputCheckbox
               labelText="Nenhuma"
-              id="nenhuma-def"
-              checked={formValues.deficiency.includes("nenhuma-def")}
+              id="nenhuma"
+              checked={formValues.deficiency.includes("nenhuma")}
               onChange={(id, checked) =>
-                handleCheckboxChange("deficiency", "nenhuma-def", id, checked)
+                handleCheckboxChange("deficiency", "nenhuma", id, checked)
               }
             />
             {DEFICIENCY_OPTIONS.map((opt) => (
@@ -285,9 +313,9 @@ export function Register() {
                 }
                 id={opt}
                 checked={formValues.deficiency.includes(opt)}
-                disabled={formValues.deficiency.includes("nenhuma-def")}
+                disabled={formValues.deficiency.includes("nenhuma")}
                 onChange={(id, checked) =>
-                  handleCheckboxChange("deficiency", "nenhuma-def", id, checked)
+                  handleCheckboxChange("deficiency", "nenhuma", id, checked)
                 }
               />
             ))}
@@ -301,26 +329,26 @@ export function Register() {
           <>
             <InputCheckbox
               labelText="Nenhuma"
-              id="nenhuma-rest"
-              checked={formValues.medicalRestriction.includes("nenhuma-rest")}
+              id="nenhuma"
+              checked={formValues.medicalRestriction.includes("nenhuma")}
               onChange={(id, checked) =>
                 handleCheckboxChange(
                   "medicalRestriction",
-                  "nenhuma-rest",
+                  "nenhuma",
                   id,
                   checked,
                 )
               }
             />
             {[
-              { id: "problemas-cardiacos", label: "Problemas cardíacos" },
+              { id: "problemas_cardiacos", label: "Problemas cardíacos" },
               {
-                id: "dores-no-peito",
+                id: "dores_no_peito",
                 label: "Dores no peito durante esforço físico ou em repouso",
               },
-              { id: "tontura-desmaios", label: "Tontura ou desmaios" },
+              { id: "tontura_ou_desmaios", label: "Tontura ou desmaios" },
               {
-                id: "problemas-osseos",
+                id: "problemas_osseos",
                 label: "Problemas ósseos ou articulares",
               },
               {
@@ -328,8 +356,8 @@ export function Register() {
                 label:
                   "Uso contínuo de medicamentos (ex.: pressão arterial, problemas cardíacos)",
               },
-              { id: "cirurgias-recentes", label: "Cirurgias recentes" },
-              { id: "outra-rest", label: "Outra" },
+              { id: "cirurgias_recentes", label: "Cirurgias recentes" },
+              { id: "outra", label: "Outra" },
             ].map(({ id, label }) => (
               <InputCheckbox
                 key={id}
@@ -337,12 +365,12 @@ export function Register() {
                 id={id}
                 checked={formValues.medicalRestriction.includes(id)}
                 disabled={formValues.medicalRestriction.includes(
-                  "nenhuma-rest",
+                  "nenhuma",
                 )}
                 onChange={(id, checked) =>
                   handleCheckboxChange(
                     "medicalRestriction",
-                    "nenhuma-rest",
+                    "nenhuma",
                     id,
                     checked,
                   )
@@ -356,20 +384,15 @@ export function Register() {
         )}
 
         {currentStepData.id === 6 && (
-          <>
-            <FileUpload id="medicalReport" onFileChange={setMedicalReportFile}>
-              Coloque seu documento ou laudo médico liberando a prática de
-              atividades físicas
-            </FileUpload>
-            {errors.medicalReport && submitAttempted && (
-              <p style={errorStyle}>{errors.medicalReport}</p>
-            )}
-          </>
+          <p>
+            Você poderá enviar o laudo depois de confirmar seu e-mail. A conta
+            continuará pendente até a aprovação da academia.
+          </p>
         )}
 
         {currentStepData.id === 7 && (
           <>
-            <Row>
+            <Row typeRow="row">
               {[
                 {
                   id: "emagrecimento",
@@ -413,7 +436,7 @@ export function Register() {
 
         {currentStepData.id === 8 && (
           <>
-            <Row>
+            <Row typeRow="row">
               {[
                 { id: "iniciante", label: "Iniciante", img: beginnerImg },
                 {
@@ -442,6 +465,7 @@ export function Register() {
           </>
         )}
 
+        {requestError && <p style={errorStyle}>{requestError}</p>}
         <div>
           {currentStep < activeSteps.length - 1 && (
             <Button type="button" onClick={handleNextStep}>
@@ -449,7 +473,9 @@ export function Register() {
             </Button>
           )}
           {currentStep === activeSteps.length - 1 && (
-            <Button type="submit">Finalizar</Button>
+            <Button type="submit" disabled={submitting}>
+              {submitting ? "Enviando..." : "Finalizar"}
+            </Button>
           )}
         </div>
       </form>

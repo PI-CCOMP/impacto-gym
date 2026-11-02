@@ -6,6 +6,8 @@ import { MenuItem } from "../../components/MenuItem";
 import { Toast } from "../../components/Toast";
 
 import { User, HelpCircle } from "lucide-react";
+import { apiPostAuthed, encerrarSessaoLocal } from "../../services/api";
+import { useState } from "react";
 
 import styles from "./Settings.module.css";
 
@@ -20,6 +22,22 @@ export function Settings() {
   const state = location.state as LocationState | null;
   const showToast = state?.showSuccessToast ?? false;
   const toastMessage = state?.toastMessage ?? "Alteração realizada com sucesso!";
+  const [logoutError, setLogoutError] = useState("");
+
+  async function handleLogout() {
+    setLogoutError("");
+    try {
+      await apiPostAuthed("/auth/logout", {});
+      encerrarSessaoLocal();
+      navigate("/login", { replace: true });
+    } catch (error) {
+      setLogoutError(
+        error instanceof Error
+          ? error.message
+          : "Não foi possível encerrar a sessão.",
+      );
+    }
+  }
 
   return (
     <Container>
@@ -34,6 +52,7 @@ export function Settings() {
       )}
 
       <PageHeader>Configurações</PageHeader>
+      {logoutError && <p role="alert">{logoutError}</p>}
       <div className={styles.content}>
         <MenuItem sectionTitle="Conta" page="perfil">
           <User />
@@ -43,7 +62,7 @@ export function Settings() {
           <HelpCircle />
           Perguntas Frequentes
         </MenuItem>
-        <button className={styles.logout} onClick={() => navigate("/")}>
+        <button className={styles.logout} onClick={() => void handleLogout()}>
           Sair
         </button>
       </div>

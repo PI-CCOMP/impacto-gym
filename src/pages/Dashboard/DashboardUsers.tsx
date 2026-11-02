@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-
 import {
   Search,
   RectangleEllipsis,
@@ -10,6 +9,7 @@ import {
   X,
   FileText,
   Plus,
+  RefreshCw,
 } from "lucide-react";
 
 import { DashboardGrid } from "../../components/DashboardGrid";
@@ -26,112 +26,298 @@ import { Toast } from "../../components/Toast";
 import { Button } from "../../components/Button";
 import { ButtonStroke } from "../../components/ButtonStroke";
 import { MaskedCPF } from "../../components/MakedCPF";
-
 import {
-  mockUsers,
-  mockLoggedUser,
-  mockPendingRegistrations,
-  type UserRole,
-  type PendingRegistration,
-} from "../../mocks/mockData";
-
+  apiDeleteAuthed,
+  apiGet,
+  apiGetBlob,
+  apiPatchAuthed,
+  apiPutAuthed,
+} from "../../services/api";
 import { hasPermission } from "../../utils/permissions";
 
 import styles from "./DashboardUsers.module.css";
+
+type UserProfile = "aluno" | "instrutor" | "recepcionista" | "admin";
+type UserItem = {
+  id_usuario: number;
+  nome: string;
+  perfil: UserProfile;
+  status: string | null;
+  cpf?: string;
+  email?: string;
+  instrutor_vinculado?: string | null;
+};
+type Registration = {
+  id_aluno: number;
+  nome: string;
+  email_verificado: boolean;
+  deficiencia?: string[];
+  restricao_medica?: string[];
+  cpf?: string;
+  documento: {
+    id_documento: number;
+    nome_arquivo: string;
+    status: string;
+  } | null;
+};
+type PageResult<T> = {
+  dados: T[];
+  total: number;
+  pagina: number;
+  por_pagina: number;
+};
+
+const profileLabels: Record<UserProfile, string> = {
+  aluno: "Aluno",
+  instrutor: "Instrutor",
+  recepcionista: "Recepcionista",
+  admin: "Administrador",
+};
+const profileValues: Record<string, UserProfile> = {
+  Aluno: "aluno",
+  Instrutor: "instrutor",
+  Recepcionista: "recepcionista",
+  Administrador: "admin",
+};
 
 export function DashboardUsers() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [search, setSearch] = useState("");
-  const [selectedRoles, setSelectedRoles] = useState<UserRole[]>([]);
+  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+  const [users, setUsers] = useState<UserItem[]>([]);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [usersLoading, setUsersLoading] = useState(false);
+  const [usersRefresh, setUsersRefresh] = useState(0);
+  const [pendingPage, setPendingPage] = useState(1);
+  const [pendingPageSize, setPendingPageSize] = useState(10);
+  const [pendingSearch, setPendingSearch] = useState("");
+  const [pending, setPending] = useState<Registration[]>([]);
+  const [totalPending, setTotalPending] = useState(0);
+  const [pendingLoading, setPendingLoading] = useState(false);
+  const [pendingRefresh, setPendingRefresh] = useState(0);
+  const [approvingId, setApprovingId] = useState<number | null>(null);
+  const [error, setError] = useState("");
+  const [editingUser, setEditingUser] = useState<UserItem | null>(null);
+  const [deletingUser, setDeletingUser] = useState<UserItem | null>(null);
+  const [rejectingRegistration, setRejectingRegistration] =
+    useState<Registration | null>(null);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
-
   const location = useLocation();
-  const [showCreatedToast, setShowCreatedToast] = useState(
-    location.state?.created === true,
-  );
 
-  function toggleRole(role: UserRole) {
-    setSelectedRoles((prev) =>
-      prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role],
+  useEffect(() => {
+    let active = true;
+    const params = new URLSearchParams({
+      busca: search,
+      pagina: String(page),
+      por_pagina: String(pageSize),
+    });
+    const selected = selectedRoles
+      .map((label) => profileValues[label])
+      .filter((profile): profile is UserProfile => Boolean(profile));
+    if (selected.length > 0) params.set("perfil", selected.join(","));
+    setUsersLoading(true);
+    apiGet<PageResult<UserItem>>(`/usuarios?${params}`)
+      .then((result) => {
+        if (!active) return;
+        const lastPage = Math.max(1, Math.ceil(result.total / pageSize));
+        if (page > lastPage) {
+          setPage(lastPage);
+          return;
+        }
+        setUsers(result.dados);
+        setTotalUsers(result.total);
+      })
+      .catch((requestError: unknown) => {
+        if (active) {
+          setError(
+            requestError instanceof Error
+              ? requestError.message
+              : "Não foi possível carregar os usuários.",
+          );
+        }
+      })
+      .finally(() => {
+        if (active) setUsersLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [page, pageSize, search, selectedRoles, usersRefresh]);
+
+  useEffect(() => {
+    let active = true;
+    const params = new URLSearchParams({
+      status: "pendente",
+      busca: pendingSearch,
+      pagina: String(pendingPage),
+      por_pagina: String(pendingPageSize),
+    });
+    setPendingLoading(true);
+    apiGet<PageResult<Registration>>(`/cadastros?${params}`)
+      .then((result) => {
+        if (!active) return;
+        setPending(result.dados);
+        setTotalPending(result.total);
+      })
+      .catch((requestError: unknown) => {
+        if (active) {
+          setError(
+            requestError instanceof Error
+              ? requestError.message
+              : "Não foi possível carregar os cadastros pendentes.",
+          );
+        }
+      })
+      .finally(() => {
+        if (active) setPendingLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [pendingPage, pendingPageSize, pendingSearch, pendingRefresh]);
+
+  function toggleRole(role: string) {
+    setSelectedRoles((previous) =>
+      previous.includes(role)
+        ? previous.filter((item) => item !== role)
+        : [...previous, role],
     );
     setPage(1);
   }
 
-  function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
-    setSearch(e.target.value);
-    setPage(1);
+  async function handleApprove(registration: Registration) {
+    const requiresApprovedReport = [
+      ...(registration.deficiencia ?? []),
+      ...(registration.restricao_medica ?? []),
+    ].some((value) => value !== "nenhuma");
+    if (
+      !registration.email_verificado ||
+      (requiresApprovedReport &&
+        registration.documento?.status !== "aprovado")
+    ) {
+      return;
+    }
+    setError("");
+    setApprovingId(registration.id_aluno);
+    try {
+      const approval = await apiPatchAuthed<{
+        id_aluno: number;
+        status: string;
+      }>(
+        `/cadastros/${registration.id_aluno}/aprovar`,
+        {},
+      );
+      if (
+        approval.id_aluno !== registration.id_aluno ||
+        approval.status !== "ativo"
+      ) {
+        throw new Error(
+          "A API não confirmou a ativação do cadastro. Atualize a lista antes de tentar novamente.",
+        );
+      }
+      setPending((current) =>
+        current.filter((item) => item.id_aluno !== registration.id_aluno),
+      );
+      if (pending.length === 1 && pendingPage > 1) {
+        setPendingPage((pageNumber) => pageNumber - 1);
+      }
+      setTotalPending((current) => Math.max(0, current - 1));
+      setPendingRefresh((count) => count + 1);
+      setUsersRefresh((count) => count + 1);
+      setSuccessMessage("Cadastro aprovado com sucesso.");
+      setShowSuccessToast(true);
+    } catch (requestError) {
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : "Não foi possível aprovar o cadastro.",
+      );
+    } finally {
+      setApprovingId(null);
+    }
   }
 
-  const filtered = mockUsers.filter((user) => {
-    const matchesSearch = user.name
-      .toLowerCase()
-      .includes(search.toLowerCase());
-    const matchesRole =
-      selectedRoles.length === 0 || selectedRoles.includes(user.profile);
-    return matchesSearch && matchesRole;
-  });
-
-  const paginated = filtered.slice((page - 1) * pageSize, page * pageSize);
-
-  const [pendingPage, setPendingPage] = useState(1);
-  const [pendingPageSize, setPendingPageSize] = useState(10);
-  const [pendingSearch, setPendingSearch] = useState("");
-
-  const [pending, setPending] = useState<PendingRegistration[]>(
-    mockPendingRegistrations,
-  );
-
-  function handlePendingSearch(e: React.ChangeEvent<HTMLInputElement>) {
-    setPendingSearch(e.target.value);
-    setPendingPage(1);
+  async function handleReject(reason: string) {
+    if (!rejectingRegistration) return;
+    setError("");
+    try {
+      await apiPatchAuthed(
+        `/cadastros/${rejectingRegistration.id_aluno}/rejeitar`,
+        { motivo_rejeicao: reason },
+      );
+      setRejectingRegistration(null);
+      setPendingRefresh((count) => count + 1);
+      setSuccessMessage("Cadastro rejeitado.");
+      setShowSuccessToast(true);
+    } catch (requestError) {
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : "Não foi possível rejeitar o cadastro.",
+      );
+    }
   }
 
-  function handleApprove(id: string) {
-    setPending((prev) => prev.filter((p) => p.id !== id));
+  async function handleSaveName(name: string) {
+    if (!editingUser) return;
+    setError("");
+    try {
+      await apiPutAuthed(`/usuarios/${editingUser.id_usuario}`, { nome: name });
+      setEditingUser(null);
+      setSuccessMessage("Usuário atualizado.");
+      setShowSuccessToast(true);
+      setUsersRefresh((current) => current + 1);
+    } catch (requestError) {
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : "Não foi possível atualizar o usuário.",
+      );
+    }
   }
 
-  function handleConfirmReject() {
-    if (!rejectingReg) return;
-    setPending((prev) => prev.filter((p) => p.id !== rejectingReg.id));
-    setRejectingReg(null);
+  async function handleDeleteUser() {
+    if (!deletingUser) return;
+    setError("");
+    try {
+      await apiDeleteAuthed(`/usuarios/${deletingUser.id_usuario}`);
+      setDeletingUser(null);
+      setSuccessMessage("Usuário excluído.");
+      setShowSuccessToast(true);
+      setUsersRefresh((current) => current + 1);
+    } catch (requestError) {
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : "Não foi possível excluir o usuário.",
+      );
+    }
   }
 
-  const filteredPending = pending.filter((p) =>
-    p.name.toLowerCase().includes(pendingSearch.toLowerCase()),
-  );
-
-  const paginatedPending = filteredPending.slice(
-    (pendingPage - 1) * pendingPageSize,
-    pendingPage * pendingPageSize,
-  );
-
-  const [editingUser, setEditingUser] = useState<{
-    id: string;
-    name: string;
-  } | null>(null);
-
-  function handleSaveName(newName: string) {
-    console.log("Salvar:", editingUser?.id, newName);
-    navigate("/dashboard/usuarios", { state: { created: true } });
+  async function openMedicalReport(registration: Registration) {
+    if (!registration.documento) return;
+    setError("");
+    try {
+      const blob = await apiGetBlob(
+        `/cadastros/${registration.id_aluno}/documentos/${registration.documento.id_documento}`,
+      );
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank", "noopener,noreferrer");
+      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    } catch (requestError) {
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : "Não foi possível abrir o laudo.",
+      );
+    }
   }
 
-  const [deletingUser, setDeletingUser] = useState<{
-    id: string;
-    name: string;
-  } | null>(null);
-
-  const [rejectingReg, setRejectingReg] = useState<{
-    id: string;
-    name: string;
-  } | null>(null);
-
-  const [showSuccessToast, setShowSuccessToast] = useState(false);
-
-  function handleConfirmDelete() {
-    setDeletingUser(null);
-    setShowSuccessToast(true);
-  }
+  const showAdminFilter =
+    sessionStorage.getItem("perfil") === "admin";
 
   return (
     <DashboardGrid>
@@ -139,12 +325,25 @@ export function DashboardUsers() {
       <Container isDashboard>
         <DashboardRow variant="sideBySide">
           <h1>Usuários</h1>
-          <ActionButton
-            icon={<Plus size={16} />}
-            title="Criar usuário"
-            onClick={() => navigate("/dashboard/usuarios/criar")}
-          />
+          {sessionStorage.getItem("perfil") === "admin" && (
+            <ActionButton
+              icon={<Plus size={16} />}
+              title="Criar usuário"
+              onClick={() => navigate("/dashboard/usuarios/criar")}
+            />
+          )}
         </DashboardRow>
+
+        {location.state?.created && (
+          <Toast
+            message="criado com sucesso!"
+            highlight="Usuário"
+            highlightPosition="before"
+            icon={<Check />}
+            onClose={() => navigate("/dashboard/usuarios", { replace: true, state: null })}
+          />
+        )}
+        {error && <p role="alert">{error}</p>}
 
         <DashboardRow>
           <Input
@@ -154,24 +353,20 @@ export function DashboardUsers() {
             placeholder="Nome do usuário"
             leftIcon={<Search />}
             value={search}
-            onChange={handleSearch}
+            onChange={(event) => {
+              setSearch(event.target.value);
+              setPage(1);
+            }}
           />
-          <InputCheckbox
-            labelText="Aluno"
-            checked={selectedRoles.includes("Aluno")}
-            onChange={() => toggleRole("Aluno")}
-          />
-          <InputCheckbox
-            labelText="Instrutor"
-            checked={selectedRoles.includes("Instrutor")}
-            onChange={() => toggleRole("Instrutor")}
-          />
-          <InputCheckbox
-            labelText="Recepcionista"
-            checked={selectedRoles.includes("Recepcionista")}
-            onChange={() => toggleRole("Recepcionista")}
-          />
-          {mockLoggedUser.role === "admin" && (
+          {(["Aluno", "Instrutor", "Recepcionista"] as const).map((role) => (
+            <InputCheckbox
+              key={role}
+              labelText={role}
+              checked={selectedRoles.includes(role)}
+              onChange={() => toggleRole(role)}
+            />
+          ))}
+          {showAdminFilter && (
             <InputCheckbox
               labelText="Administrador"
               checked={selectedRoles.includes("Administrador")}
@@ -185,23 +380,39 @@ export function DashboardUsers() {
             <thead>
               <tr>
                 <th>Nome</th>
-                <th>CPF</th>
+                {showAdminFilter && <th>CPF</th>}
                 <th>Perfil</th>
+                <th>Situação</th>
                 <th>Instrutor Vinculado</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
-              {paginated.map((user) => (
-                <tr key={user.id}>
-                  <td data-label="Nome">{user.name}</td>
-                  <td data-label="CPF">
-                    <MaskedCPF cpf={user.cpf} />
+              {users.map((user) => (
+                <tr key={user.id_usuario}>
+                  <td data-label="Nome">{user.nome}</td>
+                  {showAdminFilter && (
+                    <td data-label="CPF">
+                      {user.cpf ? <MaskedCPF cpf={user.cpf} /> : "—"}
+                    </td>
+                  )}
+                  <td data-label="Perfil">{profileLabels[user.perfil]}</td>
+                  <td data-label="Situação">
+                    {user.perfil === "aluno"
+                      ? user.status === "ativo"
+                        ? "Ativo"
+                        : user.status === "pendente"
+                          ? "Pendente"
+                          : user.status === "rejeitado"
+                            ? "Rejeitado"
+                            : user.status === "inativo"
+                              ? "Inativo"
+                              : "—"
+                      : "—"}
                   </td>
-                  <td data-label="Perfil">{user.profile}</td>
                   <td data-label="Instrutor Vinculado">
-                    {user.profile === "Aluno"
-                      ? (user.instructor ?? "N/A")
+                    {user.perfil === "aluno"
+                      ? (user.instrutor_vinculado ?? "N/A")
                       : "N/A"}
                   </td>
                   <td data-label="Ações">
@@ -213,7 +424,7 @@ export function DashboardUsers() {
                       }}
                     >
                       {hasPermission("view_member") && (
-                        <Link to={`/dashboard/usuario/${user.id}`}>
+                        <Link to={`/dashboard/usuario/${user.id_usuario}`}>
                           <ActionButton
                             variant="view"
                             icon={<RectangleEllipsis size={16} />}
@@ -226,9 +437,7 @@ export function DashboardUsers() {
                           variant="edit"
                           icon={<Edit2 size={16} />}
                           title="Editar usuário"
-                          onClick={() =>
-                            setEditingUser({ id: user.id, name: user.name })
-                          }
+                          onClick={() => setEditingUser(user)}
                         />
                       )}
                       {hasPermission("delete_member") && (
@@ -236,31 +445,24 @@ export function DashboardUsers() {
                           variant="delete"
                           icon={<Trash2 size={16} />}
                           title="Excluir usuário"
-                          onClick={() =>
-                            setDeletingUser({ id: user.id, name: user.name })
-                          }
+                          onClick={() => setDeletingUser(user)}
                         />
                       )}
                     </div>
                   </td>
                 </tr>
               ))}
-
-              {paginated.length === 0 && (
+              {!usersLoading && users.length === 0 && (
                 <tr>
-                  <td
-                    colSpan={5}
-                    style={{ textAlign: "center", padding: "var(--size-xl)" }}
-                  >
+                  <td colSpan={showAdminFilter ? 6 : 5} style={{ textAlign: "center" }}>
                     Nenhum usuário encontrado.
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
-
           <Pagination
-            total={filtered.length}
+            total={totalUsers}
             page={page}
             pageSize={pageSize}
             onPageChange={setPage}
@@ -272,10 +474,15 @@ export function DashboardUsers() {
         </div>
 
         <Line />
-
-        <Container style={{ padding: "0" }}>
-          <h2>Aprovar Cadastro</h2>
-
+        <Container style={{ padding: 0 }}>
+          <DashboardRow variant="sideBySide">
+            <h2>Aprovar Cadastro</h2>
+            <ActionButton
+              icon={<RefreshCw size={16} />}
+              title="Atualizar cadastros pendentes"
+              onClick={() => setPendingRefresh((count) => count + 1)}
+            />
+          </DashboardRow>
           <Input
             type="text"
             id="pending-search"
@@ -283,147 +490,143 @@ export function DashboardUsers() {
             placeholder="Nome do usuário"
             leftIcon={<Search />}
             value={pendingSearch}
-            onChange={handlePendingSearch}
+            onChange={(event) => {
+              setPendingSearch(event.target.value);
+              setPendingPage(1);
+            }}
           />
-
-          <div>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>Nome</th>
-                  <th>CPF</th>
-                  <th>Laudo</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedPending.map((reg) => (
-                  <tr key={reg.id}>
-                    <td data-label="Nome">{reg.name}</td>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>E-mail</th>
+                {showAdminFilter && <th>CPF</th>}
+                <th>Laudo</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {pending.map((registration) => (
+                <tr key={registration.id_aluno}>
+                  <td data-label="Nome">{registration.nome}</td>
+                  <td data-label="E-mail">
+                    {registration.email_verificado
+                      ? "Confirmado"
+                      : "Aguardando confirmação"}
+                  </td>
+                  {showAdminFilter && (
                     <td data-label="CPF">
-                      <MaskedCPF cpf={reg.cpf} />
+                      {registration.cpf ? (
+                        <MaskedCPF cpf={registration.cpf} />
+                      ) : (
+                        "—"
+                      )}
                     </td>
-                    <td data-label="Laudo">
-                      <a
-                        href={reg.medicalReportUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        download={reg.medicalReportName}
+                  )}
+                  <td data-label="Laudo">
+                    {registration.documento ? (
+                      <button
+                        type="button"
                         className={styles.reportLink}
+                        onClick={() => void openMedicalReport(registration)}
                       >
                         <FileText size={14} />
-                        {reg.medicalReportName}
-                      </a>
-                    </td>
-                    <td data-label="Ações">
-                      <div
-                        style={{
-                          display: "flex",
-                          gap: "var(--size-md)",
-                          justifyContent: "flex-end",
-                        }}
-                      >
-                        <ActionButton
-                          variant="accept"
-                          icon={<Check size={16} />}
-                          title="Aprovar cadastro"
-                          onClick={() => handleApprove(reg.id)}
-                        />
-                        <ActionButton
-                          variant="delete"
-                          icon={<X size={16} />}
-                          title="Rejeitar cadastro"
-                          onClick={() =>
-                            setRejectingReg({ id: reg.id, name: reg.name })
-                          }
-                        />
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-
-                {paginatedPending.length === 0 && (
-                  <tr>
-                    <td
-                      colSpan={4}
-                      style={{ textAlign: "center", padding: "var(--size-xl)" }}
-                    >
-                      Nenhum cadastro pendente.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-
-            <Pagination
-              total={filteredPending.length}
-              page={pendingPage}
-              pageSize={pendingPageSize}
-              onPageChange={setPendingPage}
-              onPageSizeChange={(size) => {
-                setPendingPageSize(size);
-                setPendingPage(1);
-              }}
-            />
-          </div>
+                        {registration.documento.nome_arquivo}
+                      </button>
+                    ) : (
+                      "Sem laudo"
+                    )}
+                  </td>
+                  <td data-label="Ações">
+                    <div style={{ display: "flex", gap: "var(--size-md)" }}>
+                      <ActionButton
+                        variant="accept"
+                        icon={<Check size={16} />}
+                        title={
+                          !registration.email_verificado
+                            ? "O aluno precisa confirmar o e-mail antes da aprovação"
+                            : [...(registration.deficiencia ?? []), ...(registration.restricao_medica ?? [])].some(
+                                  (value) => value !== "nenhuma",
+                                ) && registration.documento?.status !== "aprovado"
+                              ? "O laudo precisa ser aprovado antes do cadastro"
+                            : "Aprovar cadastro"
+                        }
+                        disabled={
+                          !registration.email_verificado ||
+                          ([...(registration.deficiencia ?? []), ...(registration.restricao_medica ?? [])].some(
+                            (value) => value !== "nenhuma",
+                          ) &&
+                            registration.documento?.status !== "aprovado") ||
+                          approvingId !== null
+                        }
+                        onClick={() => void handleApprove(registration)}
+                      />
+                      <ActionButton
+                        variant="delete"
+                        icon={<X size={16} />}
+                        title="Rejeitar cadastro"
+                        disabled={approvingId !== null}
+                        onClick={() => setRejectingRegistration(registration)}
+                      />
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              {!pendingLoading && pending.length === 0 && (
+                <tr>
+                  <td colSpan={showAdminFilter ? 5 : 4} style={{ textAlign: "center" }}>
+                    Nenhum cadastro pendente.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+          <Pagination
+            total={totalPending}
+            page={pendingPage}
+            pageSize={pendingPageSize}
+            onPageChange={setPendingPage}
+            onPageSizeChange={(size) => {
+              setPendingPageSize(size);
+              setPendingPage(1);
+            }}
+          />
         </Container>
       </Container>
 
       {editingUser && (
         <QuickEditModal
-          name={editingUser.name}
-          onSave={handleSaveName}
+          name={editingUser.nome}
+          title="Editar nome"
+          onSave={(name) => void handleSaveName(name)}
           onClose={() => setEditingUser(null)}
         />
       )}
-
       {deletingUser && (
         <Toast
-          message={`Você realmente quer deletar ${deletingUser.name}?`}
+          message={`Você realmente quer deletar ${deletingUser.nome}?`}
           icon={<Trash2 />}
           onClose={() => setDeletingUser(null)}
         >
-          <Button
-            style={{ marginTop: 0 }}
-            onClick={() => setDeletingUser(null)}
-          >
+          <Button style={{ marginTop: 0 }} onClick={() => setDeletingUser(null)}>
             Cancelar
           </Button>
-          <ButtonStroke onClick={handleConfirmDelete}>Deletar</ButtonStroke>
+          <ButtonStroke onClick={() => void handleDeleteUser()}>
+            Deletar
+          </ButtonStroke>
         </Toast>
       )}
-
-      {rejectingReg && (
-        <Toast
-          message={`Você realmente quer rejeitar o cadastro de ${rejectingReg.name}?`}
-          icon={<X />}
-          onClose={() => setRejectingReg(null)}
-        >
-          <Button
-            style={{ marginTop: 0 }}
-            onClick={() => setRejectingReg(null)}
-          >
-            Cancelar
-          </Button>
-          <ButtonStroke onClick={handleConfirmReject}>Rejeitar</ButtonStroke>
-        </Toast>
-      )}
-
-      {showCreatedToast && (
-        <Toast
-          message="criado com sucesso!"
-          highlight="Usuário"
-          highlightPosition="before"
-          icon={<Check />}
-          onClose={() => setShowCreatedToast(false)}
+      {rejectingRegistration && (
+        <QuickEditModal
+          name="Informe o motivo"
+          title={`Rejeitar ${rejectingRegistration.nome}`}
+          onSave={(reason) => void handleReject(reason)}
+          onClose={() => setRejectingRegistration(null)}
         />
       )}
-
       {showSuccessToast && (
         <Toast
-          message="excluído com sucesso!"
-          highlight="Usuário"
-          highlightPosition="before"
+          message={successMessage}
           icon={<Check />}
           onClose={() => setShowSuccessToast(false)}
         />

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 
 import styles from "./styles.module.css";
 import { CircleHelp } from "lucide-react";
+import { normalizeMuscleGroups } from "../../utils/training";
 
 type TrainingHeaderProps = {
   muscleGroups: string[];
@@ -49,14 +50,15 @@ export function TrainingHeader({
   showStats,
   finishedAt,
 }: TrainingHeaderProps) {
+  const groups = normalizeMuscleGroups(muscleGroups);
   return (
     <header className={styles.header}>
       <div className={styles.titleRow}>
         <h1>
-          {finishedAt ? finishedAt : "Hoje"} foi dia de
-          {muscleGroups.map((muscle, index) => {
-            const isLast = index === muscleGroups.length - 1;
-            const isSecondLast = index === muscleGroups.length - 2;
+          {finishedAt ? `${finishedAt} foi dia de` : "Hoje é dia de"}
+          {groups.map((muscle, index) => {
+            const isLast = index === groups.length - 1;
+            const isSecondLast = index === groups.length - 2;
             return (
               <span key={index}>
                 <span className={styles.muscleGroup}> {muscle}</span>

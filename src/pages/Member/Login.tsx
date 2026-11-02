@@ -11,6 +11,7 @@ import { Button } from "../../components/Button";
 import { Toast } from "../../components/Toast";
 
 import { useLoginForm } from "../../hooks/useLoginForm";
+import { apiPost, guardarSessao, rotaPorPerfil } from "../../services/api";
 
 import styles from "../Member/Auth.module.css";
 
@@ -26,15 +27,55 @@ export function Login() {
   const [showToast, setShowToast] = useState(
     locationState?.showRegisterToast ?? false,
   );
+  const [requestError, setRequestError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const { values, handleChange, handleSubmitValidate, getError } =
     useLoginForm();
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!handleSubmitValidate()) return;
-    console.log("Login!", values);
-    navigate("/inicio");
+    setRequestError("");
+    setSubmitting(true);
+    try {
+      const result = await apiPost<{
+        access_token?: string;
+        refresh_token?: string;
+        perfil?: string;
+        usuario?: { perfil: string };
+        email_verification_required?: boolean;
+      }>("/auth/login", {
+        email: values.email,
+        senha: values.password,
+        origem: "aluno",
+      });
+      if (result.email_verification_required) {
+        navigate("/dashboard/mfa", {
+          state: {
+            action: "login",
+            email: values.email,
+            perfil: result.perfil,
+          },
+        });
+        return;
+      }
+      if (!result.access_token || !result.refresh_token || !result.usuario) {
+        throw new Error("Resposta de autenticação inválida.");
+      }
+      guardarSessao(
+        result.access_token,
+        result.refresh_token,
+        result.usuario.perfil,
+      );
+      navigate(rotaPorPerfil(result.usuario.perfil), { replace: true });
+    } catch (error) {
+      setRequestError(
+        error instanceof Error ? error.message : "Não foi possível entrar.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -74,11 +115,17 @@ export function Login() {
           errorMessage={getError("password")}
           autoComplete="current-password"
         />
-        <Button type="submit">Entrar</Button>
+        {requestError && <p role="alert">{requestError}</p>}
+        <Button type="submit" disabled={submitting}>
+          {submitting ? "Entrando..." : "Entrar"}
+        </Button>
       </form>
 
       <Link to="/alterar-senha" className={styles.secondaryLink}>
         Esqueceu sua senha?
+      </Link>
+      <Link to="/enviar-laudo" className={styles.secondaryLink}>
+        Enviar laudo para análise
       </Link>
     </Container>
   );

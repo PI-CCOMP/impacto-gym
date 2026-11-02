@@ -26,27 +26,27 @@ export const EXPERIENCE_OPTIONS = [
 ];
 
 export const DISABILITY_OPTIONS = [
-  { value: "Nenhuma", label: "Nenhuma" },
-  { value: "Visual", label: "Visual" },
-  { value: "Auditiva", label: "Auditiva" },
-  { value: "Motora", label: "Motora" },
-  { value: "Intelectual", label: "Intelectual" },
-  { value: "Múltipla", label: "Múltipla" },
-  { value: "Outra", label: "Outra" },
+  { value: "nenhuma", label: "Nenhuma" },
+  { value: "visual", label: "Visual" },
+  { value: "auditiva", label: "Auditiva" },
+  { value: "motora", label: "Motora" },
+  { value: "intelectual", label: "Intelectual" },
+  { value: "multipla", label: "Múltipla" },
+  { value: "outra", label: "Outra" },
 ];
 
 export const RESTRICTION_OPTIONS = [
-  { value: "Nenhuma", label: "Nenhuma" },
-  { value: "Problemas cardíacos", label: "Problemas cardíacos" },
+  { value: "nenhuma", label: "Nenhuma" },
+  { value: "problemas_cardiacos", label: "Problemas cardíacos" },
   {
-    value: "Dores no peito",
+    value: "dores_no_peito",
     label: "Dores no peito durante esforço físico ou em repouso",
   },
-  { value: "Tontura ou desmaios", label: "Tontura ou desmaios" },
-  { value: "Problemas ósseos", label: "Problemas ósseos ou articulares" },
-  { value: "Medicamentos", label: "Uso contínuo de medicamentos" },
-  { value: "Cirurgias recentes", label: "Cirurgias recentes" },
-  { value: "Outra", label: "Outra" },
+  { value: "tontura_ou_desmaios", label: "Tontura ou desmaios" },
+  { value: "problemas_osseos", label: "Problemas ósseos ou articulares" },
+  { value: "medicamentos", label: "Uso contínuo de medicamentos" },
+  { value: "cirurgias_recentes", label: "Cirurgias recentes" },
+  { value: "outra", label: "Outra" },
 ];
 
 export const MUSCLE_GROUPS = [

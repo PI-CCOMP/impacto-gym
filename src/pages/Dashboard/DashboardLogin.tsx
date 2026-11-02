@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 
 import { Container } from "../../components/Container";
 import { Logo } from "../../components/Logo";
 import { FormHeader } from "../../components/FormHeader";
-import { Select } from "../../components/Select";
 import { Input } from "../../components/Input/input";
 import { Button } from "../../components/Button";
 
 import { useLoginForm } from "../../hooks/useLoginForm";
+import { apiPost, guardarSessao, rotaPorPerfil } from "../../services/api";
 
 import dashboardHeroImg from "../../assets/img/backgrounds/dashboard-hero.jpeg";
 
@@ -16,16 +16,59 @@ import styles from "./Auth.module.css";
 
 export function DashboardLogin() {
   const navigate = useNavigate();
-  const [role, setRole] = useState("");
+  const location = useLocation();
+  const [requestError, setRequestError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const logoutWarning =
+    (location.state as { logoutWarning?: string } | null)?.logoutWarning ?? "";
 
   const { values, handleChange, handleSubmitValidate, getError } =
     useLoginForm();
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!handleSubmitValidate()) return;
-    console.log("Login!", values);
-    navigate("/dashboard/usuarios");
+    setRequestError("");
+    setSubmitting(true);
+    try {
+      const result = await apiPost<{
+        access_token?: string;
+        refresh_token?: string;
+        perfil?: string;
+        usuario?: { perfil: string };
+        email_verification_required?: boolean;
+      }>("/auth/login", {
+        email: values.email,
+        senha: values.password,
+        origem: "equipe",
+      });
+      if (result.email_verification_required) {
+        navigate("/dashboard/mfa", {
+          state: {
+            action: "login",
+            email: values.email,
+            perfil: result.perfil,
+            origem: "equipe",
+          },
+        });
+        return;
+      }
+      if (!result.access_token || !result.refresh_token || !result.usuario) {
+        throw new Error("Resposta de autenticação inválida.");
+      }
+      guardarSessao(
+        result.access_token,
+        result.refresh_token,
+        result.usuario.perfil,
+      );
+      navigate(rotaPorPerfil(result.usuario.perfil), { replace: true });
+    } catch (error) {
+      setRequestError(
+        error instanceof Error ? error.message : "Não foi possível entrar.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -42,16 +85,6 @@ export function DashboardLogin() {
             Conecte-se!
           </FormHeader>
           <form onSubmit={handleSubmit}>
-            <Select
-              labelText="Cargo"
-              value={role}
-              onChange={setRole}
-              options={[
-                { value: "admin", label: "Administrador" },
-                { value: "instructor", label: "Instrutor" },
-                { value: "receptionist", label: "Recepcionista" },
-              ]}
-            />
             <Input
               type="email"
               labelText="E-mail"
@@ -74,7 +107,16 @@ export function DashboardLogin() {
               errorMessage={getError("password")}
               autoComplete="current-password"
             />
-            <Button type="submit">Entrar</Button>
+            {requestError && <p role="alert">{requestError}</p>}
+            {logoutWarning && (
+              <p role="alert">
+                Sessão encerrada neste dispositivo, mas a API informou:{" "}
+                {logoutWarning}
+              </p>
+            )}
+            <Button type="submit" disabled={submitting}>
+              {submitting ? "Entrando..." : "Entrar"}
+            </Button>
           </form>
 
           <Link to="/dashboard/alterar-senha" className={styles.secondaryLink}>

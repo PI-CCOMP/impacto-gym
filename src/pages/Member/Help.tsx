@@ -7,9 +7,11 @@ import { PageHeader } from "../../components/PageHeader";
 import { Line } from "../../components/Line";
 import { Button } from "../../components/Button";
 import { Toast } from "../../components/Toast";
+import { apiPostAuthed } from "../../services/api";
 
 type LocationState = {
   exerciseName?: string;
+  idAlunoTreinoExercicio?: number;
 };
 
 export function Help() {
@@ -18,13 +20,32 @@ export function Help() {
   const { exerciseName } = (location.state as LocationState) ?? {};
 
   const [showFinishToast, setShowFinishToast] = useState(false);
-  // const [isLoading, setIsLoading] = useState(false);
+  const [requestError, setRequestError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleFinish = () => {
-    // TODO: chamar API quando disponível
-    // POST /api/help-request
-    // body: { userName: user.name, exerciseName }
-    setShowFinishToast(true);
+  const handleFinish = async () => {
+    if (!location.state || !("idAlunoTreinoExercicio" in location.state)) return;
+    const requestState = location.state as LocationState;
+    if (!requestState.idAlunoTreinoExercicio) {
+      setRequestError("Não foi possível identificar o exercício do treino.");
+      return;
+    }
+    setRequestError("");
+    setIsLoading(true);
+    try {
+      await apiPostAuthed("/solicitacoes-auxilio", {
+        id_aluno_treino_exercicio: requestState.idAlunoTreinoExercicio,
+      });
+      setShowFinishToast(true);
+    } catch (error) {
+      setRequestError(
+        error instanceof Error
+          ? error.message
+          : "Não foi possível enviar a solicitação.",
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleFinishToastClose = () => {
@@ -51,11 +72,13 @@ export function Help() {
           Exercício: <b>{exerciseName}</b>
         </p>
       )}
-      {/* <Button onClick={handleFinish} disabled={isLoading}>
-          {isLoading ? "Enviando..." : "Chamar Instrutor"}
-        </Button> */}
-
-      <Button onClick={handleFinish}>Chamar Instrutor</Button>
+      {requestError && <p role="alert">{requestError}</p>}
+      <Button
+        onClick={() => void handleFinish()}
+        disabled={isLoading || !("idAlunoTreinoExercicio" in (location.state ?? {}))}
+      >
+        {isLoading ? "Enviando..." : "Chamar Instrutor"}
+      </Button>
       {showFinishToast && (
         <Toast
           message="enviada com sucesso!"

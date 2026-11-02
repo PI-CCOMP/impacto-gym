@@ -25,8 +25,10 @@ function StaticGif({
   className: string;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const isGif = src.toLowerCase().split(/[?#]/, 1)[0].endsWith(".gif");
 
   useEffect(() => {
+    if (!isGif) return;
     const img = new Image();
     img.crossOrigin = "anonymous";
     img.onload = () => {
@@ -38,7 +40,11 @@ function StaticGif({
       ctx?.drawImage(img, 0, 0);
     };
     img.src = src;
-  }, [src]);
+  }, [isGif, src]);
+
+  if (!isGif) {
+    return <img src={src} alt={alt} className={className} />;
+  }
 
   return <canvas ref={canvasRef} aria-label={alt} className={className} />;
 }

@@ -1,16 +1,52 @@
-import { mockLoggedUser, type Permission } from "../mocks/mockData";
+import { getPerfil } from "../services/api";
 
-export function hasPermission(permission: Permission): boolean {
-  return mockLoggedUser.permissions.includes(permission);
+export type Permission =
+  | "view_member"
+  | "edit_member"
+  | "delete_member"
+  | "edit_workout"
+  | "view_financial";
+
+function isAdmin() {
+  return getPerfil() === "admin";
 }
 
-export const role = mockLoggedUser.role;
+function isInstructor() {
+  return getPerfil() === "instrutor";
+}
+
+function isReceptionist() {
+  return getPerfil() === "recepcionista";
+}
+
+export function hasPermission(permission: Permission): boolean {
+  switch (permission) {
+    case "view_member":
+      return isAdmin() || isInstructor() || isReceptionist();
+    case "edit_member":
+    case "delete_member":
+      return isAdmin();
+    case "edit_workout":
+      return isAdmin() || isInstructor();
+    case "view_financial":
+      return isAdmin();
+  }
+}
 
 export const can = {
-  editTraining: role === "admin" || role === "instructor",
-  editUser: role === "admin",
-  manageAlerts:
-    role === "admin" || role === "instructor" || role === "receptionist",
-  viewTrainings: role !== "receptionist",
-  unlinkTraining: role === "admin" || role === "instructor",
+  get editTraining() {
+    return isAdmin() || isInstructor();
+  },
+  get editUser() {
+    return isAdmin();
+  },
+  get manageAlerts() {
+    return isAdmin() || isReceptionist();
+  },
+  get viewTrainings() {
+    return isAdmin() || isInstructor();
+  },
+  get unlinkTraining() {
+    return isAdmin() || isInstructor();
+  },
 };

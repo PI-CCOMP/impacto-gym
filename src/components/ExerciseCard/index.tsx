@@ -1,41 +1,19 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
+import { X } from "lucide-react";
+import { midiaExercicioPrivadaPorUrl } from "../../services/api";
+import { ActionButton } from "../ActionButton";
 import styles from "./styles.module.css";
 
 type ExerciseCardProps = {
   id: string;
-  image: string;
+  image: string | null;
   alt: string;
   exerciseName: string;
   selected?: boolean;
-  /** Quando true exibe o GIF animado (página de detalhe). Padrão: false (card pequeno — imagem estática). */
-  animated?: boolean;
   onClick?: () => void;
+  onDoubleClick?: () => void;
+  onRemove?: () => void;
 };
-
-/**
- * Quando `animated` é false (padrão), renderiza o GIF pausado no primeiro frame
- * desenhando-o em um <canvas>. Isso evita a animação nos cards da lista.
- * Quando `animated` é true (página de detalhe do exercício), usa <img> normal.
- */
-function StaticGif({ src, alt, className }: { src: string; alt: string; className: string }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = () => {
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-      canvas.width = img.naturalWidth || 64;
-      canvas.height = img.naturalHeight || 64;
-      const ctx = canvas.getContext("2d");
-      ctx?.drawImage(img, 0, 0);
-    };
-    img.src = src;
-  }, [src]);
-
-  return <canvas ref={canvasRef} aria-label={alt} className={className} />;
-}
 
 export function ExerciseCard({
   id,
@@ -43,21 +21,71 @@ export function ExerciseCard({
   alt,
   exerciseName,
   selected,
-  animated = false,
   onClick,
+  onDoubleClick,
+  onRemove,
 }: ExerciseCardProps) {
+  const [displayImage, setDisplayImage] = useState(image ?? "");
+  const [mediaError, setMediaError] = useState("");
+
+  useEffect(() => {
+    let active = true;
+    setDisplayImage(image ?? "");
+    setMediaError("");
+    midiaExercicioPrivadaPorUrl(image)
+      .then((resolvedImage) => {
+        if (active && resolvedImage) setDisplayImage(resolvedImage);
+      })
+      .catch(() => {
+        if (active) {
+          setDisplayImage("");
+          setMediaError("Não foi possível carregar a foto do exercício.");
+        }
+      });
+    return () => {
+      active = false;
+    };
+  }, [image]);
+
   return (
     <article
       className={`${styles.container} ${selected ? styles.selected : ""}`}
+      data-exercise-id={id}
       onClick={onClick}
-      style={{ cursor: onClick ? "pointer" : "default" }}
+      onDoubleClick={onDoubleClick}
+      style={{
+        cursor: onClick || onDoubleClick ? "pointer" : "default",
+      }}
     >
-      {animated ? (
-        <img src={image} alt={alt} className={styles.img} />
-      ) : (
-        <StaticGif src={image} alt={alt} className={styles.img} />
+      {displayImage && (
+        <img
+          src={displayImage}
+          alt={alt}
+          className={styles.img}
+          style={{ objectFit: "cover" }}
+        />
       )}
       <p>{exerciseName}</p>
+      {onRemove && (
+        <ActionButton
+          type="button"
+          variant="close"
+          icon={<X size={18} />}
+          title={`Remover ${exerciseName} do treino`}
+          aria-label={`Remover ${exerciseName} do treino`}
+          style={{
+            position: "absolute",
+            right: "var(--size-sm)",
+            top: "50%",
+            transform: "translateY(-50%)",
+          }}
+          onClick={(event) => {
+            event.stopPropagation();
+            onRemove();
+          }}
+        />
+      )}
+      {mediaError && <p role="alert">{mediaError}</p>}
     </article>
   );
 }

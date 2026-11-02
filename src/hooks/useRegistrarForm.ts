@@ -61,10 +61,7 @@ export function useRegistrarForm() {
     }
   }
 
-  function validateStep(
-    stepId: number,
-    medicalReportFile: File | null,
-  ): Record<string, string> {
+  function validateStep(stepId: number): Record<string, string> {
     const e: Record<string, string> = {};
     if (stepId === 1) {
       e.name = validateName(formValues.name);
@@ -87,8 +84,6 @@ export function useRegistrarForm() {
       e.deficiency = "Selecione ao menos uma opção.";
     if (stepId === 5 && formValues.medicalRestriction.length === 0)
       e.medicalRestriction = "Selecione ao menos uma opção.";
-    if (stepId === 6 && !medicalReportFile)
-      e.medicalReport = "Anexe o laudo médico.";
     if (stepId === 7 && !formValues.objective)
       e.objective = "Selecione uma opção.";
     if (stepId === 8 && !formValues.experience)

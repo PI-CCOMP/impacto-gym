@@ -13,23 +13,43 @@ import {
 } from "lucide-react";
 
 import { Logo } from "../Logo";
-import { mockLoggedUser } from "../../mocks/mockData";
+import {
+  apiPostAuthed,
+  encerrarSessaoLocal,
+  getPerfil,
+} from "../../services/api";
 
 import styles from "./styles.module.css";
-
-const role = mockLoggedUser.role;
-
-const canSee = {
-  usuarios: role === "admin" || role === "receptionist",
-  treinos: role === "admin" || role === "instructor",
-  solicitacoes: role === "admin" || role === "instructor",
-  avisos: role === "admin" || role === "instructor" || role === "receptionist",
-  configuracoes: true,
-};
 
 export function SideMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const role = getPerfil();
+  const canSee = {
+    usuarios: role === "admin" || role === "recepcionista",
+    treinos: role === "admin" || role === "instrutor",
+    solicitacoes: role === "admin" || role === "instrutor",
+    avisos: role === "admin" || role === "instrutor" || role === "recepcionista",
+    configuracoes: true,
+  };
+
+  async function handleLogout() {
+    let logoutWarning: string | undefined;
+    try {
+      await apiPostAuthed("/auth/logout", {});
+    } catch (error) {
+      logoutWarning =
+        error instanceof Error
+          ? error.message
+          : "Não foi possível invalidar a sessão no servidor.";
+    } finally {
+      encerrarSessaoLocal();
+      navigate("/dashboard", {
+        replace: true,
+        state: logoutWarning ? { logoutWarning } : null,
+      });
+    }
+  }
 
   return (
     <>
@@ -120,7 +140,7 @@ export function SideMenu() {
 
         <button
           className={styles.logout}
-          onClick={() => navigate("/dashboard")}
+          onClick={() => void handleLogout()}
         >
           <LogOut /> Sair
         </button>

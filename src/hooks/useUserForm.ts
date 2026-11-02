@@ -14,8 +14,8 @@ export type UserFormValues = {
   profile: string;
   goal: string;
   experience: string;
-  disability: string;
-  medicalRestriction: string;
+  disability: string[];
+  medicalRestriction: string[];
 };
 
 type UseUserFormOptions = {
@@ -31,8 +31,8 @@ const defaults: UserFormValues = {
   profile: "Aluno",
   goal: "Hipertrofia",
   experience: "Iniciante",
-  disability: "Nenhuma",
-  medicalRestriction: "Nenhuma",
+  disability: ["nenhuma"],
+  medicalRestriction: ["nenhuma"],
 };
 
 export function useUserForm({ initial = {}, mode }: UseUserFormOptions) {
@@ -44,9 +44,10 @@ export function useUserForm({ initial = {}, mode }: UseUserFormOptions) {
   const [submitAttempted, setSubmitAttempted] = useState(false);
 
   const requiresMedicalReport =
-    values.disability !== "Nenhuma" || values.medicalRestriction !== "Nenhuma";
+    values.disability.some((value) => value !== "nenhuma") ||
+    values.medicalRestriction.some((value) => value !== "nenhuma");
 
-  function validateAll(medicalReportFile: File | null): Record<string, string> {
+  function validateAll(): Record<string, string> {
     const e: Record<string, string> = {};
 
     const nameError = validateName(values.name);
@@ -57,11 +58,6 @@ export function useUserForm({ initial = {}, mode }: UseUserFormOptions) {
     if (mode === "create") {
       const cpfError = validateCPF(values.cpf);
       if (cpfError) e.cpf = cpfError;
-    }
-
-    if (requiresMedicalReport && !medicalReportFile) {
-      e.medicalReport =
-        "Anexe o laudo médico para deficiência ou restrição informada.";
     }
 
     return e;
@@ -77,25 +73,33 @@ export function useUserForm({ initial = {}, mode }: UseUserFormOptions) {
         if (field === "email") updated.email = validateEmail(formatted);
         if (field === "cpf") updated.cpf = validateCPF(formatted);
         // limpa erro do laudo se voltou para Nenhuma nos dois campos
-        if (field === "disability" || field === "medicalRestriction") {
-          const newDisability =
-            field === "disability" ? formatted : values.disability;
-          const newRestriction =
-            field === "medicalRestriction"
-              ? formatted
-              : values.medicalRestriction;
-          if (newDisability === "Nenhuma" && newRestriction === "Nenhuma") {
-            delete updated.medicalReport;
-          }
-        }
         return updated;
       });
     }
   }
 
-  function handleSubmitValidate(medicalReportFile: File | null): boolean {
+  function handleMedicalToggle(
+    field: "disability" | "medicalRestriction",
+    option: string,
+    checked: boolean,
+  ) {
+    setValues((prev) => {
+      const current = prev[field];
+      const updated =
+        option === "nenhuma"
+          ? checked
+            ? ["nenhuma"]
+            : []
+          : checked
+            ? [...current.filter((value) => value !== "nenhuma"), option]
+            : current.filter((value) => value !== option);
+      return { ...prev, [field]: [...new Set(updated)] };
+    });
+  }
+
+  function handleSubmitValidate(): boolean {
     setSubmitAttempted(true);
-    const newErrors = validateAll(medicalReportFile);
+    const newErrors = validateAll();
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }
@@ -110,6 +114,7 @@ export function useUserForm({ initial = {}, mode }: UseUserFormOptions) {
     submitAttempted,
     requiresMedicalReport,
     handleChange,
+    handleMedicalToggle,
     handleSubmitValidate,
     getError,
   };

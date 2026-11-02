@@ -111,7 +111,6 @@ export function TimeAdjust({
               value={{ sec: time }}
               onChange={(v) => setTime(v.sec)}
               itemHeight={60}
-              visibleItemCount={3}
             >
               <Picker.Column name="sec">
                 {timeOptions.map((sec) => (

@@ -9,6 +9,7 @@ import { Input } from "../../components/Input/input";
 import { Button } from "../../components/Button";
 
 import { validateEmailRequired } from "../../validators";
+import { apiPatchAuthed } from "../../services/api";
 
 export function ChangeEmail() {
   const navigate = useNavigate();
@@ -17,6 +18,9 @@ export function ChangeEmail() {
   const [error, setError] = useState("");
   const [touched, setTouched] = useState(false);
   const [submitAttempted, setSubmitAttempted] = useState(false);
+  const [password, setPassword] = useState("");
+  const [requestError, setRequestError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setValue(e.target.value);
@@ -24,21 +28,40 @@ export function ChangeEmail() {
     setError(validateEmailRequired(e.target.value));
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSubmitAttempted(true);
     const newError = validateEmailRequired(value);
     setError(newError);
     if (newError) return;
 
-    navigate("/verificar-email", {
-      state: {
-        action: "change-email",
-        pendingEmail: value,
-        redirectTo: "/configuracoes",
-        showSuccessToast: true,
-      },
-    });
+    if (!password) {
+      setRequestError("Informe sua senha atual.");
+      return;
+    }
+    setSubmitting(true);
+    setRequestError("");
+    try {
+      await apiPatchAuthed("/auth/alterar-email", {
+        senha_atual: password,
+        novo_email: value,
+      });
+      navigate("/verificar-email", {
+        state: {
+          action: "change-email",
+          pendingEmail: value,
+          redirectTo: "/configuracoes",
+        },
+      });
+    } catch (requestError) {
+      setRequestError(
+        requestError instanceof Error
+          ? requestError.message
+          : "Não foi possível solicitar a troca do e-mail.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -60,7 +83,19 @@ export function ChangeEmail() {
           errorMessage={touched || submitAttempted ? error : ""}
           autoComplete="email"
         />
-        <Button type="submit">Alterar</Button>
+        <Input
+          labelText="Senha atual"
+          type="password"
+          id="current-password"
+          name="current-password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          autoComplete="current-password"
+        />
+        {requestError && <p role="alert">{requestError}</p>}
+        <Button type="submit" disabled={submitting}>
+          {submitting ? "Enviando..." : "Alterar"}
+        </Button>
       </form>
     </Container>
   );

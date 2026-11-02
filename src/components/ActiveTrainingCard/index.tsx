@@ -1,9 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { PlayCircle } from "lucide-react";
 
 import { Button } from "../Button";
 import { ButtonStroke } from "../ButtonStroke";
-import { Line } from "../Line";
 
 import styles from "./styles.module.css";
 

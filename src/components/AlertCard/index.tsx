@@ -8,6 +8,7 @@ type AlertCardProps = {
   author: string;
   date: string;
   description: string;
+  title?: string;
   onEdit?: () => void;
   onDelete?: () => void;
 };
@@ -18,11 +19,12 @@ export function AlertCard({
   author,
   date,
   description,
+  title,
   onEdit,
   onDelete,
 }: AlertCardProps) {
   return (
-    <article className={styles.container}>
+    <article className={styles.container} data-alert-id={id}>
       <header className={styles.content}>
         <img src={image} className={styles.img} alt={author} />
         <div style={{ flex: 1 }}>
@@ -48,6 +50,7 @@ export function AlertCard({
           )}
         </div>
       </header>
+      {title && <h3>{title}</h3>}
       <p>{description}</p>
     </article>
   );

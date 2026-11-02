@@ -9,6 +9,11 @@ type Serie = {
   reps: number;
 };
 
+type SerieValues = {
+  kg: number;
+  reps: number;
+};
+
 type WorkoutTrainingProps = {
   exerciseIndex: number;
   trainingActive: boolean;
@@ -18,12 +23,14 @@ type WorkoutTrainingProps = {
     exerciseIndex: number,
     serieIndex: number,
     kg: number,
-  ) => void;
+    reps: number,
+  ) => void | boolean | Promise<void | boolean>;
   onSerieUnchecked?: (
     exerciseIndex: number,
     serieIndex: number,
     kg: number,
-  ) => void;
+  ) => void | boolean | Promise<void | boolean>;
+  disableUncheck?: boolean;
 };
 
 const defaultExercises: Serie[] = [
@@ -61,8 +68,14 @@ export function WorkoutTraining({
   initialChecked = [],
   onSerieChecked,
   onSerieUnchecked,
+  disableUncheck = false,
 }: WorkoutTrainingProps) {
   const [checkedRows, setCheckedRows] = useState<number[]>(initialChecked);
+  const [inputError, setInputError] = useState("");
+  const [updatingRows, setUpdatingRows] = useState<number[]>([]);
+  const [seriesValues, setSeriesValues] = useState<Record<number, SerieValues>>(
+    {},
+  );
   const [restTime, setRestTime] = useState(90);
   const [countdown, setCountdown] = useState<number | null>(null);
   const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -94,22 +107,58 @@ export function WorkoutTraining({
     };
   }, []);
 
-  const toggleRow = (serieIndex: number, kg: number) => {
-    if (!trainingActive) return;
+  useEffect(() => {
+    setCheckedRows(initialChecked);
+  }, [initialChecked]);
 
-    if (checkedRows.includes(serieIndex)) {
-      setCheckedRows((prev) => prev.filter((i) => i !== serieIndex));
-      onSerieUnchecked?.(exerciseIndex, serieIndex, kg);
-      stopCountdown();
-    } else {
-      setCheckedRows((prev) => [...prev, serieIndex]);
-      onSerieChecked?.(exerciseIndex, serieIndex, kg);
-      startCountdown(restTime);
+  const toggleRow = async (serieIndex: number) => {
+    if (!trainingActive || updatingRows.includes(serieIndex)) return;
+    setUpdatingRows((previous) => [...previous, serieIndex]);
+    try {
+      if (checkedRows.includes(serieIndex)) {
+        if (disableUncheck) return;
+        const removed = await onSerieUnchecked?.(
+          exerciseIndex,
+          serieIndex,
+          seriesValues[serieIndex]?.kg ?? exercises[serieIndex].kg,
+        );
+        if (removed === false) return;
+        setCheckedRows((prev) => prev.filter((i) => i !== serieIndex));
+        stopCountdown();
+      } else {
+        const values = seriesValues[serieIndex] ?? exercises[serieIndex];
+        if (
+          !Number.isFinite(values.kg) ||
+          values.kg < 0 ||
+          values.kg > 9999.99 ||
+          !Number.isInteger(values.reps) ||
+          values.reps < 1 ||
+          values.reps > 999
+        ) {
+          setInputError("Informe carga e repetições válidas antes de marcar a série.");
+          return;
+        }
+        setInputError("");
+        const saved = await onSerieChecked?.(
+          exerciseIndex,
+          serieIndex,
+          values.kg,
+          values.reps,
+        );
+        if (saved === false) return;
+        setCheckedRows((prev) => [...prev, serieIndex]);
+        startCountdown(restTime);
+      }
+    } finally {
+      setUpdatingRows((previous) =>
+        previous.filter((index) => index !== serieIndex),
+      );
     }
   };
 
   return (
     <div className={styles.wrapper}>
+      {inputError && <p role="alert">{inputError}</p>}
       <TimeAdjust
         initialTime={restTime}
         trainingActive={trainingActive}
@@ -136,14 +185,64 @@ export function WorkoutTraining({
               className={checkedRows.includes(i) ? styles.activeRow : ""}
             >
               <td>{ex.series}</td>
-              <td>{ex.kg}</td>
-              <td>{ex.reps}</td>
+              <td>
+                {trainingActive ? (
+                  <input
+                    type="number"
+                    aria-label={`Carga realizada na série ${ex.series}`}
+                    min={0}
+                    max={9999.99}
+                    step="0.5"
+                    value={seriesValues[i]?.kg ?? ex.kg}
+                    onChange={(event) =>
+                      setSeriesValues((previous) => ({
+                        ...previous,
+                        [i]: {
+                          kg: Number(event.target.value),
+                          reps: previous[i]?.reps ?? ex.reps,
+                        },
+                      }))
+                    }
+                    className={styles.valueInput}
+                  />
+                ) : (
+                  ex.kg
+                )}
+              </td>
+              <td>
+                {trainingActive ? (
+                  <input
+                    type="number"
+                    aria-label={`Repetições realizadas na série ${ex.series}`}
+                    min={1}
+                    max={999}
+                    step={1}
+                    value={seriesValues[i]?.reps ?? ex.reps}
+                    onChange={(event) =>
+                      setSeriesValues((previous) => ({
+                        ...previous,
+                        [i]: {
+                          kg: previous[i]?.kg ?? ex.kg,
+                          reps: Number(event.target.value),
+                        },
+                      }))
+                    }
+                    className={styles.valueInput}
+                  />
+                ) : (
+                  ex.reps
+                )}
+              </td>
               {trainingActive && (
                 <td>
                   <input
                     type="checkbox"
                     checked={checkedRows.includes(i)}
-                    onChange={() => toggleRow(i, ex.kg)}
+                    disabled={
+                      updatingRows.includes(i) ||
+                      (disableUncheck && checkedRows.includes(i))
+                    }
+                    onChange={() => void toggleRow(i)}
                     className={styles.checkbox}
                   />
                 </td>
