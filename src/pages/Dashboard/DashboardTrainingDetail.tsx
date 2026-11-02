@@ -82,7 +82,11 @@ export function DashboardTrainingDetail() {
     try {
       const [detail, userResult] = await Promise.all([
         apiGet<TrainingDetailResponse>(`/treinos/${id}`),
-        apiGetAllPages<Student>("/usuarios?perfil=aluno"),
+        apiGetAllPages<Student>(
+          sessionStorage.getItem("perfil") === "instrutor"
+            ? "/usuarios?perfil=aluno&para_treino=true"
+            : "/usuarios?perfil=aluno",
+        ),
       ]);
       setTraining({
         ...detail,

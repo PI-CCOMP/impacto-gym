@@ -10,6 +10,7 @@ import {
   FileText,
   Plus,
   RefreshCw,
+  UserPlus,
 } from "lucide-react";
 
 import { DashboardGrid } from "../../components/DashboardGrid";
@@ -100,24 +101,31 @@ export function DashboardUsers() {
   const [error, setError] = useState("");
   const [editingUser, setEditingUser] = useState<UserItem | null>(null);
   const [deletingUser, setDeletingUser] = useState<UserItem | null>(null);
+  const [managingStudentInstructor, setManagingStudentInstructor] =
+    useState<UserItem | null>(null);
+  const [managingInstructorBusy, setManagingInstructorBusy] = useState(false);
   const [rejectingRegistration, setRejectingRegistration] =
     useState<Registration | null>(null);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
+  const isInstructor = sessionStorage.getItem("perfil") === "instrutor";
+  const showAdminFilter = sessionStorage.getItem("perfil") === "admin";
 
   useEffect(() => {
     let active = true;
     const params = new URLSearchParams({
-      busca: search,
       pagina: String(page),
       por_pagina: String(pageSize),
     });
-    const selected = selectedRoles
-      .map((label) => profileValues[label])
-      .filter((profile): profile is UserProfile => Boolean(profile));
-    if (selected.length > 0) params.set("perfil", selected.join(","));
+    if (!isInstructor) {
+      params.set("busca", search);
+      const selected = selectedRoles
+        .map((label) => profileValues[label])
+        .filter((profile): profile is UserProfile => Boolean(profile));
+      if (selected.length > 0) params.set("perfil", selected.join(","));
+    }
     setUsersLoading(true);
     apiGet<PageResult<UserItem>>(`/usuarios?${params}`)
       .then((result) => {
@@ -145,9 +153,22 @@ export function DashboardUsers() {
     return () => {
       active = false;
     };
-  }, [page, pageSize, search, selectedRoles, usersRefresh]);
+  }, [
+    page,
+    pageSize,
+    search,
+    selectedRoles,
+    isInstructor,
+    usersRefresh,
+  ]);
 
   useEffect(() => {
+    if (isInstructor) {
+      setPending([]);
+      setTotalPending(0);
+      setPendingLoading(false);
+      return;
+    }
     let active = true;
     const params = new URLSearchParams({
       status: "pendente",
@@ -177,7 +198,7 @@ export function DashboardUsers() {
     return () => {
       active = false;
     };
-  }, [pendingPage, pendingPageSize, pendingSearch, pendingRefresh]);
+  }, [isInstructor, pendingPage, pendingPageSize, pendingSearch, pendingRefresh]);
 
   function toggleRole(role: string) {
     setSelectedRoles((previous) =>
@@ -297,6 +318,28 @@ export function DashboardUsers() {
     }
   }
 
+  async function handleManageStudentInstructor() {
+    if (!managingStudentInstructor) return;
+    const user = managingStudentInstructor;
+    setError("");
+    setManagingInstructorBusy(true);
+    try {
+      await apiPatchAuthed(`/usuarios/${user.id_usuario}/instrutor`, {});
+      setManagingStudentInstructor(null);
+      setSuccessMessage(`${user.nome} foi vinculado a você.`);
+      setShowSuccessToast(true);
+      setUsersRefresh((current) => current + 1);
+    } catch (requestError) {
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : "Não foi possível atualizar o vínculo do aluno.",
+      );
+    } finally {
+      setManagingInstructorBusy(false);
+    }
+  }
+
   async function openMedicalReport(registration: Registration) {
     if (!registration.documento) return;
     setError("");
@@ -316,15 +359,12 @@ export function DashboardUsers() {
     }
   }
 
-  const showAdminFilter =
-    sessionStorage.getItem("perfil") === "admin";
-
   return (
     <DashboardGrid>
       <SideMenu />
       <Container isDashboard>
         <DashboardRow variant="sideBySide">
-          <h1>Usuários</h1>
+          <h1>{isInstructor ? "Alunos sem instrutor" : "Usuários"}</h1>
           {sessionStorage.getItem("perfil") === "admin" && (
             <ActionButton
               icon={<Plus size={16} />}
@@ -345,35 +385,37 @@ export function DashboardUsers() {
         )}
         {error && <p role="alert">{error}</p>}
 
-        <DashboardRow>
-          <Input
-            type="text"
-            id="user"
-            name="user"
-            placeholder="Nome do usuário"
-            leftIcon={<Search />}
-            value={search}
-            onChange={(event) => {
-              setSearch(event.target.value);
-              setPage(1);
-            }}
-          />
-          {(["Aluno", "Instrutor", "Recepcionista"] as const).map((role) => (
-            <InputCheckbox
-              key={role}
-              labelText={role}
-              checked={selectedRoles.includes(role)}
-              onChange={() => toggleRole(role)}
+        {!isInstructor && (
+          <DashboardRow>
+            <Input
+              type="text"
+              id="user"
+              name="user"
+              placeholder="Nome do usuário"
+              leftIcon={<Search />}
+              value={search}
+              onChange={(event) => {
+                setSearch(event.target.value);
+                setPage(1);
+              }}
             />
-          ))}
-          {showAdminFilter && (
-            <InputCheckbox
-              labelText="Administrador"
-              checked={selectedRoles.includes("Administrador")}
-              onChange={() => toggleRole("Administrador")}
-            />
-          )}
-        </DashboardRow>
+            {(["Aluno", "Instrutor", "Recepcionista"] as const).map((role) => (
+              <InputCheckbox
+                key={role}
+                labelText={role}
+                checked={selectedRoles.includes(role)}
+                onChange={() => toggleRole(role)}
+              />
+            ))}
+            {showAdminFilter && (
+              <InputCheckbox
+                labelText="Administrador"
+                checked={selectedRoles.includes("Administrador")}
+                onChange={() => toggleRole("Administrador")}
+              />
+            )}
+          </DashboardRow>
+        )}
 
         <div>
           <table className={styles.table}>
@@ -381,9 +423,9 @@ export function DashboardUsers() {
               <tr>
                 <th>Nome</th>
                 {showAdminFilter && <th>CPF</th>}
-                <th>Perfil</th>
+                {!isInstructor && <th>Perfil</th>}
                 <th>Situação</th>
-                <th>Instrutor Vinculado</th>
+                {!isInstructor && <th>Instrutor Vinculado</th>}
                 <th></th>
               </tr>
             </thead>
@@ -396,7 +438,9 @@ export function DashboardUsers() {
                       {user.cpf ? <MaskedCPF cpf={user.cpf} /> : "—"}
                     </td>
                   )}
-                  <td data-label="Perfil">{profileLabels[user.perfil]}</td>
+                  {!isInstructor && (
+                    <td data-label="Perfil">{profileLabels[user.perfil]}</td>
+                  )}
                   <td data-label="Situação">
                     {user.perfil === "aluno"
                       ? user.status === "ativo"
@@ -410,11 +454,13 @@ export function DashboardUsers() {
                               : "—"
                       : "—"}
                   </td>
-                  <td data-label="Instrutor Vinculado">
-                    {user.perfil === "aluno"
-                      ? (user.instrutor_vinculado ?? "N/A")
-                      : "N/A"}
-                  </td>
+                  {!isInstructor && (
+                    <td data-label="Instrutor Vinculado">
+                      {user.perfil === "aluno"
+                        ? (user.instrutor_vinculado ?? "N/A")
+                        : "N/A"}
+                    </td>
+                  )}
                   <td data-label="Ações">
                     <div
                       style={{
@@ -432,7 +478,7 @@ export function DashboardUsers() {
                           />
                         </Link>
                       )}
-                      {hasPermission("edit_member") && (
+                      {hasPermission("edit_member") && !isInstructor && (
                         <ActionButton
                           variant="edit"
                           icon={<Edit2 size={16} />}
@@ -440,7 +486,7 @@ export function DashboardUsers() {
                           onClick={() => setEditingUser(user)}
                         />
                       )}
-                      {hasPermission("delete_member") && (
+                      {hasPermission("delete_member") && !isInstructor && (
                         <ActionButton
                           variant="delete"
                           icon={<Trash2 size={16} />}
@@ -448,14 +494,26 @@ export function DashboardUsers() {
                           onClick={() => setDeletingUser(user)}
                         />
                       )}
+                      {user.perfil === "aluno" &&
+                        isInstructor &&
+                        user.status === "ativo" &&
+                        !user.instrutor_vinculado && (
+                          <ActionButton
+                            icon={<UserPlus size={16} />}
+                            title="Assumir aluno"
+                            onClick={() => setManagingStudentInstructor(user)}
+                          />
+                        )}
                     </div>
                   </td>
                 </tr>
               ))}
               {!usersLoading && users.length === 0 && (
                 <tr>
-                  <td colSpan={showAdminFilter ? 6 : 5} style={{ textAlign: "center" }}>
-                    Nenhum usuário encontrado.
+                  <td colSpan={isInstructor ? 3 : showAdminFilter ? 6 : 5} style={{ textAlign: "center" }}>
+                    {isInstructor
+                      ? "Nenhum aluno ativo sem instrutor."
+                      : "Nenhum usuário encontrado."}
                   </td>
                 </tr>
               )}
@@ -473,6 +531,34 @@ export function DashboardUsers() {
           />
         </div>
 
+        {managingStudentInstructor && (
+          <Toast
+            message="Deseja assumir este aluno? Os treinos ativos dele serão inativados."
+            highlight={managingStudentInstructor.nome}
+            duration={999999}
+            onClose={() => {
+              if (!managingInstructorBusy) setManagingStudentInstructor(null);
+            }}
+          >
+            <Button
+              onClick={() => setManagingStudentInstructor(null)}
+              disabled={managingInstructorBusy}
+            >
+              Cancelar
+            </Button>
+            <ButtonStroke
+              onClick={() => void handleManageStudentInstructor()}
+              disabled={managingInstructorBusy}
+            >
+              {managingInstructorBusy
+                ? "Salvando..."
+                : "Assumir aluno"}
+            </ButtonStroke>
+          </Toast>
+        )}
+
+        {!isInstructor && (
+          <>
         <Line />
         <Container style={{ padding: 0 }}>
           <DashboardRow variant="sideBySide">
@@ -592,6 +678,8 @@ export function DashboardUsers() {
             }}
           />
         </Container>
+          </>
+        )}
       </Container>
 
       {editingUser && (

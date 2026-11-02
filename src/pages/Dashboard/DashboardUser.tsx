@@ -275,7 +275,7 @@ export function DashboardUser() {
                         trainingName={training.nome_treino}
                         muscleGroups={[]}
                         onUnlink={
-                          isAdmin || sessionStorage.getItem("perfil") === "instrutor"
+                          isAdmin
                             ? () => void handleUnlink(training.id_aluno_treino)
                             : undefined
                         }

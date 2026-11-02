@@ -26,7 +26,7 @@ export function SideMenu() {
   const navigate = useNavigate();
   const role = getPerfil();
   const canSee = {
-    usuarios: role === "admin" || role === "recepcionista",
+    usuarios: role === "admin" || role === "instrutor" || role === "recepcionista",
     treinos: role === "admin" || role === "instrutor",
     solicitacoes: role === "admin" || role === "instrutor",
     avisos: role === "admin" || role === "instrutor" || role === "recepcionista",

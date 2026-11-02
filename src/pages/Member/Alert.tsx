@@ -86,7 +86,11 @@ export function Alert() {
               date={formatDateTime(new Date(alert.publicado_em).getTime())}
               description={alert.mensagem}
             />
-            {alerts.length > 1 && index < alerts.length - 1 && <Line />}
+            {alerts.length > 1 && index < alerts.length - 1 && (
+              <div style={{ marginTop: "var(--size-md)" }}>
+                <Line />
+              </div>
+            )}
           </div>
         ))}
       </Container>
